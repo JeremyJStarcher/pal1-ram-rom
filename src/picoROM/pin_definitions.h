@@ -27,4 +27,7 @@
 #define D4 20
 #define D5 21
 #define D6 22
-#define D7 (26)
+#define D7 26
+
+#define WE 27
+#define CS 28
