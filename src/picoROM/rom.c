@@ -15,7 +15,9 @@
 #include <malloc.h>
 #include "tusb.h"
 
-#include "data.c"
+// #include "data.c"
+
+#include "rom_ext.c"
 
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
 
@@ -209,7 +211,12 @@ uint16_t get_mangled_addr(uint16_t addr) {
 #define LO_UINT16(a) ((a) & 0xFF)
 
 void setup_rom_contents() {
-
+    unsigned int idx = 0;
+    
+    for(idx = 0; idx <= rom_extSize ; idx++) {
+            setbyte(0xA000+idx, rom_ext[idx]);
+    }
+    return;
 
 //    set_values();
 //    return;
