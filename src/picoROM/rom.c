@@ -100,6 +100,7 @@ int main() {
     printf("data_mask: 0x%08x\n", data_mask);
 
 
+
     // Tis bit needs flipped, but we can't flip it in hardware right at the moment
     uint16_t mask = 1 << 13;  // Create a mask with a 1 at bit position 13.
 
@@ -111,8 +112,11 @@ int main() {
         cs = (all & (uint32_t) (1 << CS)) == 0;
 
 
-        if (cs) {
+        if (addr >= ADDR_BOTTOM && addr <= ADDR_TOP) {
             we = (all & (uint32_t) (1 << WE)) == 0;
+
+
+             // printf("WE %04x %04x\n", addr, data);
 
             // if (we) {
             //     data = (uint32_t) (all >> D0); // all >> D0;
