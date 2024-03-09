@@ -30,7 +30,7 @@ uint32_t data_mask = 0;
 
 uint32_t addr_pins[] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15};
 uint32_t data_pins[] = {D0, D1, D2, D3, D4, D5, D6, D7};
-uint32_t ctrl_pins[] = {WE, CS};
+uint32_t ctrl_pins[] = {WE, CS, PHI2};
 
 int last_addr_pin = A15;
 
@@ -71,6 +71,7 @@ int main() {
     uint32_t all;
     uint32_t we;
     uint32_t cs;
+    uint32_t phi2;
 
     volatile uint16_t save_addr;
     volatile uint16_t save_data;
@@ -109,24 +110,22 @@ int main() {
     while (true) {
         all = gpio_get_all();
         addr = all & (uint32_t) 0xFFFF;
-        cs = (all & (uint32_t) (1 << CS)) == 0;
+        // cs = (all & (uint32_t) (1 << CS)) == 0;
 
+        phi2 = (all & (uint32_t) (1 << PHI2)) ; // &&  (all & (uint32_t) (1 << PHI2) != 0);
 
-        if (addr >= ADDR_BOTTOM && addr <= ADDR_TOP) {
-            we = (all & (uint32_t) (1 << WE)) == 0;
+        if (addr >= ADDR_BOTTOM && addr <= ADDR_TOP && phi2 != 0) {
 
+            we = (all & (uint32_t) (1 << WE) );
 
-             // printf("WE %04x %04x\n", addr, data);
-
-            // if (we) {
-            //     data = (uint32_t) (all >> D0); // all >> D0;
-            //     printf("WE %04x %04x\n", addr, data);
-            //     rom_contents[addr] = data;
-            // } else {
+            if (we == 0) {
+                data = (uint32_t) ((all & data_mask) >> D0);
+                rom_contents[addr] =  data;
+            } else {
                 data = rom_contents[addr];
                 gpio_set_dir_masked(data_mask, data_mask);	
                 gpio_put_masked(data_mask, data  << D0);
-//            }
+            }
         } else {
             gpio_set_dir_masked(data_mask, 0);
         }
@@ -139,6 +138,16 @@ void setup_gpio() {
 
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
+
+    for(i = 0; i < 5; i++) {
+        gpio_put(LED_PIN, 1);
+        sleep_ms(100);
+        gpio_put(LED_PIN, 0);
+        sleep_ms(100);
+    }
+    gpio_put(LED_PIN, 0);
+    gpio_set_dir(LED_PIN, GPIO_IN);
+
 
     for(i = 0; i < NELEMS(addr_pins); i++) {
         gpio = addr_pins[i];
@@ -161,13 +170,7 @@ void setup_gpio() {
         gpio_init(gpio);
         gpio_set_function(gpio, GPIO_FUNC_SIO); 
         gpio_set_dir(gpio, GPIO_IN);
-    }
-
-    for(i = 0; i < 5; i++) {
-        gpio_put(LED_PIN, 1);
-        sleep_ms(100);
-        gpio_put(LED_PIN, 0);
-        sleep_ms(100);
+        printf("SET PIN %d as %d\n", gpio, GPIO_IN);
     }
 }
 

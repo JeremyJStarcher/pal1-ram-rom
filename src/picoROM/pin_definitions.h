@@ -31,3 +31,4 @@
 
 #define WE 27
 #define CS 28
+#define PHI2 25
