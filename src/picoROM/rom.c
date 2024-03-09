@@ -25,14 +25,14 @@
 
 int ledValue = 0;
 
-uint32_t addr_mask = 0; 
-uint32_t data_mask = 0; 
+uint32_t addr_mask = 0;
+uint32_t data_mask = 0;
 
 uint32_t addr_pins[] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15};
 uint32_t data_pins[] = {D0, D1, D2, D3, D4, D5, D6, D7};
 uint32_t ctrl_pins[] = {WE, CS, PHI2};
 
-int last_addr_pin = A15;
+// int last_addr_pin = A15;
 
 
 uint32_t getTotalHeap(void);
@@ -42,10 +42,21 @@ void setup_gpio();
 uint16_t get_requested_address();
 void put_data_on_bus(int);
 void setup_rom_contents();
-void setbyte(uint32_t addr, uint8_t value);
+void set_rom_byte(uint32_t addr, uint8_t value);
 
 uint16_t ADDR_BOTTOM = (uint16_t) 0x2000;
-uint16_t ADDR_TOP = ((uint16_t) 0xDFFF);
+//uint16_t ADDR_TOP = ((uint16_t) 0xDFFF);
+uint16_t ADDR_TOP = ((uint16_t) 0xFFFF);
+
+#define RO_MEMORY_BIT 15
+	
+#define HI_UINT16(a) (((a) >> 8) & 0xFF)
+#define LO_UINT16(a) ((a) & 0xFF)
+
+// this address should always never change value
+// to stop things that probe RAM
+#define IO_ADDRESS 0xFFF7
+
 
 /*
  * Because this location of this RAM spans the bit 16 boundary
@@ -92,19 +103,12 @@ int main() {
     // 400 MHz
     vreg_set_voltage(VREG_VOLTAGE_1_30);
     set_sys_clock_pll(1600000000, 4, 1);
-    
+
     // GPIO setup.
     setup_gpio();
 
-
     printf("addr_mask: 0x%08x\n", addr_mask);
     printf("data_mask: 0x%08x\n", data_mask);
-
-
-
-    // Tis bit needs flipped, but we can't flip it in hardware right at the moment
-    uint16_t mask = 1 << 13;  // Create a mask with a 1 at bit position 13.
-
 
     printf("Starting main loop\n");
     while (true) {
@@ -112,15 +116,16 @@ int main() {
         addr = all & (uint32_t) 0xFFFF;
         // cs = (all & (uint32_t) (1 << CS)) == 0;
 
-        phi2 = (all & (uint32_t) (1 << PHI2)) ; // &&  (all & (uint32_t) (1 << PHI2) != 0);
+        phi2 = (all & (uint32_t) (1 << PHI2));
 
         if (addr >= ADDR_BOTTOM && addr <= ADDR_TOP && phi2 != 0) {
-
             we = (all & (uint32_t) (1 << WE) );
 
             if (we == 0) {
-                data = (uint32_t) ((all & data_mask) >> D0);
-                rom_contents[addr] =  data;
+                if ((rom_contents[addr] & (1 << RO_MEMORY_BIT)) == 0) {
+                    data = (uint32_t) ((all & data_mask) >> D0);
+                    rom_contents[addr] =  data;
+                }
             } else {
                 data = rom_contents[addr];
                 gpio_set_dir_masked(data_mask, data_mask);	
@@ -136,6 +141,7 @@ void setup_gpio() {
     size_t i;
     int gpio;
 
+#if 0
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
 
@@ -147,13 +153,13 @@ void setup_gpio() {
     }
     gpio_put(LED_PIN, 0);
     gpio_set_dir(LED_PIN, GPIO_IN);
-
+#endif
 
     for(i = 0; i < NELEMS(addr_pins); i++) {
         gpio = addr_pins[i];
         addr_mask |= (1 << gpio);
         gpio_init(gpio);
-        gpio_set_function(gpio, GPIO_FUNC_SIO); 
+        gpio_set_function(gpio, GPIO_FUNC_SIO);
         gpio_set_dir(gpio, GPIO_IN);
     }
 
@@ -161,16 +167,15 @@ void setup_gpio() {
         gpio = data_pins[i];
         data_mask |= (1 << gpio);
         gpio_init(gpio);
-        gpio_set_function(gpio, GPIO_FUNC_SIO); 
+        gpio_set_function(gpio, GPIO_FUNC_SIO);
         gpio_set_dir(gpio, GPIO_IN);
     }
 
     for(i = 0; i < NELEMS(ctrl_pins); i++) {
         gpio = ctrl_pins[i];
         gpio_init(gpio);
-        gpio_set_function(gpio, GPIO_FUNC_SIO); 
+        gpio_set_function(gpio, GPIO_FUNC_SIO);
         gpio_set_dir(gpio, GPIO_IN);
-        printf("SET PIN %d as %d\n", gpio, GPIO_IN);
     }
 }
 
@@ -182,99 +187,43 @@ void put_data_on_bus(int address) {
     gpio_put_masked(data_mask, rom_contents[address]);
 }
 
-#define SETBIT(T, B, V) (T = V ? T | (1<<B) : T & ~(1<<B))
-#define CHECK_BIT(x, pos) (x & (1UL << pos) )
-
-uint16_t get_mangled_addr(uint16_t addr) {
-    return addr;
-
-    size_t mangled_addr = addr;
-    SETBIT(mangled_addr, A13, !CHECK_BIT(addr, A13));
-
-    return mangled_addr;
-
-    // size_t mangled_addr = 0;
-    // SETBIT(mangled_addr, A0, CHECK_BIT(addr, A0));
-    // SETBIT(mangled_addr, A1, CHECK_BIT(addr, A1));
-    // SETBIT(mangled_addr, A12, CHECK_BIT(addr, A2));
-    // SETBIT(mangled_addr, A2, CHECK_BIT(addr, A3));
-    // SETBIT(mangled_addr, A3, CHECK_BIT(addr, A4));
-    // SETBIT(mangled_addr, A4, CHECK_BIT(addr, A5));
-    // SETBIT(mangled_addr, A5, CHECK_BIT(addr, A6));
-    // SETBIT(mangled_addr, A6, CHECK_BIT(addr, A7));
-    // SETBIT(mangled_addr, A7, CHECK_BIT(addr, A8));
-    // SETBIT(mangled_addr, A8, CHECK_BIT(addr, A9));
-    // SETBIT(mangled_addr, A9, CHECK_BIT(addr, A10));
-    // SETBIT(mangled_addr, A10, CHECK_BIT(addr, A11));
-    // SETBIT(mangled_addr, A11, CHECK_BIT(addr, A12));
-    // SETBIT(mangled_addr, A13, CHECK_BIT(addr, A13));
-    // SETBIT(mangled_addr, A14, CHECK_BIT(addr, A14));
-    // SETBIT(mangled_addr, A15, CHECK_BIT(addr, A15));
-    // return mangled_addr;
-}
-
-	
-#define HI_UINT16(a) (((a) >> 8) & 0xFF)
-#define LO_UINT16(a) ((a) & 0xFF)
-
 void setup_rom_contents() {
     unsigned int idx = 0;
-    
+
     for(idx = 0; idx <= rom_extSize ; idx++) {
-            setbyte(0xA000+idx, rom_ext[idx]);
-    }
-    return;
-
-//    set_values();
-//    return;
-    
-    uint16_t data;
-    size_t len = sizeof(rom_contents)/sizeof(rom_contents[0]);
-
-    for(uint32_t addr = 0; addr < len; addr++) {
-            rom_contents[addr] = 0; 
+        // set_rom_byte(0xA000+idx, rom_ext[idx]);
     }
 
-    for(uint32_t addr = 0; addr < len; addr++) {
-            uint32_t mangled_addr = get_mangled_addr(addr);
-            if (rom_contents[mangled_addr] != 0) {
-                printf("COLLISION: ");
-                printf("addr %04x  m %04x  data %04x\n", addr, mangled_addr, data);
-            }
-    }
-
-    for(size_t addr = 0; addr < len; addr++) {
-        uint32_t mangled_addr = get_mangled_addr(addr);
-        // uint16_t data = LO_UINT16(addr);
-        uint16_t data = HI_UINT16(addr);
-        setbyte(addr, data);
-    }
+    set_rom_byte(0xFFFA, 0x1C);
+    set_rom_byte(0xFFFB, 0x1C);
+    set_rom_byte(0xFFFC, 0x22);
+    set_rom_byte(0xFFFD, 0x1C);
+    set_rom_byte(0xFFFE, 0x1F);
+    set_rom_byte(0xFFFF, 0x1C);
 }
 
-void setbyte(uint32_t addr, uint8_t value) {
-    size_t mangled_addr = get_mangled_addr(addr);
+void set_rom_byte(uint32_t addr, uint8_t value) {
     uint16_t data = value;
 
-        // There are gaps in the pins, so adjust the data.
-        // Any bit position not part of the data bus is a 
-        // "don't care".
+    // There are gaps in the pins, so adjust the data.
+    // Any bit position not part of the data mask is a
+    // "don't care".
 
-        if (data & 1 << 7) {
-            data += 1 << (D7 - D0);
-        }
+    if (data & 1 << 7) {
+        data |= 1 << (D7 - D0);
+    }
 
-        rom_contents[mangled_addr] = data;
+    data |= 1 << RO_MEMORY_BIT;
+    rom_contents[addr] = data;
 }
 
 
 uint32_t getTotalHeap(void) {
    extern char __StackLimit, __bss_end__;
-   
    return &__StackLimit  - &__bss_end__;
 }
 
 uint32_t getFreeHeap(void) {
    struct mallinfo m = mallinfo();
-
    return getTotalHeap() - m.uordblks;
 }
