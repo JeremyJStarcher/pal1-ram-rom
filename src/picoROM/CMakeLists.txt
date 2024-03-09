@@ -5,11 +5,14 @@ add_executable(pico_rom)
 
 target_sources(pico_rom PRIVATE rom.c)
 
+
+
 # Enable USB output, disable UART output.
 pico_enable_stdio_usb(pico_rom 1)
 pico_enable_stdio_uart(pico_rom 0)
 
-target_link_libraries(pico_rom PRIVATE pico_stdlib)
+
+target_link_libraries(pico_rom PRIVATE pico_stdlib pico_multicore hardware_flash hardware_sync)
 pico_add_extra_outputs(pico_rom)
 
 # Add url via pico_set_program_url.

@@ -7,6 +7,7 @@
 
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
+#include "pico/multicore.h"
 #include "hardware/vreg.h"
 #include "pin_definitions.h"
 #include <stdlib.h>
@@ -16,6 +17,8 @@
 #include "tusb.h"
 
 // #include "data.c"
+
+#define FLASH_SIZE (2 * 1024 * 1024)
 
 #include "rom_ext.c"
 
@@ -58,6 +61,10 @@ uint16_t ADDR_TOP = ((uint16_t) 0xFFFF);
 #define IO_ADDRESS 0xFFF7
 
 
+extern char __flash_binary_end;
+
+
+
 /*
  * Because this location of this RAM spans the bit 16 boundary
  * it is easiser to just allocate the full 64K.  Spares doing
@@ -76,6 +83,75 @@ uint16_t ADDR_TOP = ((uint16_t) 0xFFFF);
 
 volatile uint16_t rom_contents[32768*2] = {};
 
+
+void read_string(char *buffer, int max_length) {
+    int count = 0; // Number of characters currently in the buffer
+    char ch; // Character read from stdin
+
+    while (1) {
+        ch = getchar(); // Read a character
+
+        // Check for line end: '\n' or '\r'
+        if (ch == '\n' || ch == '\r') {
+            break;
+        }
+
+        // Handle backspace ('\b' or ASCII 127)
+        if ((ch == '\b' || ch == 127) && count > 0) {
+            // Remove the last character from the buffer
+            count--;
+            // Echo backspace sequence to terminal (backspace, space, backspace)
+            putchar('\b');
+            putchar(' ');
+            putchar('\b');
+            continue;
+        }
+
+        // In the printable range?
+        if (ch >= 32 && ch <= 126) {
+            // If the buffer is not full, add the character to the buffer
+            if (count < max_length - 1) {
+                buffer[count++] = ch;
+                putchar(ch); // Echo the character
+            }
+        }
+    }
+
+    // Null-terminate the string
+    buffer[count] = '\0';
+}
+
+void core1_main()
+{
+    // wait for USB serial
+    while (!tud_cdc_connected()) { sleep_ms(100);  }
+    printf("addr_mask          : 0x%08x\n", addr_mask);
+    printf("data_mask          : 0x%08x\n", data_mask);
+
+    printf("Free heap size     : %ld\n", getFreeHeap());
+
+    uintptr_t end = (uintptr_t) &__flash_binary_end;
+    printf("Binary ends at     : %08x\n", end);
+
+    uintptr_t flashleft = (XIP_BASE + FLASH_SIZE) - end;
+
+
+    printf("Bottom of flash    : 0x%08x\n", XIP_BASE);
+    printf("Top of flash       : 0x%08x\n", XIP_BASE + FLASH_SIZE);
+    printf("Flash Left         : 0x%08x\n", flashleft);
+    printf("Flash Left         : %11db %.2fk %.2fm\n", flashleft, flashleft/1024.0, flashleft/1024.0/1024.0);
+
+
+    char input[10]; // Define the buffer size
+
+    while(1) {
+        printf("Enter a string: ");
+        read_string(input, sizeof(input));
+        printf("\nYou entered: %s\n", input);
+    }
+}
+
+
 int main() {
     uint16_t addr;
     uint16_t data;
@@ -87,30 +163,21 @@ int main() {
     volatile uint16_t save_addr;
     volatile uint16_t save_data;
 
-
-    stdio_init_all();
-    // wait for USB serial
-    // while (!tud_cdc_connected()) { sleep_ms(100);  }
-
-    printf("Welcome\n");
-    printf("Free heap size: %ld\n", getFreeHeap());
-
-    // Specify contents of emulated ROM.
-    setup_rom_contents();
-    printf("ROM SET\n");
-
     // Set system clock speed.
     // 400 MHz
     vreg_set_voltage(VREG_VOLTAGE_1_30);
     set_sys_clock_pll(1600000000, 4, 1);
 
+    stdio_init_all();
+
+    // Specify contents of emulated ROM.
+    setup_rom_contents();
+
     // GPIO setup.
     setup_gpio();
 
-    printf("addr_mask: 0x%08x\n", addr_mask);
-    printf("data_mask: 0x%08x\n", data_mask);
+    multicore_launch_core1(core1_main);
 
-    printf("Starting main loop\n");
     while (true) {
         all = gpio_get_all();
         addr = all & (uint32_t) 0xFFFF;
@@ -190,7 +257,7 @@ void put_data_on_bus(int address) {
 void setup_rom_contents() {
     unsigned int idx = 0;
 
-    for(idx = 0; idx <= rom_extSize ; idx++) {
+    for(idx = 0; idx <= rom_extSize; idx++) {
         // set_rom_byte(0xA000+idx, rom_ext[idx]);
     }
 
