@@ -32,12 +32,13 @@ void setup_rom_contents() {
     uint8_t data = 0;
 
     for(idx = 0x0000; idx < 0xFFFF; idx+=1) {
-        set_ram_byte(idx, (uint8_t) idx);
+        set_ram_byte(idx, 0);
     }
 
-    for(idx = 0; idx <  16384; idx += 1) {
+
+    for(idx = 0; idx <  rom_extSize; idx += 1) {
         data = rom_ext[idx];
-        set_rom_byte(0xA000+idx, data);
+        // set_rom_byte(0xA000+idx, data);
     }
 
     set_rom_byte(0xFFFA, 0x1C);

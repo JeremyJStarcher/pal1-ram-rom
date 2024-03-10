@@ -71,7 +71,6 @@ bool load_ptp_line(char *line) {
     // Convert hex string to number
     count = parse_byte_from_string(&line[idx]);
     if (count == 0) {
-        printf("FOUND %d bytes", count);
         load_ptp_done = true;
         return true;
     }
@@ -101,10 +100,10 @@ bool load_ptp_line(char *line) {
     given_checksum = parse_word_from_string(&line[idx]);
 
     if (given_checksum == checksum) {
-        printf(" *MATCHED\n");
+        // printf(" *MATCHED\n");
         return true;
     }
-    printf(" *FAILED\n");
+    // printf(" *FAILED\n");
 
     load_ptp_error = true;
     return false;
@@ -155,7 +154,29 @@ void read_string(char *buffer, int max_length) {
 
 void help_command() {
     printf("---- HELP ----- \n");
-    printf("loadptp: Load a paper tape file \n");
+    printf("L: Load a paper tape file \n");
+    printf("MSB: FILL ROM WITH MSB (USED TO VERIFY ADDRESS CODING)\n");
+    printf("LSB: FILL ROM WITH LSB (USED TO VERIFY ADDRESS CODING)\n");
+    printf("RESET: RESET RAM/ROM TO POWERUP STATE)\n");
+}
+
+
+void fill_rom_msb() {
+    uint16_t addr;
+    uint8_t data;
+    for(addr = 0x0000; addr < 0xFFFF; addr+=1) {
+        data = addr / 256;
+        set_rom_byte(addr, data);
+    }
+}
+
+void fill_rom_lsb() {
+    uint16_t addr;
+    uint8_t data;
+    for(addr = 0x0000; addr < 0xFFFF; addr+=1) {
+        data = addr % 256;
+        set_rom_byte(addr, data);
+    }
 }
 
 void loadptp_command() {
@@ -169,31 +190,38 @@ void loadptp_command() {
     }
 
     if (load_ptp_error) {
-        printf("Errors were found");
+        printf("*ERR*");
     } else {
-        printf("Loaded");
+        printf("*KIM1*");
     }
 }
+
 
 
 void command_loop(uint16_t *rom_contents) {
     char input[20]; // Define the buffer size
 
     while(1) {
-        printf("Enter command (or help): ");
+        printf("\nENTER COMMAND (OR HELP): ");
         read_string(input, sizeof(input));
-        printf("\nYou entered: %s\n", input);
+        //printf("\nYou entered: %s\n", input);
 
 
         // Compare input with known commands and call the corresponding function
-        if (strcmp(input, "help") == 0) {
+        if (strcmp(input, "HELP") == 0) {
             help_command();
-        } else if (strcmp(input, "loadptp") == 0) {
+        } else if (strcmp(input, "L") == 0) {
             loadptp_command();
+        } else if (strcmp(input, "LSB") == 0) {
+            fill_rom_lsb();
+        } else if (strcmp(input, "MSB") == 0) {
+            fill_rom_msb();
+        } else if (strcmp(input, "RESET") == 0) {
+            setup_rom_contents();
         } else if (strcmp(input, "") == 0) {
             // ignore it.
         } else {
-            printf("Huh?\n");
+            printf("HUH?\n");
         }
     }
 }

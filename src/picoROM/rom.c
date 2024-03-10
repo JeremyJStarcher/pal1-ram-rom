@@ -87,6 +87,8 @@ void core1_main()
     printf("Flash Left         : %11db %.2fk %.2fm\n", flashleft, flashleft/1024.0, flashleft/1024.0/1024.0);
 
 
+    setup_rom_contents();
+
     command_loop();
 }
 
