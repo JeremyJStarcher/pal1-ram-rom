@@ -30,5 +30,5 @@
 #define D7 26
 
 #define WE 27
-#define CS 28
+#define DEN 28
 #define PHI2 25
