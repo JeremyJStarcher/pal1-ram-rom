@@ -16,7 +16,6 @@
 #include <malloc.h>
 #include "tusb.h"
 #include "commands.h"
-#include "read_ptp.h"
 #include "rambuf.h"
 
 #define FLASH_SIZE (2 * 1024 * 1024)
@@ -61,9 +60,19 @@ void core1_main()
 {
     // wait for USB serial
     while (!tud_cdc_connected()) { sleep_ms(100);  }
-    printf("addr_mask          : 0x%08x\n", addr_mask);
-    printf("data_mask          : 0x%08x\n", data_mask);
 
+    printf("\n\n\n");
+
+    printf("addr_mask          : 0x%08x\n", addr_mask);
+    printf("addr_mask          : ");
+    print_binary(addr_mask, 32);
+    printf("\n");
+
+    printf("data_mask          : 0x%08x\n", data_mask);
+    printf("data_mask          : ");
+    print_binary(data_mask, 32);
+    printf("\n");
+ 
     printf("Free heap size     : %ld\n", getFreeHeap());
 
     uintptr_t end = (uintptr_t) &__flash_binary_end;
@@ -106,10 +115,8 @@ int main() {
     // GPIO setup.
     setup_gpio();
 
-//    multicore_launch_core1(core1_main);
-
-            gpio_put(DEN, 1);
-
+    multicore_launch_core1(core1_main);
+    gpio_put(DEN, 1);
 
     while (true) {
         all = gpio_get_all();

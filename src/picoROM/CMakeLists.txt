@@ -3,7 +3,7 @@ set(PICO_DEFAULT_BINARY_TYPE copy_to_ram)
 
 add_executable(pico_rom)
 
-target_sources(pico_rom PRIVATE rom.c read_ptp.c commands.c rambuf.c rambuf_data.c)
+target_sources(pico_rom PRIVATE rom.c commands.c rambuf.c rambuf_data.c)
 
 
 
