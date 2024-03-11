@@ -37,8 +37,6 @@ uint32_t getTotalHeap(void);
 uint32_t getFreeHeap(void);
 
 void setup_gpio();
-uint16_t get_requested_address();
-void put_data_on_bus(int);
 
 uint16_t ADDR_BOTTOM = (uint16_t) 0x2000;
 uint16_t ADDR_TOP = ((uint16_t) 0xFFFF);
@@ -132,12 +130,12 @@ int main() {
             we = (all & (uint32_t) (1 << WE) );
 
             if (we == 0) {
-                if ((rom_contents[addr] & (1 << RO_MEMORY_BIT)) == 0) {
+                if ((sys_state.memory[addr] & (1 << RO_MEMORY_BIT)) == 0) {
                     data = (uint32_t) ((all & data_mask) >> D0);
-                    rom_contents[addr] =  data;
+                    sys_state.memory[addr] =  data;
                 }
             } else {
-                data = rom_contents[addr];
+                data = sys_state.memory[addr];
                 gpio_set_dir_masked(data_mask, data_mask);	
                 gpio_put_masked(data_mask, data  << D0);
             }
@@ -193,13 +191,6 @@ void setup_gpio() {
     }
 }
 
-uint16_t get_requested_address() {
-    return gpio_get_all() & (uint32_t) 0xFFFF;
-}
-
-void put_data_on_bus(int address) {
-    gpio_put_masked(data_mask, rom_contents[address]);
-}
 
 uint32_t getTotalHeap(void) {
    extern char __StackLimit, __bss_end__;

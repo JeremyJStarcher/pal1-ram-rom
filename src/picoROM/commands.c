@@ -198,7 +198,7 @@ void loadptp_command() {
 
 
 
-void command_loop(uint16_t *rom_contents) {
+void command_loop() {
     char input[20]; // Define the buffer size
 
     while(1) {

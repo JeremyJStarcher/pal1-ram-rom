@@ -1,9 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
 #include "pin_definitions.h"
 #include "rambuf.h"
 #include "rom_ext.c"
+
+SysStateStruct sys_state;
+
 
 void set_ram_byte(uint32_t addr, uint8_t value) {
     uint16_t data = value;
@@ -15,15 +19,15 @@ void set_ram_byte(uint32_t addr, uint8_t value) {
     if (data & 1 << 7) {
         data |= 1 << (D7 - D0);
     }
-    rom_contents[addr] = data;
+    sys_state.memory[addr] = data;
 }
 
 void set_rom_byte(uint32_t addr, uint8_t value) {
     set_ram_byte(addr, value);
 
-    uint16_t data = rom_contents[addr];
+    uint16_t data = sys_state.memory[addr];
     data |= 1 << RO_MEMORY_BIT;
-    rom_contents[addr] = data;
+    sys_state.memory[addr] = data;
 }
 
 
