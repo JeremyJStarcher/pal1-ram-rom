@@ -1,20 +1,22 @@
 /*
-* PicoROM
-* Simulate a ROM chip (e.g. 28c256) with a Raspberry Pi Pico.
-* Nick Bild (nick.bild@gmail.com)
-* August 2021
+* KIM-1 ROM/RAM
+* Based off the PICORom project by Nick Bild (nick.bild@gmail.com)
+*
+* Heavily modified for RAM/ROM and sideloading data.
+* 
+* March 2024
 */
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <malloc.h>
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
 #include "pico/multicore.h"
 #include "hardware/vreg.h"
-#include "pin_definitions.h"
-#include <stdlib.h>
-#include <stdio.h>
-
-#include <malloc.h>
 #include "tusb.h"
+
+#include "pin_definitions.h"
 #include "commands.h"
 #include "rambuf.h"
 
@@ -31,9 +33,6 @@ uint32_t addr_pins[] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A
 uint32_t data_pins[] = {D0, D1, D2, D3, D4, D5, D6, D7};
 uint32_t ctrl_pins[] = {WE, PHI2};
 
-// int last_addr_pin = A15;
-
-
 uint32_t getTotalHeap(void);
 uint32_t getFreeHeap(void);
 
@@ -43,7 +42,6 @@ void put_data_on_bus(int);
 
 uint16_t ADDR_BOTTOM = (uint16_t) 0x2000;
 uint16_t ADDR_TOP = ((uint16_t) 0xFFFF);
-//uint16_t ADDR_TOP = ((uint16_t) 0xFFFF);
 
 #define HI_UINT16(a) (((a) >> 8) & 0xFF)
 #define LO_UINT16(a) ((a) & 0xFF)
@@ -52,9 +50,7 @@ uint16_t ADDR_TOP = ((uint16_t) 0xFFFF);
 // to stop things that probe RAM
 #define IO_ADDRESS 0xFFF7
 
-
 extern char __flash_binary_end;
-// extern uint16_t rom_contents[];
 
 void core1_main()
 {
@@ -80,12 +76,14 @@ void core1_main()
 
     uintptr_t flashleft = (XIP_BASE + FLASH_SIZE) - end;
 
-
     printf("Bottom of flash    : 0x%08x\n", XIP_BASE);
     printf("Top of flash       : 0x%08x\n", XIP_BASE + FLASH_SIZE);
     printf("Flash Left         : 0x%08x\n", flashleft);
     printf("Flash Left         : %11db %.2fk %.2fm\n", flashleft, flashleft/1024.0, flashleft/1024.0/1024.0);
-
+    printf("clk_sys            : %ukHz %.2fmHz\n",
+        frequency_count_khz(CLOCKS_FC0_SRC_VALUE_CLK_SYS),
+        frequency_count_khz(CLOCKS_FC0_SRC_VALUE_CLK_SYS) / 1000.0
+    );
 
     setup_rom_contents();
 
@@ -118,18 +116,19 @@ int main() {
     setup_gpio();
 
     multicore_launch_core1(core1_main);
-    gpio_put(DEN, 1);
+    gpio_put(DEN, 0);
 
     while (true) {
         all = gpio_get_all();
         addr = all & (uint32_t) 0xFFFF;
-        // cs = (all & (uint32_t) (1 << CS)) == 0;
-
         phi2 = (all & (uint32_t) (1 << PHI2));
 
-        if (addr >= ADDR_BOTTOM && addr <= ADDR_TOP && phi2 != 0) {
-            gpio_put(DEN, 1);
+        // Set the DECEN line based on the current addressing
+        // If it is outside the range, then send DEN low
+        // letting the KIM-1 decode that address internally. 
+        gpio_put(DEN, addr >= ADDR_BOTTOM && addr <= ADDR_TOP);
 
+        if (addr >= ADDR_BOTTOM && addr <= ADDR_TOP && phi2 != 0) {
             we = (all & (uint32_t) (1 << WE) );
 
             if (we == 0) {
@@ -143,8 +142,6 @@ int main() {
                 gpio_put_masked(data_mask, data  << D0);
             }
         } else {
-            //gpio_put(DEN, 0);
-
             gpio_set_dir_masked(data_mask, 0);
         }
     }
@@ -171,7 +168,6 @@ void setup_gpio() {
     gpio_init(DEN);
     gpio_set_function(DEN, GPIO_FUNC_SIO);
     gpio_set_dir(DEN, GPIO_OUT);
-
 
     for(i = 0; i < NELEMS(addr_pins); i++) {
         gpio = addr_pins[i];
@@ -204,8 +200,6 @@ uint16_t get_requested_address() {
 void put_data_on_bus(int address) {
     gpio_put_masked(data_mask, rom_contents[address]);
 }
-
-
 
 uint32_t getTotalHeap(void) {
    extern char __StackLimit, __bss_end__;
