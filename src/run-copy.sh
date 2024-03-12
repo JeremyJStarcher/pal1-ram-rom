@@ -4,7 +4,7 @@ rm -rf build
 mkdir build
 cd build
 cmake .. 
-cd picoROM
+cd pal-expansion 
 make  -j5
 
 # Set the baud rate to 1200 and other settings for the serial port /dev/ttyS0
