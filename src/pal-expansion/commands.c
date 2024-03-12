@@ -1,3 +1,11 @@
+#include <malloc.h>
+#include "pico/stdlib.h"
+#include "hardware/clocks.h"
+#include "pico/multicore.h"
+
+#include "tusb.h"
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -12,13 +20,11 @@
 #include "rambuf.h"
 #include "commands.h"
 
+void main_memory_loop(void);
+
+
 unsigned long _xip_base;
 unsigned long _flash_size;
-
-/* Yes I know global variables are evil, but in this case speed trumps
-   every other concern.  This check needs done FAST.
-*/
-int flash_save_index = -1;
 
 bool load_ptp_error = false;
 bool load_ptp_done = false;
@@ -238,27 +244,35 @@ void save_slot_command(int index) {
         printf("OOPS\n");
     }
 
+
+    sleep_ms(5 * 1000); 
+
     size_t idx = offset;
     uint32_t ints;
 
     int cnt = 0;
 
-   for(idx = offset; idx < offset + size; idx += FLASH_SECTOR_SIZE) {
-        //ints = save_and_disable_interrupts();
+
+
+//   for(idx = offset; idx < offset + size; idx += FLASH_SECTOR_SIZE) {
+        multicore_reset_core1 ();
         ints = save_and_disable_interrupts();
         flash_range_erase (idx, size );
         restore_interrupts (ints);
 
-        //restore_interrupts (ints);
         cnt += 1;
-    }
+//    }
 
-    printf("Flashing..... ");
+    sleep_ms(5 * 1000); 
+
+
+    printf("Flashing.....");
     ints = save_and_disable_interrupts();
     flash_range_program (offset, (char *) &sys_state, size);
     restore_interrupts (ints);
 
     printf("DONE \n");
+    multicore_launch_core1(main_memory_loop);
 }
  
 
@@ -299,11 +313,8 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
             if (param_str != NULL) {
                 // index = atoi(param_str); // Convert parameter string to integer
                 index = (uint8_t) strtol(param_str, NULL, 16);
-                flash_save_index = index;
 
-                while(flash_save_index != -1) {
-                    // just kill time
-                }
+                save_slot_command(index);
 
             } else {
                printf("MUST SPECIFY AN INDEX NUMBER\n");

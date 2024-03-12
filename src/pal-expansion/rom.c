@@ -36,7 +36,8 @@ uint32_t ctrl_pins[] = {WE, PHI2};
 uint32_t getTotalHeap(void);
 uint32_t getFreeHeap(void);
 
-void setup_gpio();
+void setup_gpio(void);
+void main_memory_loop(void);
 
 uint16_t ADDR_BOTTOM = (uint16_t) 0x2000;
 uint16_t ADDR_TOP = ((uint16_t) 0xFFFF);
@@ -50,7 +51,7 @@ uint16_t ADDR_TOP = ((uint16_t) 0xFFFF);
 
 extern char __flash_binary_end;
 
-void core1_main()
+void init_ux()
 {
     // wait for USB serial
     while (!tud_cdc_connected()) { sleep_ms(100);  }
@@ -93,15 +94,6 @@ void core1_main()
 
 
 int main() {
-    uint16_t addr;
-    uint16_t data;
-    uint32_t all;
-    uint32_t we;
-    uint32_t cs;
-    uint32_t phi2;
-
-    volatile uint16_t save_addr;
-    volatile uint16_t save_data;
 
     // Set system clock speed.
     // 400 MHz
@@ -116,27 +108,34 @@ int main() {
     // Specify contents of emulated ROM.
     setup_memory_contents();
 
+
+    //multicore_launch_core1(init_ux);
+
+    multicore_launch_core1(main_memory_loop);
+
+
+    init_ux();
+
+}
+
+
+void main_memory_loop() {
+    uint16_t addr;
+    uint16_t data;
+    uint32_t all;
+    uint32_t we;
+    uint32_t cs;
+    uint32_t phi2;
+
     // GPIO setup.
     setup_gpio();
 
-    multicore_launch_core1(core1_main);
     gpio_put(DEN, 0);
 
     while (true) {
         all = gpio_get_all();
         addr = all & (uint32_t) 0xFFFF;
         phi2 = (all & (uint32_t) (1 << PHI2));
-
-        if (flash_save_index != -1) {
-            puts("SAVING\n");
-            set_sys_clock_khz(150000, false);
-            gpio_put(DEN, 0);
-            save_slot_command(flash_save_index);
-            flash_save_index = -1;
-            set_sys_clock_khz(250000, false);
-            puts("SAVED\n");
-            continue;
-        }
 
         // Set the DECEN line based on the current addressing
         // If it is outside the range, then send DEN low
@@ -160,7 +159,10 @@ int main() {
             gpio_set_dir_masked(data_mask, 0);
         }
     }
+
 }
+
+
 
 void setup_gpio() {
     size_t i;
