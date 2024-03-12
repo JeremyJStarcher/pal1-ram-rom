@@ -2,15 +2,26 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <hardware/sync.h>
+#include "hardware/timer.h"
+#include <hardware/sync.h>
+#include <hardware/flash.h>
+#include "hardware/clocks.h"
+
 
 #include "rambuf.h"
 #include "commands.h"
 
+unsigned long _xip_base;
+unsigned long _flash_size;
 
+/* Yes I know global variables are evil, but in this case speed trumps
+   every other concern.  This check needs done FAST.
+*/
+int flash_save_index = -1;
 
 bool load_ptp_error = false;
 bool load_ptp_done = false;
-
 
 
 uint16_t parse_word_from_string(char *line) {
@@ -158,6 +169,8 @@ void help_command() {
     printf("MSB: FILL ROM WITH MSB (USED TO VERIFY ADDRESS CODING)\n");
     printf("LSB: FILL ROM WITH LSB (USED TO VERIFY ADDRESS CODING)\n");
     printf("RESET: RESET RAM/ROM TO POWERUP STATE)\n");
+    printf("SAVE #: SAVE TO A SLOT IN FLASH MEMORY)\n");
+    printf("LOAD #: LOAD FROM A SLOT IN FLASH MEMORY)\n");
 }
 
 
@@ -196,29 +209,124 @@ void loadptp_command() {
     }
 }
 
+void load_slot_command(int index) {
+    size_t size = sizeof sys_state;
+    unsigned long offset = /*_xip_base +*/ (_flash_size/2) + (index * size);
+    const uint8_t *flash_target_contents = (const uint8_t *) (XIP_BASE + offset);
+
+    memcpy(&sys_state, flash_target_contents, size);
+}
+
+void save_slot_command(int index) {
+    if (index > 10) {
+        printf("ONLY SLOTS 0-9 MAY BE USED\n");
+        return;
+    }
 
 
-void command_loop() {
+//       flash size: 00200000                                           
+// SAVE SLOT: 1 OFFSET 1deffa 
+
+    size_t size = sizeof sys_state;
+    unsigned long offset = /*_xip_base +*/ (_flash_size/2) + (index * size);
+
+    printf("flash size: %08x\n", _flash_size);
+    printf("SAVE SLOT: %d OFFSET %04x  size: %08x\n", index, offset, size);
+    if (offset % 4096 == 0) {
+        printf("ON THE BOUNDARY\n");
+    } else {
+        printf("OOPS\n");
+    }
+
+    size_t idx = offset;
+    uint32_t ints;
+
+    int cnt = 0;
+
+   for(idx = offset; idx < offset + size; idx += FLASH_SECTOR_SIZE) {
+        //ints = save_and_disable_interrupts();
+        ints = save_and_disable_interrupts();
+        flash_range_erase (idx, size );
+        restore_interrupts (ints);
+
+        //restore_interrupts (ints);
+        cnt += 1;
+    }
+
+    printf("Flashing..... ");
+    ints = save_and_disable_interrupts();
+    flash_range_program (offset, &sys_state, size);
+    restore_interrupts (ints);
+
+    printf("DONE \n");
+}
+ 
+
+
+void command_loop(unsigned long xip_base, unsigned long flash_size) {
     char input[20]; // Define the buffer size
+
+    _xip_base = xip_base;
+    _flash_size = flash_size;
 
     while(1) {
         printf("\nENTER COMMAND (OR HELP): ");
         read_string(input, sizeof(input));
         //printf("\nYou entered: %s\n", input);
 
+        char *command = strtok(input, " "); // Get the first word as the command
+        if (command == NULL) {
+            continue; // If no command is entered, skip to the next iteration
+        }
+
+        printf("\n");
 
         // Compare input with known commands and call the corresponding function
-        if (strcmp(input, "HELP") == 0) {
+        if (strcmp(command, "HELP") == 0) {
             help_command();
-        } else if (strcmp(input, "L") == 0) {
+        } else if (strcmp(command, "L") == 0) {
             loadptp_command();
-        } else if (strcmp(input, "LSB") == 0) {
+        } else if (strcmp(command, "LSB") == 0) {
             fill_rom_lsb();
-        } else if (strcmp(input, "MSB") == 0) {
+        } else if (strcmp(command, "MSB") == 0) {
             fill_rom_msb();
-        } else if (strcmp(input, "RESET") == 0) {
-            setup_rom_contents();
-        } else if (strcmp(input, "") == 0) {
+        } else if (strcmp(command, "RESET") == 0) {
+            setup_memory_contents();
+
+        } else if (strcmp(command, "SAVE") == 0) {
+            char *param_str = strtok(NULL, " "); // Try to get the next word as a parameter
+            int index = -1; // Default index value if no parameter is provided
+            if (param_str != NULL) {
+                // index = atoi(param_str); // Convert parameter string to integer
+                index = (uint8_t) strtol(param_str, NULL, 16);
+                flash_save_index = index;
+
+                printf("!!!!!!\n");
+
+                while(flash_save_index != -1) {
+                    // just kill time
+                }
+
+                printf("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
+
+            } else {
+               printf("MUST SPECIFY AN INDEX NUMBER\n");
+            }
+
+        } else if (strcmp(command, "LOAD") == 0) {
+            char *param_str = strtok(NULL, " "); // Try to get the next word as a parameter
+            int index = -1; // Default index value if no parameter is provided
+            if (param_str != NULL) {
+                // index = atoi(param_str); // Convert parameter string to integer
+                index = (uint8_t) strtol(param_str, NULL, 16);
+                load_slot_command(index);
+
+            } else {
+               printf("MUST SPECIFY AN INDEX NUMBER\n");
+            }
+
+
+        } else if (strcmp(command, "") == 0) {
             // ignore it.
         } else {
             printf("HUH?\n");

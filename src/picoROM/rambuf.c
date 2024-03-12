@@ -1,13 +1,20 @@
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <string.h>
 
 #include "pin_definitions.h"
 #include "rambuf.h"
 #include "rom_ext.c"
 
+#define MAGIC_PRIMED_KEY "Q!Q!"
+
 SysStateStruct sys_state;
 
+#define FLASH_SECTOR_SIZE (4 * 1024)
+
+
+
+void scpy(char *dest, char *src, size_t len);
 
 void set_ram_byte(uint32_t addr, uint8_t value) {
     uint16_t data = value;
@@ -31,19 +38,32 @@ void set_rom_byte(uint32_t addr, uint8_t value) {
 }
 
 
-void setup_rom_contents() {
+void scpy(char *dest, char *src, size_t len) {
+    strncpy(dest, src, len - 1);
+    dest[len - 1] = '\0';
+}
+
+
+void setup_memory_contents() {
     uint32_t idx = 0;
     uint8_t data = 0;
+
+    //memcpy(sys_state.description, const void* src, size_t n);
+    //sys_state.memoryp
+
+    scpy(sys_state.description, "EMPTY RAM", SYS_DESCRIPTION_SIZE);
+    scpy(sys_state.primed_flag, MAGIC_PRIMED_KEY, SYS_PRIMED_SIZE);
+    char primed_flag[SYS_PRIMED_SIZE];
 
     for(idx = 0x0000; idx < 0xFFFF; idx+=1) {
         set_ram_byte(idx, 0);
     }
 
 
-    for(idx = 0; idx <  rom_extSize; idx += 1) {
-        data = rom_ext[idx];
-        // set_rom_byte(0xA000+idx, data);
-    }
+    // for(idx = 0; idx <  rom_extSize; idx += 1) {
+    //     data = rom_ext[idx];
+    //     set_rom_byte(0xA000+idx, data);
+    // }
 
     set_rom_byte(0xFFFA, 0x1C);
     set_rom_byte(0xFFFB, 0x1C);

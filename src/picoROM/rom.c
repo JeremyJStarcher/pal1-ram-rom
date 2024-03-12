@@ -83,9 +83,12 @@ void core1_main()
         frequency_count_khz(CLOCKS_FC0_SRC_VALUE_CLK_SYS) / 1000.0
     );
 
-    setup_rom_contents();
 
-    command_loop();
+   printf("Size of sys_state   : %u\n", sizeof sys_state);
+   printf("                    : %u\n", sizeof sys_state / 1024);
+   printf(" (Flash pages)      : %u R %u\n", sizeof sys_state / (4 * 1024), sizeof sys_state % (4 * 1024));
+ 
+   command_loop(XIP_BASE, FLASH_SIZE);
 }
 
 
@@ -102,13 +105,16 @@ int main() {
 
     // Set system clock speed.
     // 400 MHz
-    vreg_set_voltage(VREG_VOLTAGE_1_30);
-    set_sys_clock_pll(1600000000, 4, 1);
+    //  vreg_set_voltage(VREG_VOLTAGE_1_30);
+    //  set_sys_clock_pll(1600000000, 4, 1);
+
+
+    set_sys_clock_khz(250000, false); // 328us\
 
     stdio_init_all();
 
     // Specify contents of emulated ROM.
-    setup_rom_contents();
+    setup_memory_contents();
 
     // GPIO setup.
     setup_gpio();
@@ -120,6 +126,13 @@ int main() {
         all = gpio_get_all();
         addr = all & (uint32_t) 0xFFFF;
         phi2 = (all & (uint32_t) (1 << PHI2));
+
+        if (flash_save_index != -1) {
+            gpio_put(DEN, 0);
+            save_slot_command(flash_save_index);
+            flash_save_index = -1;
+            continue;
+        }
 
         // Set the DECEN line based on the current addressing
         // If it is outside the range, then send DEN low
