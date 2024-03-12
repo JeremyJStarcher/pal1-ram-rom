@@ -109,7 +109,7 @@ int main() {
     //  set_sys_clock_pll(1600000000, 4, 1);
 
 
-    set_sys_clock_khz(250000, false); // 328us\
+    set_sys_clock_khz(250000, false);
 
     stdio_init_all();
 
@@ -128,9 +128,13 @@ int main() {
         phi2 = (all & (uint32_t) (1 << PHI2));
 
         if (flash_save_index != -1) {
+            puts("SAVING\n");
+            set_sys_clock_khz(150000, false);
             gpio_put(DEN, 0);
             save_slot_command(flash_save_index);
             flash_save_index = -1;
+            set_sys_clock_khz(250000, false);
+            puts("SAVED\n");
             continue;
         }
 

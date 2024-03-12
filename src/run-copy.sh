@@ -3,7 +3,7 @@
 rm -rf build
 mkdir build
 cd build
-cmake .. 
+cmake ../pal-expansion
 cd pal-expansion 
 make  -j5
 
