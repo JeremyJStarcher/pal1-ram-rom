@@ -5,3 +5,4 @@ kicad/barebones/barebones.kicad_pcb.zip
 kicad/barebones/pal1-pico-rom.kicad_pcb.zip
 kicad/pal1-pico-rom/pal1-pico-rom.kicad_pcb.zip
 kicad/barebones/production
+src/pal-expansion/CMakeFiles

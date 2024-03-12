@@ -255,7 +255,7 @@ void save_slot_command(int index) {
 
     printf("Flashing..... ");
     ints = save_and_disable_interrupts();
-    flash_range_program (offset, &sys_state, size);
+    flash_range_program (offset, (char *) &sys_state, size);
     restore_interrupts (ints);
 
     printf("DONE \n");
@@ -301,13 +301,9 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
                 index = (uint8_t) strtol(param_str, NULL, 16);
                 flash_save_index = index;
 
-                printf("!!!!!!\n");
-
                 while(flash_save_index != -1) {
                     // just kill time
                 }
-
-                printf("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ");
 
             } else {
                printf("MUST SPECIFY AN INDEX NUMBER\n");
