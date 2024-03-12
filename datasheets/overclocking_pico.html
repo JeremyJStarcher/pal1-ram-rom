@@ -1,0 +1,2841 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-gb"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Overclocking Pico with up to 436MHz works - Raspberry Pi Forums</title>
+
+	<link rel="alternate" type="application/atom+xml" title="Feed - Raspberry Pi Forums" href="https://forums.raspberrypi.com/app.php/feed?sid=a0d03dc14729e23d4d5b600fe3af90f5">			<link rel="alternate" type="application/atom+xml" title="Feed - New Topics" href="https://forums.raspberrypi.com/app.php/feed/topics?sid=a0d03dc14729e23d4d5b600fe3af90f5">		<link rel="alternate" type="application/atom+xml" title="Feed - Forum - SDK" href="https://forums.raspberrypi.com/app.php/feed/forum/145?sid=a0d03dc14729e23d4d5b600fe3af90f5">	<link rel="alternate" type="application/atom+xml" title="Feed - Topic - Overclocking Pico with up to 436MHz works" href="https://forums.raspberrypi.com/app.php/feed/topic/301902?sid=a0d03dc14729e23d4d5b600fe3af90f5">
+	
+
+<!--[if IE]><link rel="shortcut icon" href="./styles/rpi/theme/images/favicon.png"><![endif]-->
+<!-- <link rel="apple-touch-icon-precomposed" href="./styles/rpi/theme/images/apple-touch-icon-precomposed.gif"> -->
+<link rel="icon" href="https://forums.raspberrypi.com/styles/rpi/theme/images/favicon.png">
+
+	<link rel="canonical" href="https://forums.raspberrypi.com/viewtopic.php?t=301902">
+
+<link href="overclocking_pico_files/font-awesome.min.css" rel="stylesheet" type="text/css" media="screen, projection">
+<link href="overclocking_pico_files/legacy.min.css" rel="stylesheet">
+<link href="overclocking_pico_files/stylesheet.css" rel="stylesheet" type="text/css" media="screen, projection">
+<link href="overclocking_pico_files/colours_rpi.css" rel="stylesheet" type="text/css" media="screen, projection">
+<link href="overclocking_pico_files/print.css" rel="stylesheet" type="text/css" media="print">
+
+
+
+
+
+
+</head>
+
+<body id="phpbb" class="notouch section-viewtopic ltr section-forums hasjs">
+
+
+<div id="overall-wrap">
+  <a id="top" class="anchor" accesskey="t"></a>
+  <style>
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+#__rptl-header {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  line-height: 1;
+  font-family: "Roboto", sans-serif;
+  font-size: medium;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+     -moz-text-size-adjust: 100%;
+          text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  z-index: 100;
+}
+#__rptl-header .__rptl-header-wrapper {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+#__rptl-header .__rptl-header-navbar {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  background-color: #fff;
+  border-bottom: 1px solid #dedede;
+  width: 100%;
+  padding: 16px;
+}
+@media (min-width: 800px) {
+  #__rptl-header .__rptl-header-navbar {
+    padding: 16px 76px;
+  }
+}
+@media (min-width: 1200px) {
+  #__rptl-header .__rptl-header-navbar {
+    padding: 16px 84px;
+    border-bottom-style: none;
+  }
+}
+#__rptl-header .__rptl-header-brand {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: middle;
+}
+#__rptl-header .__rptl-header-logo {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+  display: block;
+  vertical-align: middle;
+}
+#__rptl-header .__rptl-header-burger {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  transform: rotate(0deg);
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+@media (min-width: 1200px) {
+  #__rptl-header .__rptl-header-burger {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #__rptl-header .__rptl-header-burger {
+    transition: 0.5s ease-in-out;
+  }
+}
+#__rptl-header .__rptl-header-burger-stroke {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: #707070;
+  border-radius: 9px;
+  transform: rotate(0deg);
+}
+#__rptl-header .__rptl-header-burger-stroke:nth-child(1) {
+  top: 0;
+  transform-origin: left center;
+}
+#__rptl-header .__rptl-header-burger-stroke:nth-child(2) {
+  top: 14px;
+  transform-origin: left center;
+}
+#__rptl-header .__rptl-header-burger-stroke:nth-child(3) {
+  top: 28px;
+  transform-origin: left center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  #__rptl-header .__rptl-header-burger-stroke {
+    transition: 0.25s ease-in-out;
+  }
+}
+#__rptl-header .__rptl-header-burger-state {
+  display: none;
+}
+#__rptl-header .__rptl-header-burger-state:checked + .__rptl-header-navbar .__rptl-header-burger-stroke:nth-child(1) {
+  transform: rotate(45deg);
+  top: 4.5px;
+  left: 4.5px;
+}
+#__rptl-header .__rptl-header-burger-state:checked + .__rptl-header-navbar .__rptl-header-burger-stroke:nth-child(2) {
+  width: 0;
+  opacity: 0;
+}
+#__rptl-header .__rptl-header-burger-state:checked + .__rptl-header-navbar .__rptl-header-burger-stroke:nth-child(3) {
+  transform: rotate(-45deg);
+  top: 25.5px;
+  left: 4.5px;
+}
+#__rptl-header .__rptl-header-burger-state:checked ~ .__rptl-header-nav {
+  transform: translateY(100%);
+  transition-duration: 500ms;
+  transition-timing-function: ease-out;
+}
+#__rptl-header .__rptl-header-nav {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  display: block;
+  box-sizing: border-box;
+  position: absolute;
+  bottom: 0;
+  background-color: #fff;
+  width: 100%;
+  border-bottom: 1px solid #dedede;
+}
+#__rptl-header .__rptl-header-nav:focus-within {
+  transform: translateY(100%);
+}
+@media (min-width: 1200px) {
+  #__rptl-header .__rptl-header-nav {
+    position: static;
+    padding: 0 84px;
+    background-color: #f7f8fa;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #__rptl-header .__rptl-header-nav {
+    transition: transform 0.25s ease-in;
+  }
+}
+#__rptl-header .__rptl-header-nav-inner {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+@media (min-width: 1200px) {
+  #__rptl-header .__rptl-header-nav-inner {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+  }
+}
+#__rptl-header .__rptl-header-nav-list {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  list-style: none;
+  display: block;
+  box-sizing: border-box;
+}
+#__rptl-header .__rptl-header-nav-list:first-child .__rptl-header-nav-list-item:first-child {
+  border: 0;
+}
+#__rptl-header .__rptl-header-nav-list-item {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  display: block;
+  box-sizing: border-box;
+  border-top: 1px solid #dedede;
+}
+@media (min-width: 1200px) {
+  #__rptl-header .__rptl-header-nav-list-item {
+    display: inline-block;
+    border-style: none;
+  }
+}
+#__rptl-header .__rptl-header-nav-link {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  display: block;
+  text-decoration: none;
+  box-sizing: border-box;
+  color: #333;
+  font-size: 1.65em;
+  padding: 16px;
+}
+#__rptl-header .__rptl-header-nav-link:hover {
+  color: #fff;
+  background-color: #333;
+}
+#__rptl-header .__rptl-header-nav-link--for-home {
+  color: #cd2355;
+  font-weight: 700;
+}
+#__rptl-header .__rptl-header-nav-link--for-home:hover {
+  background-color: #cd2355;
+}
+#__rptl-header .__rptl-header-nav-link--for-industry {
+  font-weight: 700;
+}
+@media (min-width: 800px) {
+  #__rptl-header .__rptl-header-nav-link {
+    padding: 16px 76px;
+  }
+}
+@media (min-width: 1200px) {
+  #__rptl-header .__rptl-header-nav-link {
+    font-size: 1em;
+    padding: 16px;
+  }
+}
+</style>
+<header id="__rptl-header">
+  <input type="checkbox" class="__rptl-header-burger-state" id="__rptl-header-burger-state">
+
+  <div class="__rptl-header-navbar">
+    <div class="__rptl-header-wrapper">
+      <a href="https://www.raspberrypi.com/" class="__rptl-header-brand">
+        <svg class="__rptl-header-logo" aria-hidden="true" focusable="false" height="44" viewBox="0 0 270 57" xmlns="http://www.w3.org/2000/svg" aria-labelledby="__rptl-header-logo"><title id="__rptl-header-logo">Raspberry Pi</title><g fill-rule="nonzero" fill="none"><path d="M65.275 33.317h-4.477v9.46c0 .29-.235.526-.525.526h-4.57a.525.525 0 0 1-.526-.525V16.55a.525.525 0 0 1 .525-.525h9.61c3.223 0 5.709.718 7.457 2.154a7.437 7.437 0 0 1 2.623 6.09 8.391 8.391 0 0 1-1.208 4.655 8.24 8.24 0 0 1-3.663 2.97l5.635 10.638a.525.525 0 0 1-.464.77h-4.917a.63.63 0 0 1-.56-.342l-4.94-9.643Zm-4.477-4.552h4.534a4.641 4.641 0 0 0 3.278-1.078 3.85 3.85 0 0 0 1.162-2.97 4.122 4.122 0 0 0-1.096-3.034 4.556 4.556 0 0 0-3.363-1.106h-4.515v8.188ZM90.426 42.997a6.562 6.562 0 0 1-.402-1.511 6.551 6.551 0 0 1-5.114 2.192 7.195 7.195 0 0 1-4.937-1.724 5.542 5.542 0 0 1-1.958-4.347 5.73 5.73 0 0 1 2.389-4.946c1.592-1.148 3.894-1.73 6.904-1.742h2.491v-1.162a3.342 3.342 0 0 0-.72-2.248 2.838 2.838 0 0 0-2.277-.843 3.226 3.226 0 0 0-2.145.656 2.13 2.13 0 0 0-.748 1.37.513.513 0 0 1-.513.428h-4.375a.533.533 0 0 1-.524-.596 5.494 5.494 0 0 1 1.054-2.663 7.184 7.184 0 0 1 3.073-2.352 11.2 11.2 0 0 1 4.459-.852 8.848 8.848 0 0 1 5.948 1.883 6.587 6.587 0 0 1 2.202 5.292v8.787a9.948 9.948 0 0 0 .629 3.93.525.525 0 0 1-.47.754h-4.485a.515.515 0 0 1-.48-.306Zm-4.336-3.46c.77.007 1.529-.176 2.21-.534a3.509 3.509 0 0 0 1.5-1.433v-3.485h-2.024c-2.71 0-4.153.937-4.328 2.81l-.019.319a2.166 2.166 0 0 0 .712 1.667 2.764 2.764 0 0 0 1.949.656ZM109.963 37.701a1.745 1.745 0 0 0-.983-1.564 11.18 11.18 0 0 0-3.157-1.021c-4.822-1.012-7.232-3.06-7.232-6.145a5.57 5.57 0 0 1 2.24-4.506 9.031 9.031 0 0 1 5.854-1.808 9.723 9.723 0 0 1 6.173 1.817 5.699 5.699 0 0 1 2.292 4.175.52.52 0 0 1-.525.546h-4.382a.514.514 0 0 1-.514-.435 2.538 2.538 0 0 0-.721-1.485 3.172 3.172 0 0 0-2.342-.759 3.24 3.24 0 0 0-2.117.619c-.483.377-.76.96-.75 1.573.001.603.327 1.158.853 1.452a8.76 8.76 0 0 0 2.876.956 23.54 23.54 0 0 1 3.41.908c2.86 1.05 4.29 2.867 4.29 5.452a5.288 5.288 0 0 1-2.38 4.487 10.264 10.264 0 0 1-6.145 1.715c-1.556.029-3.1-.281-4.524-.91a7.586 7.586 0 0 1-3.1-2.49 5.853 5.853 0 0 1-1.094-2.824.533.533 0 0 1 .523-.596h4.11a.513.513 0 0 1 .513.418c.091.71.46 1.354 1.024 1.793a4.233 4.233 0 0 0 2.66.768c.827.057 1.65-.15 2.352-.59.508-.35.807-.93.796-1.546ZM136.719 33.355a12.159 12.159 0 0 1-2.127 7.503 6.817 6.817 0 0 1-5.742 2.82 6.315 6.315 0 0 1-4.965-2.136v9.03c0 .29-.235.525-.525.525h-4.364a.525.525 0 0 1-.525-.525V23.557a.525.525 0 0 1 .525-.525h4.018c.27 0 .497.206.523.475l.142 1.51a6.363 6.363 0 0 1 5.134-2.36 6.865 6.865 0 0 1 5.826 2.773c1.387 1.848 2.08 4.396 2.08 7.644v.28Zm-5.415-.394a7.982 7.982 0 0 0-1.002-4.365 3.266 3.266 0 0 0-2.913-1.536 3.546 3.546 0 0 0-3.504 1.948v8.3a3.605 3.605 0 0 0 3.541 2.004c2.586 0 3.878-2.117 3.878-6.35ZM158.159 33.355c0 3.247-.694 5.78-2.08 7.597a6.889 6.889 0 0 1-5.808 2.726 6.329 6.329 0 0 1-5.264-2.53l-.191 1.689a.525.525 0 0 1-.522.466h-3.877a.525.525 0 0 1-.525-.525V15.05c0-.29.235-.525.525-.525h4.364a.525.525 0 0 1 .525.525v9.798a6.166 6.166 0 0 1 4.928-2.192 6.945 6.945 0 0 1 5.817 2.726c1.405 1.817 2.108 4.374 2.108 7.672v.3Zm-5.415-.394a8.068 8.068 0 0 0-.974-4.487 3.295 3.295 0 0 0-2.904-1.414 3.572 3.572 0 0 0-3.56 2.117v8a3.62 3.62 0 0 0 3.597 2.135c1.626.093 3.081-.999 3.448-2.585.31-1.23.442-2.498.393-3.766ZM170.555 43.678a9.95 9.95 0 0 1-7.26-2.736 9.722 9.722 0 0 1-2.8-7.288v-.524a12.247 12.247 0 0 1 1.18-5.461 8.666 8.666 0 0 1 3.344-3.71 9.387 9.387 0 0 1 4.936-1.302 8.413 8.413 0 0 1 6.548 2.623c1.593 1.749 2.39 4.228 2.39 7.438v1.685a.525.525 0 0 1-.526.525h-12.383a5.028 5.028 0 0 0 1.583 3.185 4.785 4.785 0 0 0 3.344 1.2 5.886 5.886 0 0 0 4.524-1.837.527.527 0 0 1 .773.026l1.964 2.198c.17.188.182.47.028.672a8.216 8.216 0 0 1-3.036 2.34 10.82 10.82 0 0 1-4.609.966Zm-.618-16.656a3.382 3.382 0 0 0-2.614 1.092 5.65 5.65 0 0 0-1.283 3.124h7.531v-.433a4.034 4.034 0 0 0-.974-2.795 3.492 3.492 0 0 0-2.66-.988ZM193.333 27.525a.523.523 0 0 1-.575.515c-.459-.051-.92-.078-1.382-.081-2.049 0-3.391.693-4.028 2.08v12.739a.525.525 0 0 1-.525.525h-4.364a.525.525 0 0 1-.525-.525V23.557a.525.525 0 0 1 .525-.525h4.096c.277 0 .507.215.524.492l.12 1.924a5.017 5.017 0 0 1 4.514-2.791c.434-.002.867.044 1.29.138a.515.515 0 0 1 .39.515l-.06 4.215ZM207.017 27.525a.523.523 0 0 1-.575.515c-.459-.051-.92-.078-1.382-.081-2.048 0-3.39.693-4.028 2.08v12.739a.525.525 0 0 1-.525.525h-4.364a.525.525 0 0 1-.525-.525V23.557a.525.525 0 0 1 .525-.525h4.096c.277 0 .507.215.524.492l.12 1.924a5.018 5.018 0 0 1 4.514-2.791c.434-.002.867.044 1.29.138a.515.515 0 0 1 .39.515l-.06 4.215ZM217.934 35.64l3.635-12.233a.525.525 0 0 1 .504-.375h4.677a.525.525 0 0 1 .496.697l-7.907 22.721-.45 1.068a6.18 6.18 0 0 1-5.995 3.972 8.368 8.368 0 0 1-2.003-.25.529.529 0 0 1-.395-.513v-3.15a.525.525 0 0 1 .546-.524l.538.02a3.442 3.442 0 0 0 2.035-.492 3.08 3.08 0 0 0 1.19-1.555l.637-1.667-6.857-19.63a.525.525 0 0 1 .496-.697h4.696c.232 0 .437.152.503.374l3.654 12.234ZM245.156 33.692v9.086c0 .29-.235.525-.525.525h-4.57a.525.525 0 0 1-.526-.525V16.55a.525.525 0 0 1 .525-.525h10.117a12.31 12.31 0 0 1 5.405 1.124 8.284 8.284 0 0 1 3.587 3.194 8.91 8.91 0 0 1 1.256 4.712 7.833 7.833 0 0 1-2.745 6.323c-1.83 1.543-4.362 2.314-7.597 2.314h-4.927Zm0-4.553h5.02a4.934 4.934 0 0 0 3.401-1.049 3.816 3.816 0 0 0 1.171-2.998 4.5 4.5 0 0 0-1.18-3.24 4.41 4.41 0 0 0-3.26-1.275h-5.152v8.562ZM263.081 17.786a2.666 2.666 0 0 1 .815-2.005 3.512 3.512 0 0 1 4.431 0 2.86 2.86 0 0 1-.01 4.028 3.473 3.473 0 0 1-4.402 0 2.66 2.66 0 0 1-.834-2.023Zm5.227 25.517h-4.383a.525.525 0 0 1-.525-.525V23.557a.525.525 0 0 1 .525-.525h4.383a.525.525 0 0 1 .525.525v19.22a.525.525 0 0 1-.525.526ZM45.008 32.949a8.74 8.74 0 0 0-3.104-6.182 7.664 7.664 0 0 0-1.44-2.801 8.594 8.594 0 0 0-3.058-5.777c.284-.244.524-.536.708-.862a6.186 6.186 0 0 0 3.63-4.23 5.558 5.558 0 0 0 1.755-3.64 3.481 3.481 0 0 0-.31-1.638 3.114 3.114 0 0 0 .81-3.215c-.606-1.756-2.73-2.896-5.584-3.017a4.497 4.497 0 0 0-3.11-1.065 7.188 7.188 0 0 0-1.678.207 3.821 3.821 0 0 0-1.65-.334 6.458 6.458 0 0 0-3.148.858 2.894 2.894 0 0 0-.38-.025 6.276 6.276 0 0 0-3.551 1.558 10.765 10.765 0 0 0-1.866 1.944 10.768 10.768 0 0 0-1.867-1.944 6.278 6.278 0 0 0-3.55-1.558c-.127 0-.254.008-.38.025a6.46 6.46 0 0 0-3.148-.858 3.822 3.822 0 0 0-1.65.334 7.188 7.188 0 0 0-1.68-.207 4.498 4.498 0 0 0-3.109 1.065c-2.854.12-4.978 1.261-5.585 3.018a3.114 3.114 0 0 0 .812 3.214 3.482 3.482 0 0 0-.31 1.639 5.557 5.557 0 0 0 1.755 3.64 6.186 6.186 0 0 0 3.63 4.229c.183.326.423.618.707.862A8.594 8.594 0 0 0 5.6 23.966a7.663 7.663 0 0 0-1.44 2.801 8.74 8.74 0 0 0-3.104 6.182 8.424 8.424 0 0 0 1.92 6.578c.26 1.31.8 2.549 1.581 3.632a9.452 9.452 0 0 0 2.386 5.514 9.768 9.768 0 0 0 5.262 3.126 12.74 12.74 0 0 0 4.208 2.605 9.763 9.763 0 0 0 13.24 0c1.559-.585 2.988-1.47 4.207-2.605a9.768 9.768 0 0 0 5.262-3.126 9.452 9.452 0 0 0 2.386-5.514 9.311 9.311 0 0 0 1.582-3.632 8.424 8.424 0 0 0 1.919-6.578Z" fill="#000"></path><path d="M28.366 4.192a.225.225 0 0 1 .286.24c-.072.672.335.587.432.468a3.526 3.526 0 0 1 3.188-1.53.225.225 0 0 1 .154.363c-.4.593.03.706.19.6 1.631-1.02 3.187-1.023 3.785-.594a.225.225 0 0 1 .013.349c-.604.514-.266.77-.052.692a5.802 5.802 0 0 1 4.74.607.227.227 0 0 1 .006.343 4.493 4.493 0 0 0-1.73 3.018c-.045.396.614.313.891.241a.225.225 0 0 1 .28.21c.026.954-.876 2.002-2.218 2.898-.18.12-.154.408.256.42a.222.222 0 0 1 .191.334c-.478.888-1.13 1.724-3.345 2.298a.227.227 0 0 0-.032.429.217.217 0 0 1 .071.384c-2.207 1.896-7.8 1.148-8.51-2.043a.224.224 0 0 1 .04-.182 21.262 21.262 0 0 1 9.276-7.058.176.176 0 0 0-.087-.34 15.168 15.168 0 0 0-10.074 6.074.227.227 0 0 1-.289.065c-3.585-1.851-.64-7.317 2.538-8.286ZM7.285 12.85a.222.222 0 0 1 .191-.334c.41-.01.436-.299.256-.419C6.39 11.201 5.49 10.153 5.514 9.2a.225.225 0 0 1 .28-.21c.278.072.936.155.891-.241a4.493 4.493 0 0 0-1.73-3.017.227.227 0 0 1 .006-.344 5.802 5.802 0 0 1 4.74-.607c.214.079.552-.178-.052-.692a.225.225 0 0 1 .014-.35c.597-.428 2.153-.426 3.785.594.159.107.589-.006.19-.599a.225.225 0 0 1 .153-.363A3.526 3.526 0 0 1 16.98 4.9c.096.12.503.204.432-.469a.225.225 0 0 1 .286-.239c3.178.97 6.122 6.435 2.537 8.286a.227.227 0 0 1-.289-.065A15.168 15.168 0 0 0 9.873 6.34a.176.176 0 0 0-.088.34 21.262 21.262 0 0 1 9.276 7.057c.04.052.054.119.04.183-.71 3.19-6.303 3.938-8.51 2.042a.217.217 0 0 1 .071-.384.227.227 0 0 0-.031-.429c-2.216-.574-2.867-1.41-3.346-2.298Z" fill="#46AF4B"></path><path d="M37.158 22.605c.92 2.446.203 3.622-1.978 2.377a15.632 15.632 0 0 1-4.58-3.84c-1.644-1.952-.576-2.821 2.012-2.352a6.985 6.985 0 0 1 4.546 3.815ZM27.375 19.853c3.12 2.593-.454 4.428-4.343 4.428-3.89 0-7.463-1.835-4.344-4.428a6.935 6.935 0 0 1 8.687 0ZM8.906 22.605a6.985 6.985 0 0 1 4.545-3.815c2.588-.47 3.656.4 2.013 2.352a15.632 15.632 0 0 1-4.58 3.84c-2.182 1.245-2.898.069-1.978-2.377ZM4.394 36.196a6.983 6.983 0 0 1 .518-5.942c1.153-1.96 2.313-1.883 2.773-.222.585 2.29.373 4.712-.6 6.867-.854 1.696-1.921 1.123-2.691-.703ZM12.704 48.896A6.942 6.942 0 0 1 7.482 42.7c.433-10.066 14.94 7.91 5.222 6.196ZM12.999 36.358c-2.433-1.404-3.077-4.844-1.438-7.682 1.639-2.839 4.94-4 7.372-2.596 2.433 1.404 3.077 4.844 1.438 7.682-1.639 2.839-4.94 4-7.372 2.596ZM27.091 52.737a6.947 6.947 0 0 1-8.119 0c-2.41-1.664.015-3.58 4.06-3.58s6.47 1.916 4.06 3.58Z" fill="#CD2355"></path><ellipse fill="#CD2355" cx="23.032" cy="41.795" rx="5.647" ry="4.84"></ellipse><path d="M25.692 33.762c-1.639-2.838-.995-6.278 1.438-7.682 2.433-1.405 5.734-.243 7.372 2.596 1.64 2.838.995 6.278-1.438 7.682-2.432 1.405-5.733.243-7.372-2.596ZM33.36 48.896C23.64 50.61 38.149 32.634 38.58 42.7a6.941 6.941 0 0 1-5.221 6.196ZM41.67 36.196c-.77 1.826-1.838 2.399-2.691.703a10.417 10.417 0 0 1-.6-6.867c.46-1.66 1.62-1.739 2.772.222a6.983 6.983 0 0 1 .518 5.942Z" fill="#CD2355"></path></g></svg>
+      </a>
+
+      <label class="__rptl-header-burger" for="__rptl-header-burger-state">
+        <span class="__rptl-header-burger-stroke"></span>
+        <span class="__rptl-header-burger-stroke"></span>
+        <span class="__rptl-header-burger-stroke"></span>
+      </label>
+    </div>
+  </div>
+
+  <nav class="__rptl-header-nav">
+    <div class="__rptl-header-wrapper">
+      <div class="__rptl-header-nav-inner">
+        <ul class="__rptl-header-nav-list">
+          <li class="__rptl-header-nav-list-item"><a href="https://www.raspberrypi.com/for-home/" class="__rptl-header-nav-link __rptl-header-nav-link--for-home">For home</a>
+          </li><li class="__rptl-header-nav-list-item"><a href="https://www.raspberrypi.com/for-industry/" class="__rptl-header-nav-link __rptl-header-nav-link--for-industry">For industry</a>
+        </li></ul>
+        <ul class="__rptl-header-nav-list">
+          <li class="__rptl-header-nav-list-item"><a href="https://www.raspberrypi.com/products/" class="__rptl-header-nav-link">Hardware</a>
+          </li><li class="__rptl-header-nav-list-item"><a href="https://www.raspberrypi.com/software/" class="__rptl-header-nav-link">Software</a>
+          </li><li class="__rptl-header-nav-list-item"><a href="https://www.raspberrypi.com/documentation/" class="__rptl-header-nav-link">Documentation</a>
+          </li><li class="__rptl-header-nav-list-item"><a href="https://www.raspberrypi.com/news/" class="__rptl-header-nav-link">News</a>
+          </li><li class="__rptl-header-nav-list-item"><a href="https://forums.raspberrypi.com/" class="__rptl-header-nav-link">Forums</a>
+          </li><li class="__rptl-header-nav-list-item"><a href="https://www.raspberrypi.org/" class="__rptl-header-nav-link " rel="noopener">Foundation</a>
+        </li></ul>
+      </div>
+    </div>
+  </nav>
+</header>
+<script async="" src="overclocking_pico_files/google-analytics_analytics.js"></script><script>
+  (function() {
+    var header = document.getElementById("__rptl-header"),
+        burgerState = document.getElementById("__rptl-header-burger-state");
+
+    document.addEventListener("click", function (e) {
+      if (!header.contains(e.target)) {
+        burgerState.checked = false;
+      }
+    });
+  })();
+</script>
+
+	<div id="wrap-head">
+		<div id="site-header">
+			<div class="chunk">
+				<ul id="site-menu">
+					<li data-skip-responsive="true" class="site-menu"><a href="https://forums.raspberrypi.com/app.php/help/faq?sid=a0d03dc14729e23d4d5b600fe3af90f5" rel="help" title="Frequently Asked Questions">Forum FAQ</a></li>
+<li class="site-menu">
+	<a href="#" title="About">About</a>
+	<ul>
+		<li><a href="https://www.raspberrypi.com/about/">About us</a></li>
+		<li><a href="https://www.raspberrypi.com/contact/">Contact us</a></li>
+		<li><a href="https://www.raspberrypi.com/documentation/">Documentation</a></li>
+		<li><a href="https://www.raspberrypi.com/trademark-rules/">Trademark rules</a></li>
+	</ul>
+</li>
+				</ul>
+			</div>
+		</div>
+
+		<div id="site-nav" role="navigation">
+			<div class="chunk">
+
+				
+				<div class="site-nav">
+
+					
+										<div id="site-search" role="search">
+						<form action="./search.php?sid=a0d03dc14729e23d4d5b600fe3af90f5" method="get">
+							<fieldset>
+								<input name="keywords" type="search" maxlength="128" title="Search for keywords" size="20" placeholder="Search"><button type="submit" title="Search"><i class="fa fa-search"></i></button><input type="hidden" name="sid" value="a0d03dc14729e23d4d5b600fe3af90f5">
+
+							</fieldset>
+						</form>
+					</div>
+					
+					<ul role="menubar">
+											<li class="font-icon rightside" data-skip-responsive="true"><a href="https://forums.raspberrypi.com/ucp.php?mode=login&amp;redirect=viewtopic.php%3Ft%3D301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" title="Login" accesskey="x" role="menuitem"><i class="fa fa-power-off"></i><span class="nav-rh-2">Login</span></a></li>
+												<li class="font-icon rightside" data-skip-responsive="true"><a href="https://forums.raspberrypi.com/ucp.php?mode=register&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" role="menuitem"><i class="fa fa-pencil-square-o"></i><span class="nav-rh-2">Register</span></a></li>
+																																		</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+	<a id="start_here" class="anchor"></a>
+		
+		
+		<!-- main element closes in overall_footer.html -->
+		<main id="rp-app-landmark-main">
+
+<div id="wrap-subhead">
+	<div class="chunk">
+		<div class="wrap-subhead">
+			<ul id="breadcrumbs" role="menubar">
+				<li class="font-icon responsive-menu dropdown-container" data-skip-responsive="true">
+  <a href="#" class="responsive-menu-link dropdown-trigger dropdown-toggle"><i class="fa fa-bars"></i></a>
+  <div class="dropdown hidden">
+    <div class="pointer"><div class="pointer-inner"></div></div>
+    <ul class="dropdown-contents" role="menu">
+      
+              <li class="separator"></li>
+                                <li class="font-icon icon-search-unanswered"><a href="https://forums.raspberrypi.com/search.php?search_id=unanswered&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" role="menuitem"><i class="fa fa-file-o"></i>Unanswered topics</a></li>
+        <li class="font-icon icon-search-active"><a href="https://forums.raspberrypi.com/search.php?search_id=active_topics&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" role="menuitem"><i class="fa fa-fire"></i>Active topics</a></li>
+            <li class="separator site-menu"></li>
+
+      <li data-skip-responsive="true" class="site-menu"><a href="https://forums.raspberrypi.com/app.php/help/faq?sid=a0d03dc14729e23d4d5b600fe3af90f5" rel="help" title="Frequently Asked Questions">Forum FAQ</a></li>
+<li class="site-menu">
+	<a href="#" title="About">About</a>
+	<ul>
+		<li><a href="https://www.raspberrypi.com/about/">About us</a></li>
+		<li><a href="https://www.raspberrypi.com/contact/">Contact us</a></li>
+		<li><a href="https://www.raspberrypi.com/documentation/">Documentation</a></li>
+		<li><a href="https://www.raspberrypi.com/trademark-rules/">Trademark rules</a></li>
+	</ul>
+</li>
+
+          </ul>
+  </div>
+</li>
+								
+								<li class="breadcrumbs rightside" itemscope="" itemtype="https://schema.org/BreadcrumbList">
+															<span class="crumb" itemtype="http://schema.org/ListItem" itemprop="itemListElement" itemscope="">
+						<a itemprop="item" href="https://forums.raspberrypi.com/index.php?sid=a0d03dc14729e23d4d5b600fe3af90f5" accesskey="h" data-navbar-reference="index" title="Board index"><i class="fa fa-home"></i><span itemprop="name">Board index</span></a>
+						<meta itemprop="position" content="1">
+					</span>
+					                    <span class="crumb" itemtype="http://schema.org/ListItem" itemprop="itemListElement" itemscope="" data-forum-id="16">
+    <a itemprop="item" href="https://forums.raspberrypi.com/viewforum.php?f=16&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" title="Hardware and peripherals"><span itemprop="name">Hardware and peripherals</span></a>
+    <meta itemprop="position" content="2">
+  </span>
+                      <span class="crumb" itemtype="http://schema.org/ListItem" itemprop="itemListElement" itemscope="" data-forum-id="143">
+    <a itemprop="item" href="https://forums.raspberrypi.com/viewforum.php?f=143&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" title="Raspberry Pi Pico"><span itemprop="name">Raspberry Pi Pico</span></a>
+    <meta itemprop="position" content="3">
+  </span>
+                      <span class="crumb" itemtype="http://schema.org/ListItem" itemprop="itemListElement" itemscope="" data-forum-id="145">
+    <a itemprop="item" href="https://forums.raspberrypi.com/viewforum.php?f=145&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" title="SDK"><span itemprop="name">SDK</span></a>
+    <meta itemprop="position" content="4">
+  </span>
+  									</li>
+							</ul>
+
+		</div>
+
+		<div id="subhead-title">
+			<h2 class="topic-title"><a href="https://forums.raspberrypi.com/viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Overclocking Pico with up to 436MHz works</a></h2>
+			
+					</div>
+
+	</div>
+</div>
+
+<div id="wrap-body">
+	<div class="chunk">
+
+		
+		<div class="action-bar top">
+
+			<div class="buttons">
+				
+							<a href="https://forums.raspberrypi.com/posting.php?mode=reply&amp;t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="button font-icon" title="This topic is locked, you cannot edit posts or make further replies.">
+					<i class="fa fa-lock"></i>Locked				</a>
+			
+							</div>
+
+				<div class="dropdown-container dropdown-button-control topic-tools">
+		<span title="Topic tools" class="button icon-button tools-icon dropdown-trigger dropdown-select dropdown-toggle"><i class="fa fa-wrench"></i></span>
+		<div class="dropdown hidden">
+			<div class="pointer"><div class="pointer-inner"></div></div>
+			<ul class="dropdown-contents">
+																								<li class="font-icon icon-print"><a href="https://forums.raspberrypi.com/viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5&amp;view=print" title="Print view" accesskey="p"><i class="fa fa-print"></i>Print view</a></li>							</ul>
+		</div>
+	</div>
+
+			
+							<div class="search-box" role="search">
+					<form method="get" id="topic-search" action="./search.php?sid=a0d03dc14729e23d4d5b600fe3af90f5">
+					<fieldset>
+						<input class="inputbox search" type="search" name="keywords" id="search_keywords" size="20" placeholder="Search this topic…">
+						<button class="button" type="submit" title="Search"><i class="fa fa-search"></i></button>
+						<input type="hidden" name="t" value="301902">
+<input type="hidden" name="sf" value="msgonly">
+<input type="hidden" name="sid" value="a0d03dc14729e23d4d5b600fe3af90f5">
+
+					</fieldset>
+					</form>
+				</div>
+			
+							<div class="pagination">
+					78 posts
+											<ul>
+<li class="active"><span>1</span></li><li><a href="https://forums.raspberrypi.com/viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5&amp;start=25" role="button">2</a></li><li><a href="https://forums.raspberrypi.com/viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5&amp;start=50" role="button">3</a></li><li><a href="https://forums.raspberrypi.com/viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5&amp;start=75" role="button">4</a></li><li class="next"><a href="https://forums.raspberrypi.com/viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5&amp;start=25" rel="next" role="button"><i class="fa fa-chevron-right"></i></a></li></ul>
+									</div>
+			
+			
+		</div>
+
+		
+		
+		
+											<div id="p1810553" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1810553">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1810553">
+					
+					<h3 class="first"><a href="#p1810553">Overclocking Pico with up to 436MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1810553&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1810553">Mon Feb 01, 2021 8:22 pm</a> </p>
+
+					
+					
+					
+					<div class="content">First quoting Pico FAQ on overclocking:<br>
+<a href="https://www.raspberrypi.org/forums/viewtopic.php?f=144&amp;t=299523" class="postlink">viewtopic.php?f=144&amp;t=299523</a>
+<blockquote class="uncited"><div><strong>Can I overclock?</strong><br>
+<br>
+The maximum clk_sys clock speed is 133MHz at normal core voltage (1.1V 
+±10%), but it can be overclocked. However, this requires more power and a
+ higher core voltage, and may affect the life expectancy of your device.
+ No warranties are given when running outside of the limits specified in
+ the datasheet.
+</div></blockquote>
+
+<br>
+I used program q32.c for years to compare single core integer 
+performance of different microcontrollers and CPUs. A week ago I adapted
+ it to the Pico and found that Pico was faster than all Arduinos tested,
+ but slower than the ESP8266:<br>
+<a href="https://www.raspberrypi.org/forums/viewtopic.php?f=145&amp;t=300265&amp;p=1804700#p1804700" class="postlink">viewtopic.php?f=145&amp;t=300265&amp;p=1804700#p1804700</a><br>
+<br>
+<br>
+Today I evaluated the Pico overclocking options using "set_sys_clock_khz(_, true)".<br>
+<br>
+First there are frequencies (high and "low") that make /dev/ttyACM0  missing (after flashing the Pico):
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>  //set_sys_clock_khz(275000, true); //  /dev/ttyACM0  missing
+  //set_sys_clock_khz(124400, true); //  /dev/ttyACM0  missing
+</code></pre></div>
+
+<br>
+Then I tried to identify at which frequency the Pico runs when not 
+explicitely setting sys_clock. To my surprise it was not the often read 
+133MHz but 130MHz:
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>  // 330us
+  //set_sys_clock_khz(124000, true); // 346us
+  //set_sys_clock_khz(126000, true); // 340us
+  //set_sys_clock_khz(128000, true); // 335us
+  //set_sys_clock_khz(130000, true); // 330us
+  //set_sys_clock_khz(131000, true); // 328us
+</code></pre></div>
+
+<br>
+Then I wanted to see whether "set_sys_clock_48mhz()" does what it states -- and it does not, it sets 50MHz <img class="smilies" src="overclocking_pico_files/icon_e_wink.gif" width="15" height="17" alt=";-)" title="Wink">
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>  //set_sys_clock_48mhz(); // 894us
+  //set_sys_clock_khz(48000, true); // 932us
+  //set_sys_clock_khz(50000, true); // 894us
+</code></pre></div>
+
+<br>
+Finally I went higher and higher, and the maximal frequency I was able to run q32.pico.c was 270MHz(!).
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>  //set_sys_clock_khz(200000, true); // 214us
+  //set_sys_clock_khz(250000, true); // 171us
+  //set_sys_clock_khz(266000, true); // 161us  (1596/6)
+  //set_sys_clock_khz(270000, true); // 158us
+</code></pre></div>
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>Press CTRL-A Z for help on special keys                
+                                                       
+                                                       
+158us                                                  
+ 47| 29|101|                                           
+113| 59|  5|
+ 17| 89| 71|
+</code></pre></div>
+
+<br>
+This is q32.pico.c: <br>
+<a href="https://gist.github.com/Hermann-SW/6772285cc8a3ac2a347a89543d9d3dbe" class="postlink">https://gist.github.com/Hermann-SW/6772 ... 543d9d3dbe</a><br>
+Today's commit added printf() of measured time before printing the 
+minimal distinct primes 3x3 magic square. There is a small bug in 
+pico/stdlib(?) that does not always print the last line with the 
+measured time taken into minicom over USB. That happens for high as well
+ as low cpu clocks.<br>
+<br>
+<br>
+I have not used project generator up to now, I hijacked pico-examples 
+usb hello_world.c and just copied over my  code. I don't know the 
+correct way of doing "-O3" compilations, I appended "-O3" just after  
+1st "$(C_FLAGS)" to<br>
+/home/pi/pico/pico-examples/build/hello_world/usbCMakeFiles/hello_usb.dir/build.make<br>
+<br>
+<br>
+<strong>Comparison with ESPs:</strong><br>
+80MHz ESP8266 took 304us.<br>
+160MHz ESP32 took 149us.<br>
+Pico at default 130MHz took 357us.<br>
+Pico at maximal 270MHz took 158us.<br>
+<br>
+So Pico (overclocked with 270MHz) is only slightly slower in running q32.pico.c than ESP32.<br>
+<br>
+<br>
+Other measured microcontrollers and CPUs:<br>
+<a href="https://www.raspberrypi.org/forums/viewtopic.php?f=63&amp;t=208778&amp;p=1804701#p1804701" class="postlink">viewtopic.php?f=63&amp;t=208778&amp;p=1804701#p1804701</a><br>
+<img src="overclocking_pico_files/mc.performance.png" class="postimage" alt="Image"><br>
+<br>
+<br>
+P.S:
+<div class="inline-attachment">
+
+	
+		
+		
+
+				<dl class="file">
+			<dt class="attach-image"><img src="overclocking_pico_files/pico.delta2average.png" class="postimage" alt="pico.delta2average.png" onclick="viewableArea(this);"></dt>
+			<dd><em>pico.delta2average.png</em></dd>			<dd>pico.delta2average.png (9.57 KiB) Viewed 30071 times</dd>
+		</dl>
+		
+		
+		
+		
+	
+</div></div>
+
+					
+																					<div class="notice">
+							Last edited by <a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a> on Mon Feb 15, 2021 8:22 pm, edited 4 times in total.
+													</div>
+					
+															<div id="sig1810553" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1810769" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1810769">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1810769">
+					
+					<h3><a href="#p1810769">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1810769&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1810769">Tue Feb 02, 2021 7:33 am</a> </p>
+
+					
+					
+					
+					<div class="content">As expected, Pico clock [MHz] vs. (1/runtime) [Hz] for all measured values in 48..270 MHz range looks linear:
+<div class="inline-attachment">
+
+	
+		
+		
+
+				<dl class="file">
+			<dt class="attach-image"><img src="overclocking_pico_files/pico_clock_vs_runtime_reciprocal.png" class="postimage" alt="pico_clock_vs_runtime_reciprocal.png" onclick="viewableArea(this);"></dt>
+			<dd><em>pico_clock_vs_runtime_reciprocal.png</em></dd>			<dd>pico_clock_vs_runtime_reciprocal.png (19.03 KiB) Viewed 30014 times</dd>
+		</dl>
+		
+		
+		
+		
+	
+</div></div>
+
+					
+															
+															<div id="sig1810769" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1810916" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1810916">
+					<dt class="has-profile-rank no-avatar">
+						<div class="avatar-container">
+																											</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=406&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" style="color: #00AA00;" class="username-coloured">jamesh</a>
+						
+					</dt>
+
+					
+					<dd class="profile-rank">Raspberry Pi Engineer &amp; Forum Moderator<br><img src="overclocking_pico_files/Forum-Banners_Engineer.png" alt="Raspberry Pi Engineer &amp; Forum Moderator" title="Raspberry Pi Engineer &amp; Forum Moderator"></dd>
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=406&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">33236</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Sat Jul 30, 2011 7:41 pm</dd>				
+				
+												
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1810916">
+					
+					<h3><a href="#p1810916">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1810916&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1810916">Tue Feb 02, 2021 10:15 am</a> </p>
+
+					
+					
+					
+					<div class="content">So what happened when you went over 270?</div>
+
+					
+															
+															<div id="sig1810916" class="signature">Principal Software Engineer at Raspberry Pi Ltd.<br>
+Working in the Applications Team.<br>
+Meet me and the Pi team at Embedded World in Nürnberg, April 9th-11th, 2024<br>
+Hall 3A Stand 138<br>
+https://events.raspberrypi.com/official/24d5151d-dd0f-483d-88a7-a5fddaa5c554</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1810977" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1810977">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=119265&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/119265.jpg" width="90" height="83" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=119265&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">davidcoton</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=119265&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">7422</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Mon Sep 01, 2014 2:37 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Cambridge, UK</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1810977">
+					
+					<h3><a href="#p1810977">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1810977&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1810977">Tue Feb 02, 2021 11:23 am</a> </p>
+
+					
+					
+					
+					<div class="content"><blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=406&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">jamesh</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1810916&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1810916" data-post-id="1810916" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Tue Feb 02, 2021 10:15 am</div></cite>
+So what happened when you went over 270?
+</div></blockquote>
+
+End of the World?<br>
+(In which case, OP didn't try.)</div>
+
+					
+															
+															<div id="sig1810977" class="signature"><strong>Location:</strong> 345th cell on the right of the 210th row of L2 cache</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1810985" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1810985">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1810985">
+					
+					<h3><a href="#p1810985">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1810985&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1810985">Tue Feb 02, 2021 11:29 am</a> </p>
+
+					
+					
+					
+					<div class="content"><blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=406&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">jamesh</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1810916&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1810916" data-post-id="1810916" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Tue Feb 02, 2021 10:15 am</div></cite>
+So what happened when you went over 270?
+</div></blockquote>
+After flashing, the device /dev/ttyACM0 was missing, nothing to connect minicom to.<br>
+<br>
+I assume that is correct behavior because of calling "set_sys_clock_khz(_, true)".<br>
+With required=true assertion there seems to be no /dev/ttyACM0:<br>
+<a href="https://datasheets.raspberrypi.org/pico/raspberry-pi-pico-c-sdk.pdf#page=196" class="postlink">https://datasheets.raspberrypi.org/pico ... f#page=196</a>
+<blockquote class="uncited"><div><strong>Parameters</strong><br>
+•<span style="color:#0000FF">freq_khz</span> Requested frequency<br>
+•<span style="color:#0000FF">required</span> if true then this function will assert if the frequency is not attainable.</div></blockquote>
+
+<br>
+
+<blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=119265&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">davidcoton</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1810977&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1810977" data-post-id="1810977" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Tue Feb 02, 2021 11:23 am</div></cite>
+End of the World?<br>
+(In which case, OP didn't try.)
+</div></blockquote>
+I did try many values, slightly and far above 270000KHz, but those all seem to have asserted.<br>
+As stated in original post, also small frequencies can result in that, here 124400KHz:
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>  //set_sys_clock_khz(275000, true); //  /dev/ttyACM0  missing
+  //set_sys_clock_khz(124400, true); //  /dev/ttyACM0  missing</code></pre></div></div>
+
+					
+															
+															<div id="sig1810985" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1811031" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1811031">
+					<dt class="no-profile-rank no-avatar">
+						<div class="avatar-container">
+																											</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=31514&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">cleverca22</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=31514&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">8703</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Sat Aug 18, 2012 2:33 pm</dd>				
+				
+												
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1811031">
+					
+					<h3><a href="#p1811031">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1811031&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811031">Tue Feb 02, 2021 12:13 pm</a> </p>
+
+					
+					
+					
+					<div class="content"><blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">HermannSW</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1810985&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1810985" data-post-id="1810985" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Tue Feb 02, 2021 11:29 am</div></cite>
+After flashing, the device /dev/ttyACM0 was missing, nothing to connect minicom to.
+</div></blockquote>
+try adding in both blink and hw uart, so you can see if its still alive, and then debug why the usb died</div>
+
+					
+															
+															
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1811060" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1811060">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1811060">
+					
+					<h3><a href="#p1811060">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1811060&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811060">Tue Feb 02, 2021 12:54 pm</a> </p>
+
+					
+					
+					
+					<div class="content"><blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=31514&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">cleverca22</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1811031&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811031" data-post-id="1811031" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Tue Feb 02, 2021 12:13 pm</div></cite>
+<blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">HermannSW</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1810985&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1810985" data-post-id="1810985" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Tue Feb 02, 2021 11:29 am</div></cite>
+After flashing, the device /dev/ttyACM0 was missing, nothing to connect minicom to.
+</div></blockquote>
+try adding in both blink and hw uart, so you can see if its still alive, and then debug why the usb died
+</div></blockquote>
+I will do in my evening, did not use uart until now because usb was so convenient ...</div>
+
+					
+															
+															<div id="sig1811060" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1811075" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1811075">
+					<dt class="no-profile-rank no-avatar">
+						<div class="avatar-container">
+																											</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=31514&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">cleverca22</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=31514&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">8703</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Sat Aug 18, 2012 2:33 pm</dd>				
+				
+												
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1811075">
+					
+					<h3><a href="#p1811075">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1811075&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811075">Tue Feb 02, 2021 1:19 pm</a> </p>
+
+					
+					
+					
+					<div class="content"><blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">HermannSW</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1811060&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811060" data-post-id="1811060" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Tue Feb 02, 2021 12:54 pm</div></cite>
+did not use uart until now because usb was so convenient ...
+</div></blockquote>
+
+same, i still need to confirm what pins the hw uart is even on, the usb-uart just saves having to find a usb adapter</div>
+
+					
+															
+															
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1811191" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1811191">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1811191">
+					
+					<h3><a href="#p1811191">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1811191&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811191">Tue Feb 02, 2021 3:11 pm</a> </p>
+
+					
+					
+					
+					<div class="content"><blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=31514&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">cleverca22</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1811075&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811075" data-post-id="1811075" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Tue Feb 02, 2021 1:19 pm</div></cite>
+same, i still need to confirm what pins the hw uart is even on, the usb-uart just saves having to find a usb adapter
+</div></blockquote>
+Back in the mid 80s while studying CS, I worked in a special purpose 
+machinery manufacture in parallel, and wrote more or less a "plotter" 
+program (no pen, instead a 4000bar water-jet coming out of 0.1mm 
+diameter hole in industrial diamond). I had no idea how to drive the 
+stepper motors, so did just use parallel port of 8088 office PC for 
+bidirectional signals <img class="smilies" src="overclocking_pico_files/icon_e_wink.gif" width="15" height="17" alt=";-)" title="Wink"></div>
+
+					
+															
+															<div id="sig1811191" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1811232" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1811232">
+					<dt class="has-profile-rank no-avatar">
+						<div class="avatar-container">
+																											</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=294330&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" style="color: #00AA00;" class="username-coloured">kilograham</a>
+						
+					</dt>
+
+					
+					<dd class="profile-rank">Raspberry Pi Engineer &amp; Forum Moderator<br><img src="overclocking_pico_files/Forum-Banners_Engineer.png" alt="Raspberry Pi Engineer &amp; Forum Moderator" title="Raspberry Pi Engineer &amp; Forum Moderator"></dd>
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=294330&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">1536</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Apr 12, 2019 11:00 am</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> austin tx</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1811232">
+					
+					<h3><a href="#p1811232">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1811232&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811232">Tue Feb 02, 2021 3:49 pm</a> </p>
+
+					
+					
+					
+					<div class="content">about about 270Mhz system clock you are probably out of range of the flash chip.<br>
+<br>
+Do something like this in your CMakeLists.txt<br>
+
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>pico_define_boot_stage2(slower_boot2 ${PICO_DEFAULT_BOOT_STAGE2_FILE})
+target_compile_definitions(slower_boot2 PRIVATE PICO_FLASH_SPI_CLKDIV=4)
+
+pico_set_boot_stage2(TARGET slower_boot2)
+</code></pre></div>
+
+to use a custom boot_stage2 which configures the flash slower (relative to system clock)</div>
+
+					
+															
+															
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1811236" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1811236">
+					<dt class="has-profile-rank no-avatar">
+						<div class="avatar-container">
+																											</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=294330&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" style="color: #00AA00;" class="username-coloured">kilograham</a>
+						
+					</dt>
+
+					
+					<dd class="profile-rank">Raspberry Pi Engineer &amp; Forum Moderator<br><img src="overclocking_pico_files/Forum-Banners_Engineer.png" alt="Raspberry Pi Engineer &amp; Forum Moderator" title="Raspberry Pi Engineer &amp; Forum Moderator"></dd>
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=294330&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">1536</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Apr 12, 2019 11:00 am</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> austin tx</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1811236">
+					
+					<h3><a href="#p1811236">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1811236&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811236">Tue Feb 02, 2021 3:51 pm</a> </p>
+
+					
+					
+					
+					<div class="content">p.s. i recommend you move to SDK 1.0.1 which fixes a bug in the dependency checking of boot stage 2 during build</div>
+
+					
+															
+															
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1811687" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1811687">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1811687">
+					
+					<h3><a href="#p1811687">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1811687&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811687">Wed Feb 03, 2021 7:32 am</a> </p>
+
+					
+					
+					
+					<div class="content">Did run into issues with SWD (doc not correct wrt. example<br>
+<a href="https://www.raspberrypi.org/forums/viewtopic.php?f=145&amp;t=302206" class="postlink">viewtopic.php?f=145&amp;t=302206</a><br>
+SWD single stepping does work, but cannot see USB output).<br>
+<br>
+I created pico/buildu directory and did cmake normal non-SWD environment there.<br>
+Flashing blink.uf2 does blink, flashing with added 
+"set_sys_clock_khz(270000, true)" does blink, but flashing with 275000 
+does not blink after flashing, so assertion does not continue into 
+endless while blink loop:
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>...
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+    set_sys_clock_khz(275000, true);
+    while (true) {
+...</code></pre></div>
+
+<br>
+This test was done after upgrading to 1.0.1 SDK, but without kilograham's CMakeLists.txt change.</div>
+
+					
+															
+															<div id="sig1811687" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1811693" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1811693">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1811693">
+					
+					<h3><a href="#p1811693">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1811693&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811693">Wed Feb 03, 2021 7:47 am</a> </p>
+
+					
+					
+					
+					<div class="content"><blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=294330&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">kilograham</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1811232&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811232" data-post-id="1811232" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Tue Feb 02, 2021 3:49 pm</div></cite>
+about about 270Mhz system clock you are probably out of range of the flash chip.<br>
+<br>
+Do something like this in your CMakeLists.txt<br>
+
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>pico_define_boot_stage2(slower_boot2 ${PICO_DEFAULT_BOOT_STAGE2_FILE})
+target_compile_definitions(slower_boot2 PRIVATE PICO_FLASH_SPI_CLKDIV=4)
+
+pico_set_boot_stage2(TARGET slower_boot2)
+</code></pre></div>
+
+to use a custom boot_stage2 which configures the flash slower (relative to system clock)
+</div></blockquote>
+Thanks, I tried that.<br>
+<br>
+This is the diff:
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>pi@raspberrypi400:~/pico/pico-examples/buildu/blink $ git diff ../../blink/CMakeLists.txt 
+diff --git a/blink/CMakeLists.txt b/blink/CMakeLists.txt
+index 1bf1d2a..682c8cd 100644
+--- a/blink/CMakeLists.txt
++++ b/blink/CMakeLists.txt
+@@ -10,3 +10,9 @@ pico_add_extra_outputs(blink)
+ 
+ # add url via pico_set_program_url
+ example_auto_set_url(blink)
++
++# https://www.raspberrypi.org/forums/viewtopic.php?f=145&amp;t=301902&amp;p=1811687#p1811232
++pico_define_boot_stage2(slower_boot2 ${PICO_DEFAULT_BOOT_STAGE2_FILE})
++target_compile_definitions(slower_boot2 PRIVATE PICO_FLASH_SPI_CLKDIV=4)
++
++pico_set_boot_stage2(blink slower_boot2)
+pi@raspberrypi400:~/pico/pico-examples/buildu/blink $ 
+</code></pre></div>
+
+<br>
+After making, Pico blinks for  "set_sys_clock_khz(270000, true)", but 
+does not blink for  "set_sys_clock_khz(275000, true)" added. So the 
+change did not help, or 270MHz is really the top. <br>
+<br>
+6*266MHz is 1596MHZ, so I tried 1596MHZ/4=399MHz as well, no blinking after flashing.<br>
+<br>
+Finally I did set to 124400 which should not have any speed issues, no 
+blinking as reported originally for /dev/ttyACM0  missing.</div>
+
+					
+															
+															<div id="sig1811693" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1811767" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1811767">
+					<dt class="no-profile-rank no-avatar">
+						<div class="avatar-container">
+																											</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=3060&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">WestfW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=3060&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">271</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Tue Nov 01, 2011 9:56 pm</dd>				
+				
+												
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1811767">
+					
+					<h3><a href="#p1811767">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1811767&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811767">Wed Feb 03, 2021 10:08 am</a> </p>
+
+					
+					
+					
+					<div class="content">Are you still running your code from the QSPI flash?<br>
+Have you tried compiling it to run from RAM?</div>
+
+					
+															
+															
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1811923" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1811923">
+					<dt class="has-profile-rank no-avatar">
+						<div class="avatar-container">
+																											</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=294330&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" style="color: #00AA00;" class="username-coloured">kilograham</a>
+						
+					</dt>
+
+					
+					<dd class="profile-rank">Raspberry Pi Engineer &amp; Forum Moderator<br><img src="overclocking_pico_files/Forum-Banners_Engineer.png" alt="Raspberry Pi Engineer &amp; Forum Moderator" title="Raspberry Pi Engineer &amp; Forum Moderator"></dd>
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=294330&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">1536</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Apr 12, 2019 11:00 am</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> austin tx</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1811923">
+					
+					<h3><a href="#p1811923">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1811923&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811923">Wed Feb 03, 2021 2:50 pm</a> </p>
+
+					
+					
+					
+					<div class="content">note the "true" argument to set_sys_clock_khz 
+means assert if you can't get the frequency exactly (which you may not 
+see evidence of at this point other than a hang)<br>
+<br>
+if you pass false, it will return a return code.<br>
+<br>
+of course you might have max-ed out your pico at 1.1v you can (at your own risk) do say 
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>vreg_set_voltage(VREG_VOLTAGE_1_25);
+</code></pre></div>
+
+or similar first</div>
+
+					
+															
+															
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1812062" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1812062">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1812062">
+					
+					<h3><a href="#p1812062">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1812062&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812062">Wed Feb 03, 2021 5:10 pm</a> </p>
+
+					
+					
+					
+					<div class="content"><blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=3060&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">WestfW</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1811767&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811767" data-post-id="1811767" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Wed Feb 03, 2021 10:08 am</div></cite>
+Are you still running your code from the QSPI flash?<br>
+Have you tried compiling it to run from RAM?
+</div></blockquote>
+Yes, and not until now.<br>
+<br>
+What I did is to remove the previously added stuff to pico/pico-examples/blink/CMakeLists.txt.<br>
+Then I did "set_sys_clock_khz(270000, true)" before the while loop, did make and copied blink.uf2.<br>
+That way I got blinking led on Pico.<br>
+<br>
+Next I added this line at bottom of pico/pico-examples/blink/CMakeLists.txt to force RAM execution:<br>
+<a href="https://datasheets.raspberrypi.org/pico/raspberry-pi-pico-c-sdk.pdf#page=266" class="postlink">https://datasheets.raspberrypi.org/pico ... f#page=266</a>
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>pico_set_binary_type(blink no_flash)
+</code></pre></div>
+
+And I increased clock from 270000 to 275000.<br>
+Again did make, copied blink.uf2 after reconnecting with bootsel key pressed.<br>
+result is no blinking, so execution from RAM did not help to get  faster clock than 270MHz.<br>
+Finally I disconnected USB cable, and reconnected to verify that the 275000 code was executed in RAM.<br>
+And really the Pico was blinking again from the 270000 blink.uf2 that was still on the flash.</div>
+
+					
+															
+															<div id="sig1812062" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1812071" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1812071">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1812071">
+					
+					<h3><a href="#p1812071">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1812071&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812071">Wed Feb 03, 2021 5:24 pm</a> </p>
+
+					
+					
+					
+					<div class="content"><blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=294330&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">kilograham</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1811923&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1811923" data-post-id="1811923" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Wed Feb 03, 2021 2:50 pm</div></cite>
+of course you might have max-ed out your pico at 1.1v you can (at your own risk) do say 
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>vreg_set_voltage(VREG_VOLTAGE_1_25);
+</code></pre></div>
+
+or similar first
+</div></blockquote>
+Thanks for that pointer, I will try, found that function:<br>
+<a href="https://datasheets.raspberrypi.org/pico/raspberry-pi-pico-c-sdk.pdf#page=187" class="postlink">https://datasheets.raspberrypi.org/pico ... f#page=187</a><br>
+<br>
+Found the enumeration in pico/pico-sdk/src/rp2_common/hardware_vreg/include/hardware/vreg.h:
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>enum vreg_voltage {
+    VREG_VOLTAGE_0_85 = 0b0110,    ///&lt; 0.85v
+    VREG_VOLTAGE_0_90 = 0b0111,    ///&lt; 0.90v
+    VREG_VOLTAGE_0_95 = 0b1000,    ///&lt; 0.95v
+    VREG_VOLTAGE_1_00 = 0b1001,    ///&lt; 1.00v
+    VREG_VOLTAGE_1_05 = 0b1010,    ///&lt; 1.05v
+    VREG_VOLTAGE_1_10 = 0b1011,    ///&lt; 1.10v
+    VREG_VOLTAGE_1_15 = 0b1100,    ///&lt; 1.15v
+    VREG_VOLTAGE_1_20 = 0b1101,    ///&lt; 1.20v
+    VREG_VOLTAGE_1_25 = 0b1110,    ///&lt; 1.25v
+    VREG_VOLTAGE_1_30 = 0b1111,    ///&lt; 1.30v
+
+    VREG_VOLTAGE_MIN = VREG_VOLTAGE_0_85,      ///&lt; Always the minimum possible voltage
+    VREG_VOLTAGE_DEFAULT = VREG_VOLTAGE_1_10,  ///&lt; Default voltage on power up.
+    VREG_VOLTAGE_MAX = VREG_VOLTAGE_1_30,      ///&lt; Always the maximum possible voltage
+};
+</code></pre></div>
+
+<br>
+I assume the idea is not to increase Pico sales by making me burn my 
+Pico (I do have 3, will try in small incremental steps starting with 
+1.15V).</div>
+
+					
+															
+															<div id="sig1812071" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1812077" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1812077">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1812077">
+					
+					<h3><a href="#p1812077">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1812077&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812077">Wed Feb 03, 2021 5:33 pm</a> </p>
+
+					
+					
+					
+					<div class="content">I just kept the run from RAM setup, so that 
+after disconnecting USB cable and reconnecting the safe 270MHz with 
+default 1.1V blink.uf2 will run.<br>
+<br>
+I tested in 0.05V steps starting with 1.15V and ended with maximal value of 1.30V.<br>
+To be sure that voltage has been switched, code did sleep for a second before touching clock.<br>
+Even after flashing blink.uf2 with 1.3V, Pico did not blink.<br>
+After removing USB cable and reconnecting Pico blinked again (code from flash, at 270MHz):
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>...
+    vreg_set_voltage(VREG_VOLTAGE_1_30);
+    sleep_ms(1000);
+    set_sys_clock_khz(275000, true);
+...
+</code></pre></div>
+
+<br>
+Summary of latest experiments:<br>
+Neither running code from RAM nor increasing voltage from 1.1V to 1.3V did allow to run blink with 275MHz clock.</div>
+
+					
+															
+															<div id="sig1812077" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1812137" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1812137">
+					<dt class="has-profile-rank no-avatar">
+						<div class="avatar-container">
+																											</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=294330&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" style="color: #00AA00;" class="username-coloured">kilograham</a>
+						
+					</dt>
+
+					
+					<dd class="profile-rank">Raspberry Pi Engineer &amp; Forum Moderator<br><img src="overclocking_pico_files/Forum-Banners_Engineer.png" alt="Raspberry Pi Engineer &amp; Forum Moderator" title="Raspberry Pi Engineer &amp; Forum Moderator"></dd>
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=294330&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">1536</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Apr 12, 2019 11:00 am</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> austin tx</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1812137">
+					
+					<h3><a href="#p1812137">Re: Overclocking Pico with up to 270MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1812137&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812137">Wed Feb 03, 2021 6:46 pm</a> </p>
+
+					
+					
+					
+					<div class="content">as i say 275Mhz may not be possible (and the ,true is causing an assert)<br>
+<br>
+try 360Mhz which I know works (well assuming your silicon is not on the slow end)</div>
+
+					
+															
+															
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1812185" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1812185">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1812185">
+					
+					<h3><a href="#p1812185">Re: Overclocking Pico with up to 360MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1812185&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812185">Wed Feb 03, 2021 7:28 pm</a> </p>
+
+					
+					
+					
+					<div class="content"><blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=294330&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">kilograham</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1812137&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812137" data-post-id="1812137" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Wed Feb 03, 2021 6:46 pm</div></cite>
+as i say 275Mhz may not be possible (and the ,true is causing an assert)<br>
+<br>
+try 360Mhz which I know works (well assuming your silicon is not on the slow end)
+</div></blockquote>
+@kilograham Thanks for the many breadcrumbs, it really works!<br>
+<br>
+But only running from RAM, from flash even 1.3V do not make it blink.<br>
+From RAM 1.15V does not blink, but with 1.2V it blinks happily!.<br>
+
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>pi@raspberrypi400:~/pico/pico-examples/buildu/blink $ tail -1 ../../blink/CMakeLists.txt 
+pico_set_binary_type(blink no_flash) 
+pi@raspberrypi400:~/pico/pico-examples/buildu/blink $ 
+
+</code></pre></div>
+
+
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>pi@raspberrypi400:~/pico/pico-examples/buildu/blink $ cat ../../blink/blink.c 
+/**
+ * Copyright (c) 2020 Raspberry Pi (Trading) Ltd.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+#include "pico/stdlib.h"
+#include "hardware/vreg.h"
+
+int main() {
+    const uint LED_PIN = 25;
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+    vreg_set_voltage(VREG_VOLTAGE_1_20);
+    sleep_ms(1000);
+    set_sys_clock_khz(360000, true);
+    while (true) {
+        gpio_put(LED_PIN, 1);
+        sleep_ms(250);
+        gpio_put(LED_PIN, 0);
+        sleep_ms(250);
+    }
+}
+pi@raspberrypi400:~/pico/pico-examples/buildu/blink $ 
+</code></pre></div>
+
+<br>
+I just changed the thread title to 360MHz.</div>
+
+					
+															
+															<div id="sig1812185" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1812187" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1812187">
+					<dt class="no-profile-rank no-avatar">
+						<div class="avatar-container">
+																											</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=31514&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">cleverca22</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=31514&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">8703</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Sat Aug 18, 2012 2:33 pm</dd>				
+				
+												
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1812187">
+					
+					<h3><a href="#p1812187">Re: Overclocking Pico with up to 360MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1812187&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812187">Wed Feb 03, 2021 7:31 pm</a> </p>
+
+					
+					
+					
+					<div class="content">i'm thinking you should modify the parts of 
+the sdk around set_sys_clock_khz() to print all of the clock config 
+registers as they are being set, and to fflush() before it puts them 
+into effect<br>
+<br>
+then write up a spreadsheet, showing the final clock, all of the 
+configs, and the min voltage it works at, along with if flash still 
+worked, and the flash divisor</div>
+
+					
+															
+															
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1812200" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1812200">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1812200">
+					
+					<h3><a href="#p1812200">Re: Overclocking Pico with up to 360MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1812200&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812200">Wed Feb 03, 2021 7:57 pm</a> </p>
+
+					
+					
+					
+					<div class="content">@cleverca22 Good idea.<br>
+<br>
+I did want to see a real program running at 360MHz, not only blink.<br>
+<br>
+So I used code that does wait for USB ready, then inputs a number and 
+outputs cube of that number, repeat. That code can be seen below. And I 
+wanted to query which clock frequency. For the set_sys_clock_khz(_, 
+true) we already know that the frequency requested in 1st arg can be set
+ -- otherwise that function asserts and stops program flow. But I found 
+function frequency_count_khz() and passed CLOCKS_FC0_SRC_VALUE_CLK_SYS 
+as argument. For 270MHz the output is as expected in minicom:
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>Press CTRL-A Z for help on special keys
+
+tud_cdc_connected()
+clk_sys = 270000kHz
+7
+343</code></pre></div>
+
+<br>
+But for 360MHz either the measurement or the printf() seems to have real
+ problems (we know that clock is 360MHz because not having asserted at 
+that output):
+ <div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>Press CTRL-A Z for help on special keys
+
+tud_cdc_connected()
+clk_sys = 36863¡kHz
+8
+512
+</code></pre></div>
+
+<br>
+Compile to RAM:
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>pi@raspberrypi400:~/pico/pico-examples/buildu/hello_world/usb $ tail -1 ../../../hello_world/usb/CMakeLists.txt 
+pico_set_binary_type(hello_usb no_flash)
+pi@raspberrypi400:~/pico/pico-examples/buildu/hello_world/usb $</code></pre></div>
+
+<br>
+Code:
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>pi@raspberrypi400:~/pico/pico-examples/buildu/hello_world/usb $ cat ../../../hello_world/usb/hello_usb.c 
+#include &lt;stdlib.h&gt;
+#include "pico/stdlib.h"
+#include &lt;tusb.h&gt;
+#include "hardware/vreg.h"
+#include "hardware/clocks.h"
+
+#define L 5
+unsigned char str[L+1];
+
+unsigned char *readLine() {
+  unsigned char u, *p;
+  for(p=str, u=getchar(); u!='\r' &amp;&amp; p-str&lt;L; u=getchar())  putchar(*p++=u);
+  *p = 0;  return str;
+}
+
+int main(void) {
+  stdio_init_all();
+
+  vreg_set_voltage(VREG_VOLTAGE_1_20);
+  sleep_ms(1000);
+  set_sys_clock_khz(360000, true);
+
+  while (!tud_cdc_connected()) { sleep_ms(100);  }
+  printf("tud_cdc_connected()\n");
+  printf("clk_sys = %ukHz\n", frequency_count_khz(CLOCKS_FC0_SRC_VALUE_CLK_SYS));
+
+  for(;;) { int n=atoi(readLine());  printf("\n%d\n",n*n*n); }
+
+  return 0;
+}
+pi@raspberrypi400:~/pico/pico-examples/buildu/hello_world/usb $ 
+</code></pre></div>
+
+<br>
+With those changes in place just do "make" and copy hello_usb.uf2 to the
+ fake drive. Finally run this and enter numbers in minicom, followed by 
+newline (at most 5 digits):
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>$ minicom -b 115200 -o -D /dev/ttyACM0</code></pre></div></div>
+
+					
+															
+															<div id="sig1812200" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1812202" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1812202">
+					<dt class="has-profile-rank no-avatar">
+						<div class="avatar-container">
+																											</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=294330&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" style="color: #00AA00;" class="username-coloured">kilograham</a>
+						
+					</dt>
+
+					
+					<dd class="profile-rank">Raspberry Pi Engineer &amp; Forum Moderator<br><img src="overclocking_pico_files/Forum-Banners_Engineer.png" alt="Raspberry Pi Engineer &amp; Forum Moderator" title="Raspberry Pi Engineer &amp; Forum Moderator"></dd>
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=294330&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">1536</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Apr 12, 2019 11:00 am</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> austin tx</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1812202">
+					
+					<h3><a href="#p1812202">Re: Overclocking Pico with up to 360MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1812202&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812202">Wed Feb 03, 2021 8:05 pm</a> </p>
+
+					
+					
+					
+					<div class="content">ah lightbulb - maybe try blowing away your 
+build directory and re-doing to pick up the "slow" boot stage 2 (at 
+least to be sure) if you aren't using the 1.0.1 sdk which fixes some 
+dependency checking in cmake for the boot stage 2</div>
+
+					
+															
+															
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1812211" class="post has-profile bg1">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1812211">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1812211">
+					
+					<h3><a href="#p1812211">Re: Overclocking Pico with up to 360MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1812211&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812211">Wed Feb 03, 2021 8:36 pm</a> </p>
+
+					
+					
+					
+					<div class="content"><blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=294330&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">kilograham</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1812202&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812202" data-post-id="1812202" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Wed Feb 03, 2021 8:05 pm</div></cite>
+ah lightbulb - maybe try blowing away your build directory and re-doing 
+to pick up the "slow" boot stage 2 (at least to be sure) if you aren't 
+using the 1.0.1 sdk which fixes some dependency checking in cmake for 
+the boot stage 2
+</div></blockquote>
+I was on 1.0.1 already, did throw away my build directory and created 
+again. No change, the 360000 number gets sent to output scrambled.<br>
+<br>
+<br>
+From further above in this thread, on running q32.pico.c for computing minimal distinct primes 3x3 magic square:
+<blockquote><div><cite><a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">HermannSW</a> wrote: <a href="https://forums.raspberrypi.com/viewtopic.php?p=1810553&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1810553" data-post-id="1810553" onclick="if(document.getElementById(hash.substr(1)))href=hash">↑</a><div class="responsive-hide">Mon Feb 01, 2021 8:22 pm</div></cite>
+<strong>Comparison with ESPs:</strong><br>
+80MHz ESP8266 took 304us.<br>
+160MHz ESP32 took 149us.<br>
+Pico at default 130MHz took 357us.<br>
+Pico at maximal 270MHz took 158us.<br>
+<br>
+So Pico (overclocked with 270MHz) is only slightly slower in running q32.pico.c than ESP32.
+</div></blockquote>
+
+<br>
+I just tried running with 360MHz, and now Pico completely outperforns 
+the ESP32 with only 96us taken! Yes, I/O seems to have problem, middle 
+bottom number should read as 89, all other numbers are correct:
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>Press CTRL-A Z for help on special keys                         
+                                                                
+                                                                
+                                                                
+96us                                                            
+ 47| 29|101|
+113| 59|  5|
+ 17| 8`| 71|
+
+96us
+</code></pre></div>
+
+<br>
+Next smaller runtime from the table is 30us from Pi0 ...<br>
+<a href="https://stamm-wilbrandt.de/en/forum/mc.performance.png" class="postlink">https://stamm-wilbrandt.de/en/forum/mc.performance.png</a></div>
+
+					
+															
+															<div id="sig1812211" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+														<div id="p1812229" class="post has-profile bg2">
+				<div class="inner">
+
+				<dl class="postprofile" id="profile1812229">
+					<dt class="no-profile-rank has-avatar">
+						<div class="avatar-container">
+																						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="avatar"><img class="avatar" src="overclocking_pico_files/198596.jpg" width="90" height="90" alt="User avatar"></a>																				</div>
+
+						
+						<a href="https://forums.raspberrypi.com/memberlist.php?mode=viewprofile&amp;u=198596&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="username">HermannSW</a>
+						
+					</dt>
+
+					
+					
+					
+				<dd class="profile-posts"><strong>Posts:</strong> <a href="https://forums.raspberrypi.com/search.php?author_id=198596&amp;sr=posts&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">6282</a></dd>				<dd class="profile-joined"><strong>Joined:</strong> Fri Jul 22, 2016 9:09 pm</dd>				
+				
+																			<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Eberbach, Germany</dd>
+													
+												
+				</dl>
+
+				<div class="postbody">
+										<div id="post_content1812229">
+					
+					<h3><a href="#p1812229">Re: Overclocking Pico with up to 360MHz works</a></h3>
+
+				
+				
+													
+				
+					
+					<p class="author"><a href="https://forums.raspberrypi.com/viewtopic.php?p=1812229&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5#p1812229">Wed Feb 03, 2021 9:08 pm</a> </p>
+
+					
+					
+					
+					<div class="content">I tried to slow down the clock before doing 
+printf() showing the 3x3 magic square, that did not work (I saw no 
+output in minicom at all).<br>
+<br>
+Next I increased from 1.2V further to maximum of 1.3V.<br>
+Before 266MHz worked, and that was 1596MHz/6.<br>
+Now I tried 1596MHz/4=399MHz.<br>
+Proportional faster, but now really I/O is not reliable anymore, just stops in middle of 3x3 square output: 
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;">Select all</a></p><pre><code>Press CTRL-A Z for help on special keys
+
+
+87us
+ 47| 29|101|
+</code></pre></div>
+
+<br>
+I need to get setting clock slower (to 130MHz default) working before doing printf() output.</div>
+
+					
+															
+															<div id="sig1812229" class="signature">https://github.com/Hermann-SW/RSA_numbers_factored<br>
+https://stamm-wilbrandt.de/GS     [304+402+536fps]<br>
+https://hermann-sw.github.io/planar_graph_playground<br>
+https://github.com/Hermann-SW/Raspberry_v1_camera_global_external_shutter<br>
+https://stamm-wilbrandt.de</div>
+										</div>
+
+				</div>
+
+				</div>
+											</div>
+
+			<hr class="divider">
+					
+		
+					<form id="viewtopic" method="post" action="./viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">
+			<fieldset class="display-options" style="margin-top: 0; ">
+								<label>Display posts from previous:<select name="st" id="st" style="display: none;"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select><div class="chosen-container chosen-container-single chosen-container-single-nosearch" style="width: auto;" title="" id="st_chosen"><a class="chosen-single" tabindex="-1"><span>All posts</span><div><b></b></div></a><div class="chosen-drop"><div class="chosen-search"><input type="text" autocomplete="off" readonly="readonly"></div><ul class="chosen-results"></ul></div></div></label><label>Sort by<select name="sk" id="sk" style="display: none;"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select><div class="chosen-container chosen-container-single chosen-container-single-nosearch" style="width: auto;" title="" id="sk_chosen"><a class="chosen-single" tabindex="-1"><span>Post time</span><div><b></b></div></a><div class="chosen-drop"><div class="chosen-search"><input type="text" autocomplete="off" readonly="readonly"></div><ul class="chosen-results"></ul></div></div></label><label><select name="sd" id="sd" style="display: none;"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select><div class="chosen-container chosen-container-single chosen-container-single-nosearch" style="width: auto;" title="" id="sd_chosen"><a class="chosen-single" tabindex="-1"><span>Ascending</span><div><b></b></div></a><div class="chosen-drop"><div class="chosen-search"><input type="text" autocomplete="off" readonly="readonly"></div><ul class="chosen-results"></ul></div></div></label><input type="submit" name="sort" value="Go" class="button2">
+							</fieldset>
+			</form>
+		
+				<div class="action-bar bottom">
+			<div class="buttons">
+				
+							<a href="https://forums.raspberrypi.com/posting.php?mode=reply&amp;t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="button font-icon" title="This topic is locked, you cannot edit posts or make further replies.">
+					<i class="fa fa-lock"></i>Locked				</a>
+			
+							</div>
+
+				<div class="dropdown-container dropdown-button-control topic-tools">
+		<span title="Topic tools" class="button icon-button tools-icon dropdown-trigger dropdown-select dropdown-toggle"><i class="fa fa-wrench"></i></span>
+		<div class="dropdown hidden">
+			<div class="pointer"><div class="pointer-inner"></div></div>
+			<ul class="dropdown-contents">
+																								<li class="font-icon icon-print"><a href="https://forums.raspberrypi.com/viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5&amp;view=print" title="Print view" accesskey="p"><i class="fa fa-print"></i>Print view</a></li>							</ul>
+		</div>
+	</div>
+
+			
+			
+							<div class="pagination">
+					78 posts
+											<ul>
+<li class="active"><span>1</span></li><li><a href="https://forums.raspberrypi.com/viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5&amp;start=25" role="button">2</a></li><li><a href="https://forums.raspberrypi.com/viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5&amp;start=50" role="button">3</a></li><li><a href="https://forums.raspberrypi.com/viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5&amp;start=75" role="button">4</a></li><li class="next"><a href="https://forums.raspberrypi.com/viewtopic.php?t=301902&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5&amp;start=25" rel="next" role="button"><i class="fa fa-chevron-right"></i></a></li></ul>
+									</div>
+						<div class="clear"></div>
+		</div>
+
+				
+	<p class="jumpbox-return"><a href="https://forums.raspberrypi.com/viewforum.php?f=145&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" class="left-box arrow-left" accesskey="r">Return to “SDK”</a></p>
+
+	<div class="dropdown-container dropdown-container-right dropdown-up dropdown-left dropdown-button-control" id="jumpbox">
+		<span title="Jump to" class="dropdown-trigger button dropdown-select dropdown-toggle">
+			Jump to		</span>
+		<div class="dropdown hidden">
+			<div class="pointer"><div class="pointer-inner"></div></div>
+			<ul class="dropdown-contents">
+																			<li><a href="https://forums.raspberrypi.com/viewforum.php?f=19&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Community</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=63&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">General discussion</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=117&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Announcements</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=90&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Other languages</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=75&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Deutsch</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=76&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Español</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=65&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Français</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=79&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Italiano</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=88&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Nederlands</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=82&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">日本語</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=103&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Polski</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=74&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Português</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=84&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Русский</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=89&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Türkçe</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=57&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">User groups and events</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=106&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">The MagPi</a></li>
+																<li><a href="https://forums.raspberrypi.com/viewforum.php?f=12&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Using the Raspberry Pi</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=91&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Beginners</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=28&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Troubleshooting</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=29&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Advanced users</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=102&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Assistive technology and accessibility</a></li>
+																<li><a href="https://forums.raspberrypi.com/viewforum.php?f=17&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Education</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=99&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Picademy</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=49&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Teaching and learning resources</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=48&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Staffroom, classroom and projects</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=104&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Astro Pi</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=94&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Mathematica</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=111&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">High Altitude Balloon</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=112&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Weather station</a></li>
+																<li><a href="https://forums.raspberrypi.com/viewforum.php?f=14&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Programming</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=33&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">C/C++</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=81&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Java</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=32&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Python</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=77&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Scratch</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=34&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Other programming languages</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=105&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Windows 10 for IoT</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=95&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Wolfram Language</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=72&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Bare metal, Assembly language</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=67&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Graphics programming</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=68&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">OpenGLES</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=69&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">OpenVG</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=70&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">OpenMAX</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=31&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">General programming discussion</a></li>
+																<li><a href="https://forums.raspberrypi.com/viewforum.php?f=15&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Projects</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=36&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Networking and servers</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=37&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Automation, sensing and robotics</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=38&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Graphics, sound and multimedia</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=41&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Other projects</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=78&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Gaming</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=35&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Media centres</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=114&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">AIY Projects</a></li>
+																<li><a href="https://forums.raspberrypi.com/viewforum.php?f=16&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Hardware and peripherals</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=43&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Camera board</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=98&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Compute Module</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=108&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Official Display</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=45&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">HATs and other add-ons</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=107&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Device Tree</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=44&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Interfacing (DSI, CSI, I2C, etc.)</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=140&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Raspberry Pi 400</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=143&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Raspberry Pi Pico</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=144&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">General</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=145&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">SDK</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=146&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">MicroPython</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=147&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Other RP2040 boards</a></li>
+																<li><a href="https://forums.raspberrypi.com/viewforum.php?f=18&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Operating system distributions</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=66&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Raspberry Pi OS</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=116&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Raspberry Pi Desktop for PC and Mac</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=56&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Other</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=73&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Android</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=50&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Debian</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=85&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">FreeBSD</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=54&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Gentoo</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=71&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Linux Kernel</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=86&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">NetBSD</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=87&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">openSUSE</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=80&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Plan 9</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=52&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Puppy</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=53&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Arch</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=51&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Pidora / Fedora</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=55&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">RISCOS</a></li>
+																<li>&nbsp; &nbsp;&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=131&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Ubuntu</a></li>
+																<li><a href="https://forums.raspberrypi.com/viewforum.php?f=20&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Ye Olde Pi Shoppe</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=93&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">For sale</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=61&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Wanted</a></li>
+																<li><a href="https://forums.raspberrypi.com/viewforum.php?f=21&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Off topic</a></li>
+																<li>&nbsp; &nbsp;<a href="https://forums.raspberrypi.com/viewforum.php?f=62&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5">Off topic discussion</a></li>
+										</ul>
+		</div>
+	</div>
+
+		
+	</div>
+</div>
+
+        <!-- main element opens in overall_header.html -->
+        </main>
+		
+	
+	<div id="wrap-footer">
+		<div id="site-footer-nav" role="navigation">
+			<div class="chunk">
+				<ul class="site-footer-nav" role="menubar">
+					<li class="small-icon icon-home breadcrumbs">
+																		<span class="crumb"><a href="https://forums.raspberrypi.com/index.php?sid=a0d03dc14729e23d4d5b600fe3af90f5" data-navbar-reference="index" title="Board index">Board index</a></span>
+											</li>
+					
+										<li class="rightside">All times are <span title="UTC">UTC</span></li>
+																<li class="small-icon icon-delete-cookies rightside"><a href="https://forums.raspberrypi.com/ucp.php?mode=delete_cookies&amp;sid=a0d03dc14729e23d4d5b600fe3af90f5" data-ajax="true" data-refresh="true" role="menuitem">Delete cookies</a></li>
+															</ul>
+			</div>
+		</div>
+
+    <style>
+#__rptl-footer .__rptl-footer-link, #__rptl-footer .__rptl-footer-link--with-icon, #__rptl-footer .__rptl-footer-item, #__rptl-footer .__rptl-footer-list, #__rptl-footer .__rptl-footer-heading, #__rptl-footer .__rptl-footer-column, #__rptl-footer .__rptl-footer-row, #__rptl-footer .__rptl-footer-container, #__rptl-footer {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+#__rptl-footer {
+  display: block;
+  font-family: "Roboto", sans-serif;
+  font-size: medium;
+  font-weight: 400;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+     -moz-text-size-adjust: 100%;
+          text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #f5f6f9;
+  overflow: hidden;
+}
+#__rptl-footer .__rptl-footer-container {
+  width: 100%;
+  max-width: 1300px;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin: auto;
+  margin-top: 32px;
+}
+@media (min-width: 800px) {
+  #__rptl-footer .__rptl-footer-container {
+    padding: 0 76px;
+  }
+}
+@media (min-width: 1200px) {
+  #__rptl-footer .__rptl-footer-container {
+    padding: 0 84px;
+  }
+}
+#__rptl-footer .__rptl-footer-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+#__rptl-footer .__rptl-footer-column {
+  flex-basis: 1;
+  width: 100%;
+  padding-right: 8px;
+}
+@media (min-width: 640px) {
+  #__rptl-footer .__rptl-footer-column {
+    width: 50%;
+  }
+}
+@media (min-width: 1024px) {
+  #__rptl-footer .__rptl-footer-column {
+    width: 25%;
+  }
+}
+#__rptl-footer .__rptl-footer-heading {
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 8px;
+}
+#__rptl-footer .__rptl-footer-list {
+  list-style: none;
+  margin-bottom: 32px;
+}
+#__rptl-footer .__rptl-footer-item {
+  margin-bottom: 8px;
+}
+#__rptl-footer .__rptl-footer-icon {
+  margin-right: 0.5em;
+  fill: #333;
+}
+#__rptl-footer .__rptl-footer-link, #__rptl-footer .__rptl-footer-link--with-icon {
+  font-weight: 400;
+  color: #333;
+  text-decoration: none;
+}
+#__rptl-footer .__rptl-footer-link--with-icon {
+  display: inline-flex;
+  align-items: center;
+}
+#__rptl-footer .__rptl-footer-link:hover, #__rptl-footer .__rptl-footer-link--with-icon:hover {
+  text-decoration: underline;
+}
+</style>
+<footer id="__rptl-footer">
+  <div class="__rptl-footer-container">
+    <div class="__rptl-footer-row">
+      <div class="__rptl-footer-column">
+        <div class="__rptl-footer-heading">Follow us</div>
+        <ul class="__rptl-footer-list">
+          <li class="__rptl-footer-item">
+            <a href="https://www.raspberrypi.com/weekly/" class="__rptl-footer-link--with-icon">
+              <svg class="__rptl-footer-icon" aria-hidden="true" focusable="false" width="1.25em" height="1.25em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 6v12a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H3a2 2 0 0 0-2 2Zm19.707 10.293a1 1 0 1 1-1.414 1.414L15 13.414l-.515.515a3.518 3.518 0 0 1-4.97 0L9 13.414l-4.293 4.293a1 1 0 0 1-1.414-1.414L7.586 12 3.293 7.707a1 1 0 0 1 1.414-1.414l5 5 1.222 1.222a1.516 1.516 0 0 0 2.142 0l1.222-1.222 5-5a1 1 0 0 1 1.414 1.414L16.414 12Z"></path></svg>
+              Sign up to newsletter
+            </a>
+          </li>
+          <li class="__rptl-footer-item">
+            <a href="https://www.threads.net/@raspberrypi" class="__rptl-footer-link--with-icon">
+              <svg class="__rptl-footer-icon" aria-hidden="true" focusable="false" width="1.25em" height="1.25em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.229c8.249.053 14.474 2.452 18.503 7.129 2.932 3.405 4.893 8.111 5.864 14.05-7.314-1.243-15.224-1.626-23.68-1.14-23.82 1.371-39.134 15.264-38.105 34.568.522 9.792 5.4 18.216 13.735 23.719 7.047 4.652 16.124 6.927 25.557 6.412 12.458-.683 22.231-5.436 29.049-14.127 5.178-6.6 8.453-15.153 9.899-25.93 5.937 3.583 10.337 8.298 12.767 13.966 4.132 9.635 4.373 25.468-8.546 38.376-11.319 11.308-24.925 16.2-45.488 16.351-22.809-.169-40.06-7.484-51.275-21.742C35.236 139.966 29.808 120.682 29.605 96c.203-24.682 5.63-43.966 16.133-57.317C56.954 24.425 74.204 17.11 97.013 16.94c22.975.17 40.526 7.52 52.171 21.847 5.71 7.026 10.015 15.86 12.853 26.162l16.147-4.308c-3.44-12.68-8.853-23.606-16.219-32.668C147.036 9.607 125.202.195 97.07 0h-.113C68.882.194 47.292 9.642 32.788 28.08 19.882 44.485 13.224 67.315 13.001 95.932L13 96v.067c.224 28.617 6.882 51.447 19.788 67.854C47.292 182.358 68.882 191.806 96.957 192h.113c24.96-.173 42.554-6.708 57.048-21.189 18.963-18.945 18.392-42.692 12.142-57.27-4.484-10.454-13.033-18.945-24.723-24.553ZM98.44 129.507c-10.44.588-21.286-4.098-21.82-14.135-.397-7.442 5.296-15.746 22.461-16.735 1.966-.114 3.895-.169 5.79-.169 6.235 0 12.068.606 17.371 1.765-1.978 24.702-13.58 28.713-23.802 29.274Z"></path></svg>
+              Threads
+            </a>
+          </li>
+          <li class="__rptl-footer-item">
+            <a href="https://raspberrypi.social/@Raspberry_Pi" rel="me" class="__rptl-footer-link--with-icon">
+              <svg class="__rptl-footer-icon" aria-hidden="true" focusable="false" width="1.25em" height="1.25em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M11.19 12.195c2.016-.24 3.77-1.475 3.99-2.603.348-1.778.32-4.339.32-4.339 0-3.47-2.286-4.488-2.286-4.488C12.062.238 10.083.017 8.027 0h-.05C5.92.017 3.942.238 2.79.765c0 0-2.285 1.017-2.285 4.488l-.002.662c-.004.64-.007 1.35.011 2.091.083 3.394.626 6.74 3.78 7.57 1.454.383 2.703.463 3.709.408 1.823-.1 2.847-.647 2.847-.647l-.06-1.317s-1.303.41-2.767.36c-1.45-.05-2.98-.156-3.215-1.928a3.614 3.614 0 0 1-.033-.496s1.424.346 3.228.428c1.103.05 2.137-.064 3.188-.189zm1.613-2.47H11.13v-4.08c0-.859-.364-1.295-1.091-1.295-.804 0-1.207.517-1.207 1.541v2.233H7.168V5.89c0-1.024-.403-1.541-1.207-1.541-.727 0-1.091.436-1.091 1.296v4.079H3.197V5.522c0-.859.22-1.541.66-2.046.456-.505 1.052-.764 1.793-.764.856 0 1.504.328 1.933.983L8 4.39l.417-.695c.429-.655 1.077-.983 1.934-.983.74 0 1.336.259 1.791.764.442.505.661 1.187.661 2.046v4.203z"></path></svg>
+              Mastodon
+            </a>
+          </li>
+          <li class="__rptl-footer-item">
+            <a href="https://youtube.com/raspberrypi" class="__rptl-footer-link--with-icon">
+              <svg class="__rptl-footer-icon" aria-hidden="true" focusable="false" width="1.25em" height="1.25em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.751 15.27V8.73L15.498 12l-5.747 3.27Zm12.783-8.597a2.763 2.763 0 0 0-1.944-1.956C18.876 4.254 12 4.254 12 4.254s-6.876 0-8.59.463a2.763 2.763 0 0 0-1.944 1.956A28.982 28.982 0 0 0 1.006 12a28.982 28.982 0 0 0 .46 5.327 2.763 2.763 0 0 0 1.943 1.956c1.715.463 8.591.463 8.591.463s6.876 0 8.59-.463a2.763 2.763 0 0 0 1.944-1.956 28.98 28.98 0 0 0 .46-5.327 28.98 28.98 0 0 0-.46-5.327Z"></path></svg>
+              YouTube
+            </a>
+          </li>
+          <li class="__rptl-footer-item">
+            <a href="https://www.instagram.com/raspberrypi/" class="__rptl-footer-link--with-icon">
+              <svg class="__rptl-footer-icon" aria-hidden="true" focusable="false" width="1.25em" height="1.25em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.25 3.667c2.67 0 2.986.01 4.04.058a5.534 5.534 0 0 1 1.858.344 3.312 3.312 0 0 1 1.898 1.898 5.534 5.534 0 0 1 .344 1.857c.048 1.054.058 1.37.058 4.04s-.01 2.987-.058 4.042a5.534 5.534 0 0 1-.344 1.857 3.312 3.312 0 0 1-1.898 1.897 5.533 5.533 0 0 1-1.857.345c-1.054.048-1.37.058-4.041.058s-2.987-.01-4.04-.058a5.533 5.533 0 0 1-1.858-.345 3.312 3.312 0 0 1-1.898-1.897 5.534 5.534 0 0 1-.344-1.857c-.048-1.055-.058-1.371-.058-4.041s.01-2.987.058-4.041a5.534 5.534 0 0 1 .344-1.857A3.312 3.312 0 0 1 6.352 4.07a5.533 5.533 0 0 1 1.857-.344c1.055-.048 1.37-.058 4.041-.058m0-1.802c-2.716 0-3.056.011-4.123.06A7.34 7.34 0 0 0 5.7 2.39a5.113 5.113 0 0 0-2.925 2.924 7.34 7.34 0 0 0-.465 2.428c-.049 1.066-.06 1.407-.06 4.123s.011 3.056.06 4.123a7.34 7.34 0 0 0 .465 2.427A5.113 5.113 0 0 0 5.7 21.34a7.34 7.34 0 0 0 2.427.465c1.067.048 1.407.06 4.123.06s3.056-.012 4.123-.06a7.34 7.34 0 0 0 2.427-.465 5.113 5.113 0 0 0 2.925-2.925 7.34 7.34 0 0 0 .465-2.427c.048-1.067.06-1.407.06-4.123s-.012-3.057-.06-4.123a7.34 7.34 0 0 0-.465-2.428A5.113 5.113 0 0 0 18.8 2.39a7.34 7.34 0 0 0-2.427-.465c-1.067-.049-1.407-.06-4.123-.06Z"></path><path class="cls-1" d="M12.25 6.73a5.135 5.135 0 1 0 5.135 5.135A5.135 5.135 0 0 0 12.25 6.73Zm0 8.468a3.333 3.333 0 1 1 3.333-3.333 3.333 3.333 0 0 1-3.333 3.333Z"></path><circle cx="17.588" cy="6.527" r="1.2"></circle></svg>
+              Instagram
+            </a>
+          </li>
+          <li class="__rptl-footer-item">
+            <a href="https://www.linkedin.com/company/raspberrypi/" class="__rptl-footer-link--with-icon">
+              <svg class="__rptl-footer-icon" aria-hidden="true" focusable="false" width="1.25em" height="1.25em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.435 2.1H3.561a1.445 1.445 0 0 0-1.462 1.426v16.946a1.446 1.446 0 0 0 1.462 1.429h16.874a1.449 1.449 0 0 0 1.466-1.429V3.526A1.448 1.448 0 0 0 20.435 2.1ZM7.972 18.972H5.035v-9.45h2.937ZM6.504 8.23a1.703 1.703 0 1 1 1.702-1.703A1.703 1.703 0 0 1 6.504 8.23Zm12.468 10.742h-2.934v-4.596c0-1.096-.02-2.505-1.527-2.505-1.528 0-1.762 1.193-1.762 2.426v4.675H9.814v-9.45h2.817v1.291h.04a3.086 3.086 0 0 1 2.778-1.526c2.974 0 3.523 1.957 3.523 4.501Z"></path></svg>
+              LinkedIn
+            </a>
+          </li>
+          <li class="__rptl-footer-item">
+            <a href="https://www.facebook.com/raspberrypi" class="__rptl-footer-link--with-icon">
+              <svg class="__rptl-footer-icon" aria-hidden="true" focusable="false" width="1.25em" height="1.25em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 12.06a10 10 0 1 0-11.563 9.88V14.95H7.899v-2.89h2.54V9.858a3.529 3.529 0 0 1 3.777-3.891 15.378 15.378 0 0 1 2.238.195v2.461h-1.26a1.445 1.445 0 0 0-1.63 1.562v1.876h2.773l-.443 2.89h-2.33v6.988A10.002 10.002 0 0 0 22 12.061Z"></path></svg>
+              Facebook
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="__rptl-footer-column">
+        <div class="__rptl-footer-heading">About Raspberry Pi</div>
+        <ul class="__rptl-footer-list">
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/news/" class="__rptl-footer-link">News</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/contact/" class="__rptl-footer-link">Contact us</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/trademark-rules/" class="__rptl-footer-link">Trademark</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/about/" class="__rptl-footer-link">About us</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/resellers/" class="__rptl-footer-link">Our Approved Resellers</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/jobs/" class="__rptl-footer-link">Jobs</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/accessibility/" class="__rptl-footer-link">Accessibility</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/terms-and-conditions/" class="__rptl-footer-link">Site use terms and conditions</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/acceptable-use/" class="__rptl-footer-link">Acceptable use</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/cookies/" class="__rptl-footer-link">Cookies</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/licensing/" class="__rptl-footer-link">Licensing</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/terms-conditions-sale/" class="__rptl-footer-link">Terms and conditions of sale</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/privacy/" class="__rptl-footer-link">Privacy</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/contact/security/" class="__rptl-footer-link">Security</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/verify/" class="__rptl-footer-link">Verify our bank details</a></li>
+        </ul>
+      </div>
+      <div class="__rptl-footer-column">
+        <div class="__rptl-footer-heading">For home</div>
+        <ul class="__rptl-footer-list">
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/for-home/" class="__rptl-footer-link">Raspberry Pi for home</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/tutorials/" class="__rptl-footer-link">Tutorials</a></li>
+        </ul>
+        <div class="__rptl-footer-heading">For industry</div>
+        <ul class="__rptl-footer-list">
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/for-industry/" class="__rptl-footer-link">Raspberry Pi for industry</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/for-industry/thin-clients/" class="__rptl-footer-link">Thin clients</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/for-industry/space/" class="__rptl-footer-link">Raspberry Pi in space</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/for-industry/powered-by/" class="__rptl-footer-link">Powered by Raspberry Pi</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/for-industry/design-partners/" class="__rptl-footer-link">Design partners</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/success-stories/" class="__rptl-footer-link">Success stories</a></li>
+        </ul>
+        <div class="__rptl-footer-heading">Hardware</div>
+        <ul class="__rptl-footer-list">
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/products/#raspberry-pi-computers-and-microcontrollers" class="__rptl-footer-link">Computers and microcontrollers</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/products/#cameras-and-displays" class="__rptl-footer-link">Cameras and displays</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/products/#add-on-boards" class="__rptl-footer-link">Add-on boards</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/products/#power-supplies-and-cables" class="__rptl-footer-link">Power supplies and cables</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/products/#cases" class="__rptl-footer-link">Cases</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/products/#peripherals" class="__rptl-footer-link">Peripherals</a></li>
+        </ul>
+        <div class="__rptl-footer-heading">Software</div>
+        <ul class="__rptl-footer-list">
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/software/operating-systems/#raspberry-pi-os-32-bit" class="__rptl-footer-link">Raspberry Pi OS</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/software/" class="__rptl-footer-link">Raspberry Pi Imager</a></li>
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/software/raspberry-pi-desktop/" class="__rptl-footer-link">Raspberry Pi Desktop</a></li>
+        </ul>
+      </div>
+      <div class="__rptl-footer-column">
+        <div class="__rptl-footer-heading">Documentation</div>
+        <ul class="__rptl-footer-list">
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/documentation/" class="__rptl-footer-link">All categories</a></li>
+          <li class="__rptl-footer-item"><a href="https://pip.raspberrypi.com/" class="__rptl-footer-link">Product information portal</a></li>
+          <li class="__rptl-footer-item"><a href="https://datasheets.raspberrypi.com/" class="__rptl-footer-link">Datasheets</a></li>
+        </ul>
+        <div class="__rptl-footer-heading">Community</div>
+        <ul class="__rptl-footer-list">
+          <li class="__rptl-footer-item"><a href="https://forums.raspberrypi.com/" class="__rptl-footer-link">Forums</a></li>
+          <li class="__rptl-footer-item"><a href="https://events.raspberrypi.com/" class="__rptl-footer-link">Events</a></li>
+        </ul>
+        <div class="__rptl-footer-heading">Raspberry Pi Store</div>
+        <ul class="__rptl-footer-list">
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/raspberry-pi-store/" class="__rptl-footer-link">Store information</a></li>
+        </ul>
+        <div class="__rptl-footer-heading">Raspberry Pi Press</div>
+        <ul class="__rptl-footer-list">
+          <li class="__rptl-footer-item"><a href="https://www.raspberrypi.com/books-magazines/" class="__rptl-footer-link">About Raspberry Pi Press</a></li>
+          <li class="__rptl-footer-item"><a href="https://magpi.raspberrypi.com/" class="__rptl-footer-link">The MagPi</a></li>
+          <li class="__rptl-footer-item"><a href="https://hackspace.raspberrypi.com/" class="__rptl-footer-link">HackSpace</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+
+		<div id="darkenwrapper" data-ajax-error-title="AJAX error" data-ajax-error-text="Something went wrong when processing your request." data-ajax-error-text-abort="User aborted request." data-ajax-error-text-timeout="Your request timed out; please try again." data-ajax-error-text-parsererror="Something went wrong with the request and the server returned an invalid reply.">
+			<div id="darken">&nbsp;</div>
+		</div>
+
+		<div id="phpbb_alert" class="phpbb_alert" data-l-err="Error" data-l-timeout-processing-req="Request timed out.">
+			<a href="#" class="alert_close"></a>
+			<h3 class="alert_title">&nbsp;</h3><p class="alert_text"></p>
+		</div>
+		<div id="phpbb_confirm" class="phpbb_alert">
+			<a href="#" class="alert_close"></a>
+			<div class="alert_text"></div>
+		</div>
+
+		<div style="display: none;">
+			<a id="bottom" class="anchor" accesskey="z"></a>
+					</div>
+</div>
+
+<script type="text/javascript" src="overclocking_pico_files/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="overclocking_pico_files/core.js"></script>
+<script type="text/javascript" src="overclocking_pico_files/js.cookie.js"></script>
+<script type="text/javascript" src="overclocking_pico_files/forum_fn.js"></script>
+<script type="text/javascript" src="overclocking_pico_files/ajax.js"></script>
+<script type="text/javascript" src="overclocking_pico_files/chosen.jquery.min.js"></script>
+
+
+<script>
+	$(function() {
+		$("#st, #sd, #sk, #ch").chosen({
+			disable_search: true,
+			width: "auto"
+		});
+	});
+</script>
+
+<script>
+	// $(function() {
+	//
+	// 	var sidebarRecentPostDiv = document.getElementById("sidebar-recent-posts");
+	//
+	// 	$.get('/app.php/feed?sid=a0d03dc14729e23d4d5b600fe3af90f5', function (data) {
+	// 		$(data).find("entry").each(function (i) {
+	// 			var el = $(this);
+	// 			var entryWrap = document.createElement("div");
+	//
+	// 			var entryTitle = document.createElement("a");
+	// 			var entryAuthor = document.createElement("span");
+	// 			var entryContent = document.createElement("span");
+	//
+	// 			entryTitle.className = ("sidebar-recent-title");
+	// 			entryAuthor.className = ("sidebar-recent-author");
+	// 			entryContent.className = ("sidebar-recent-content");
+	//
+	// 			function cutText(name) {
+	// 				var elementText = el.find(name).text();
+	//
+	// 				if (name == "title") {
+	// 					elementText = elementText.substring(elementText.indexOf("•") + 2);
+	// 				} else if (name == "content") {
+	// 					elementText = elementText.replace(/(<([^>]+)>)/ig,"");
+	// 				}
+	//
+	// 				if (elementText.length > 50) {
+	// 					return elementText.substr(0, 50);
+	// 				} else {
+	// 					return elementText;
+	// 				};
+	// 			};
+	//
+	// 			entryTitle.textContent = cutText("title");
+	// 			entryAuthor.textContent = "by " + cutText("author");
+	// 			entryContent.textContent = cutText("content");
+	// 			entryURL = el.find("id").text();
+	//
+	// 			$(entryTitle).attr("href", entryURL);
+	//
+	// 			entryWrap.appendChild(entryTitle);
+	// 			entryWrap.appendChild(entryAuthor);
+	// 			entryWrap.appendChild(entryContent);
+	//
+	// 			sidebarRecentPostDiv.appendChild(entryWrap);
+	//
+	// 			if (++i >= 5) {
+	// 				return false;
+	// 			}
+	// 		});
+	// 	});
+	//
+	// });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46270871-9', 'auto');
+  ga('set', 'anonymizeIp', true);
+  ga('send', 'pageview');
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async="" src="overclocking_pico_files/google-analytics_analytics_002.js"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-9633Z0KS6W');
+</script>
+
+<script type="text/javascript" id="cookiebanner" src="overclocking_pico_files/cookiebanner.min.js" data-bg="#999798" data-fg="#ffffff" data-link="#ffffff" data-moreinfo="https://www.raspberrypi.com/cookies" data-accept-on-scroll="true" data-message="We use cookies to ensure that we give you the best experience on our website. By continuing to visit this site you agree to our use of cookies." data-moreinfo-decoration="underline" integrity="sha384-ZtuZyMr5oH1P/r7ZKXXHFBkIZoNaDZ+aHMHxGUZWP0Zfwk6TgyUlgcR5QIx1kj1U" crossorigin="anonymous"></script>
+<script>(function(){var js = "window['__CF$cv$params']={r:'862ff7de7c050943',t:'MTcxMDIwNjQ5NS4wMjYwMDA='};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js',document.getElementsByTagName('head')[0].appendChild(_cpo);";var _0xh = document.createElement('iframe');_0xh.height = 1;_0xh.width = 1;_0xh.style.position = 'absolute';_0xh.style.top = 0;_0xh.style.left = 0;_0xh.style.border = 'none';_0xh.style.visibility = 'hidden';document.body.appendChild(_0xh);function handler() {var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;if (_0xi) {var _0xj = _0xi.createElement('script');_0xj.innerHTML = js;_0xi.getElementsByTagName('head')[0].appendChild(_0xj);}}if (document.readyState !== 'loading') {handler();} else if (window.addEventListener) {document.addEventListener('DOMContentLoaded', handler);} else {var prev = document.onreadystatechange || function () {};document.onreadystatechange = function (e) {prev(e);if (document.readyState !== 'loading') {document.onreadystatechange = prev;handler();}};}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: medium; visibility: hidden;"></iframe>
+
+<script src="overclocking_pico_files/app.js" type="text/javascript"></script></body></html>
