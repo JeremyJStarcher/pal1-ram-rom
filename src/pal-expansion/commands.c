@@ -35,8 +35,12 @@ bool load_ptp_done = false;
 
 
 void pause() {
+    // If the USB is still busy when we enter a critical section,
+    // bad things tend to happen, so give time for the USB bursts to
+    // to through.
+
     volatile long long i;
-    long long count = 2* 10000000; // Adjust count as needed for timing
+    long long count = 1 * 10000000;
 
     for (i = 0; i < count; i++) {
         // Empty loop body
@@ -47,7 +51,6 @@ uintptr_t get_offset(size_t index) {
     size_t size = sizeof(SysStateStruct); // Assuming you want the size of the structure
     return  (_flash_size/2) + (index * size);
 }
-
 
 bool is_safe_to_access(size_t index) {
     if (index > MAX_VALID_INDEX) {
