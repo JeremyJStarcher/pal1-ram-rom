@@ -5,7 +5,6 @@
 
 #include "tusb.h"
 
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -19,16 +18,93 @@
 
 #include "rambuf.h"
 #include "commands.h"
+#include "clockspeed.h"
+
+#define MAX_VALID_INDEX ((_flash_size / 2) / sizeof(SysStateStruct)) - 1
+
 
 void main_memory_loop(void);
 
 
 unsigned long _xip_base;
 unsigned long _flash_size;
+uint32_t ints;
 
 bool load_ptp_error = false;
 bool load_ptp_done = false;
 
+
+void pause() {
+    volatile long long i;
+    long long count = 2* 10000000; // Adjust count as needed for timing
+
+    for (i = 0; i < count; i++) {
+        // Empty loop body
+    }
+}
+
+uintptr_t get_offset(size_t index) {
+    size_t size = sizeof(SysStateStruct); // Assuming you want the size of the structure
+    return  (_flash_size/2) + (index * size);
+}
+
+
+bool is_safe_to_access(size_t index) {
+    if (index > MAX_VALID_INDEX) {
+        return false; // Index is out of valid range
+    }
+
+    uintptr_t offset = get_offset(index);
+    uintptr_t end_address = XIP_BASE + offset + sizeof(SysStateStruct);
+    // Check if end address exceeds flash size or other boundary conditions
+    if (end_address > XIP_BASE + _flash_size) {
+        return false;
+    }
+
+    //Add any additional checks for alignment here if necessary
+    //For example, if your system requires 4-byte alignment:
+    if ((XIP_BASE + offset) % (4 * 1024) != 0) {
+        return false; // Address is not properly aligned
+    }
+
+    return true; // Safe to access
+}
+
+SysStateStruct* get_slot_ptr(size_t index) {
+    if (!is_safe_to_access(index)) {
+        printf("Error: Unsafe to access the requested memory slot.\n");
+        return NULL; // Use NULL for pointer error signaling
+    }
+
+    size_t size = sizeof(SysStateStruct);
+    uintptr_t offset = get_offset(index);
+    return (SysStateStruct *)(XIP_BASE + offset); // Correctly cast and return the pointer
+}
+
+
+void load_slot_command(size_t index, SysStateStruct *state) {
+
+    memcpy(
+        state,
+        get_slot_ptr(index),
+        sizeof(SysStateStruct)
+    );
+}
+void crit_start() {
+    pause(); 
+    multicore_reset_core1();
+    ints = save_and_disable_interrupts();
+    set_sys_clock_khz(CLOCK_SPEED_LOW, false);
+
+}
+
+
+void crit_end() {
+    restore_interrupts (ints);
+    multicore_launch_core1(main_memory_loop);
+    set_sys_clock_khz(CLOCK_SPEED_HIGH, false);
+    pause(); 
+}
 
 uint16_t parse_word_from_string(char *line) {
     char temp_s[5];
@@ -50,11 +126,6 @@ uint8_t parse_byte_from_string(char *line) {
 
     return (uint8_t) strtol(temp_s, NULL, 16);
 }
-
-
-
-/*** */ 
-
 
 
 void start_ptp_load(void) {
@@ -174,9 +245,11 @@ void help_command() {
     printf("L: Load a paper tape file \n");
     printf("MSB: FILL ROM WITH MSB (USED TO VERIFY ADDRESS CODING)\n");
     printf("LSB: FILL ROM WITH LSB (USED TO VERIFY ADDRESS CODING)\n");
-    printf("RESET: RESET RAM/ROM TO POWERUP STATE)\n");
-    printf("SAVE #: SAVE TO A SLOT IN FLASH MEMORY)\n");
-    printf("LOAD #: LOAD FROM A SLOT IN FLASH MEMORY)\n");
+    printf("RESET: RESET RAM/ROM TO POWERUP STATE\n");
+    printf("SAVE #: SAVE TO A SLOT IN FLASH MEMORY\n");
+    printf("LOAD #: LOAD FROM A SLOT IN FLASH MEMORY\n");
+    printf("LIST: LIST CONFIGURATIONS TO LOAD\n");
+    printf("PAUSE: PAUSE DEMO\n");
 }
 
 
@@ -215,26 +288,15 @@ void loadptp_command() {
     }
 }
 
-void load_slot_command(int index) {
-    size_t size = sizeof sys_state;
-    unsigned long offset = /*_xip_base +*/ (_flash_size/2) + (index * size);
-    const uint8_t *flash_target_contents = (const uint8_t *) (XIP_BASE + offset);
-
-    memcpy(&sys_state, flash_target_contents, size);
-}
-
-void save_slot_command(int index) {
-    if (index > 10) {
-        printf("ONLY SLOTS 0-9 MAY BE USED\n");
-        return;
+void save_slot_command(size_t index) {
+    if (!is_safe_to_access(index)) {
+        printf("Error: Unsafe to access the requested memory slot.\n");
+        printf("ONLY SLOTS %02x to %02x MAY BE USED\n",0, MAX_VALID_INDEX);
+        return; // Exit or handle error appropriately
     }
 
-
-//       flash size: 00200000                                           
-// SAVE SLOT: 1 OFFSET 1deffa 
-
-    size_t size = sizeof sys_state;
-    unsigned long offset = /*_xip_base +*/ (_flash_size/2) + (index * size);
+    size_t size = sizeof(SysStateStruct); // Assuming you want the size of the structure
+    uintptr_t offset = get_offset(index);
 
     printf("flash size: %08x\n", _flash_size);
     printf("SAVE SLOT: %d OFFSET %04x  size: %08x\n", index, offset, size);
@@ -244,38 +306,54 @@ void save_slot_command(int index) {
         printf("OOPS\n");
     }
 
-
-    sleep_ms(5 * 1000); 
-
+    pause();  
     size_t idx = offset;
-    uint32_t ints;
 
-    int cnt = 0;
-
-
-
-//   for(idx = offset; idx < offset + size; idx += FLASH_SECTOR_SIZE) {
-        multicore_reset_core1 ();
-        ints = save_and_disable_interrupts();
-        flash_range_erase (idx, size );
-        restore_interrupts (ints);
-
-        cnt += 1;
-//    }
-
-    sleep_ms(5 * 1000); 
-
-
-    printf("Flashing.....");
-    ints = save_and_disable_interrupts();
+    crit_start();
+    flash_range_erase (idx, size );
     flash_range_program (offset, (char *) &sys_state, size);
-    restore_interrupts (ints);
-
-    printf("DONE \n");
-    multicore_launch_core1(main_memory_loop);
+    crit_end();
 }
- 
 
+
+void get_slot_state(size_t i, SlotStateStruct *slot_state) {
+    char flag[] = MAGIC_PRIMED_KEY;
+    SysStateStruct *state = get_slot_ptr(i);
+
+    unsigned int c0 = state->primed_flag[0];
+    unsigned int c1 = state->primed_flag[1];
+    unsigned int c2 = state->primed_flag[2];
+    unsigned int c3 = state->primed_flag[3];
+
+    bool pass = true;
+
+    // printf("\n:::%c %c %c %c\n", c0, c1, c2, c3);
+    // printf(":::%c %c %c %c\n", flag[0], flag[1], flag[2], flag[3]);
+
+    if (c0 != flag[0]) { pass = false;}
+    if (c1 != flag[1]) { pass = false;}
+    if (c2 != flag[2]) { pass = false;}
+    if (c3 != flag[3]) { pass = false;}
+
+    slot_state->primed = pass;
+
+    if (pass) {
+        scpy(slot_state->description,state->description, SYS_DESCRIPTION_SIZE);
+    } else {
+        scpy(slot_state->description, "<unset>",SYS_DESCRIPTION_SIZE);
+    }
+}
+
+void list_slots_command() {
+    for(size_t i = 0; i < MAX_VALID_INDEX; i++) {
+        printf("SLOT: %02x ", i);
+
+        SlotStateStruct slot_state;
+        get_slot_state(i, &slot_state);
+
+        puts(slot_state.description);
+    }
+}
 
 void command_loop(unsigned long xip_base, unsigned long flash_size) {
     char input[20]; // Define the buffer size
@@ -298,6 +376,10 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
         // Compare input with known commands and call the corresponding function
         if (strcmp(command, "HELP") == 0) {
             help_command();
+        } else if (strcmp(command, "PAUSE") == 0) {
+            puts("LINE 1 - Pausing");
+            pause();
+            puts("LINE 2 - Pausing");
         } else if (strcmp(command, "L") == 0) {
             loadptp_command();
         } else if (strcmp(command, "LSB") == 0) {
@@ -326,13 +408,14 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
             if (param_str != NULL) {
                 // index = atoi(param_str); // Convert parameter string to integer
                 index = (uint8_t) strtol(param_str, NULL, 16);
-                load_slot_command(index);
+                load_slot_command(index, &sys_state);
 
             } else {
                printf("MUST SPECIFY AN INDEX NUMBER\n");
             }
 
-
+        } else if (strcmp(command, "LIST") == 0) {
+            list_slots_command();
         } else if (strcmp(command, "") == 0) {
             // ignore it.
         } else {

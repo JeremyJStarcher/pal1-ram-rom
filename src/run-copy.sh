@@ -1,26 +1,51 @@
 #!/bin/sh
 
+# Abort if any command fails
+set -e
+
 rm -rf build
 mkdir build
 cd build
 cmake ../pal-expansion
-cd pal-expansion 
-make  -j5
+#cd pal-expansion 
+make -j5
 
-# Set the baud rate to 1200 and other settings for the serial port /dev/ttyS0
-# This is a "magic connection" that causes the device to go into programming mode
-# https://github.com/raspberrypi/pico-sdk/pull/197
+UF2_FILE=$(find . -name "*.uf2")
 
-# can be disabled by adding 
-# add_compile_definitions( PICO_STDIO_USB_ENABLE_RESET_VIA_BAUD_RATE=0 ) to CMakeLists.txt.
+# Check if the .uf2 file exists
+if [ -z "$UF2_FILE" ]; then
+    echo ".uf2 file does not exist. Aborting."
+    exit 1
+fi
 
-stty -F /dev/ttyACM0 1200 cs8 -cstopb -parenb
+# Check if the COM port exists
+if [ -c /dev/ttyACM0 ]; then
+    # Set the baud rate to 1200 and other settings for the serial port /dev/ttyACM0
+    # This is a "magic connection" that causes the device to go into programming mode
+    stty -F /dev/ttyACM0 1200 cs8 -cstopb -parenb || true
+    #echo "COM port /dev/ttyACM0 configured."
+    echo "Using COM port to reset PICO"
+else
+    echo "No com port found. Skipping"
+    # echo "COM port /dev/ttyACM0 does not exist. Aborting."
+    # exit 1
+fi
 
-# This is the Window command to do the same thing:
-# Mode Com14: Baud=1200 Parity=N Data=8 Stop=1
+# Check for the mount point to be available
+MOUNT_POINT="/media/jjs/RPI-RP2/"
+i=0
+while [ ! -d "$MOUNT_POINT" ]; do
+    sleep 1
+    i=$((i+1))
+    if [ $i -ge 600 ]; then
+        echo "Timeout waiting for $MOUNT_POINT to be mounted. Aborting."
+        exit 1
+    fi
+    echo "Waiting for $MOUNT_POINT to be mounted..."
+done
 
-sleep 5
+# Copy the .uf2 file to the mount point
+echo "Copying $UF2_FILE to $MOUNT_POINT"
+cp "$UF2_FILE" "$MOUNT_POINT"
 
-cp *.uf2 /media/jjs/RPI-RP2/
-
-#sudo openocd -f interface/cmsis-dap.cfg -f target/rp2040.cfg -c "adapter speed 5000" -c "program pico_rom.elf verify reset exit"
+echo "Operation completed successfully."

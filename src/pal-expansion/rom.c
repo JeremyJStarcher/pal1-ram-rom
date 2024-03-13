@@ -19,6 +19,7 @@
 #include "pin_definitions.h"
 #include "commands.h"
 #include "rambuf.h"
+#include "clockspeed.h"
 
 #define FLASH_SIZE (2 * 1024 * 1024)
 #define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
@@ -101,7 +102,7 @@ int main() {
     //  set_sys_clock_pll(1600000000, 4, 1);
 
 
-    set_sys_clock_khz(250000, false);
+    set_sys_clock_khz(CLOCK_SPEED_HIGH, false);
 
     stdio_init_all();
 

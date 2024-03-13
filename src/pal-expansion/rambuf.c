@@ -4,9 +4,10 @@
 
 #include "pin_definitions.h"
 #include "rambuf.h"
-#include "rom_ext.c"
 
-#define MAGIC_PRIMED_KEY "Q!Q!"
+
+// #include "rom_ext.c"
+
 
 SysStateStruct sys_state;
 
@@ -54,6 +55,12 @@ void setup_memory_contents() {
     scpy(sys_state.description, "EMPTY RAM", SYS_DESCRIPTION_SIZE);
     scpy(sys_state.primed_flag, MAGIC_PRIMED_KEY, SYS_PRIMED_SIZE);
     char primed_flag[SYS_PRIMED_SIZE];
+
+
+    puts("-------------------------------");
+    puts(sys_state.description);
+    puts(sys_state.primed_flag);
+    puts("\n");
 
     for(idx = 0x0000; idx < 0xFFFF; idx+=1) {
         set_ram_byte(idx, 0);
