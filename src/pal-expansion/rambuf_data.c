@@ -1,7 +1,6 @@
 
-#include <stdlib.h>
 #include <stdio.h>
-
+#include <stdlib.h>
 
 /*
  * Because this location of this RAM spans the bit 16 boundary
@@ -19,5 +18,4 @@
  * Besides, what else would we use the memory for?
  */
 
-
-uint16_t rom_contents[32768*2] = {};
+uint16_t rom_contents[32768 * 2] = {};
