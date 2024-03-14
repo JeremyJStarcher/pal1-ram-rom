@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <ctype.h>
 
 #define RO_MEMORY_BIT 15
 #define MAGIC_PRIMED_KEY "Q!Q!"
