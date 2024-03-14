@@ -24,6 +24,9 @@ void set_ram_byte(uint32_t addr, uint8_t value) {
   if (data & 1 << 7) {
     data |= 1 << (D7 - D0);
   }
+
+  data |= 1 << IN_USE_BIT;
+
   sys_state.memory[addr] = data;
 }
 
@@ -32,6 +35,7 @@ void set_rom_byte(uint32_t addr, uint8_t value) {
 
   uint16_t data = sys_state.memory[addr];
   data |= 1 << RO_MEMORY_BIT;
+
   sys_state.memory[addr] = data;
 }
 
@@ -56,7 +60,7 @@ void setup_memory_contents() {
   puts(sys_state.primed_flag);
   puts("\n");
 
-  for (idx = 0x0000; idx < 0xFFFF; idx += 1) {
+  for (idx = 0x2000; idx < 0xFFFF; idx += 1) {
     set_ram_byte(idx, 0);
   }
 
@@ -64,6 +68,11 @@ void setup_memory_contents() {
   //     data = rom_ext[idx];
   //     set_rom_byte(0xA000+idx, data);
   // }
+
+
+  set_rom_byte(0x1FDD+0, 'L');
+  set_rom_byte(0x1FDD+1, 'A');
+  set_rom_byte(0x1FDD+2, 'P');
 
   set_rom_byte(0xFFFA, 0x1C);
   set_rom_byte(0xFFFB, 0x1C);

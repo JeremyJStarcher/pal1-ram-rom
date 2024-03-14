@@ -4,6 +4,8 @@
 #include <ctype.h>
 
 #define RO_MEMORY_BIT 15
+#define IN_USE_BIT 14
+
 #define MAGIC_PRIMED_KEY "Q!Q!"
 
 #define SYS_MEMORY_SIZE 65536  // Number of words

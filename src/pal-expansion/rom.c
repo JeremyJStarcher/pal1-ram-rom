@@ -136,18 +136,20 @@ void main_memory_loop() {
     // Set the DECEN line based on the current addressing
     // If it is outside the range, then send DEN low
     // letting the KIM-1 decode that address internally.
-    gpio_put(DEN, addr >= ADDR_BOTTOM && addr <= ADDR_TOP);
+    //char decen = addr >= ADDR_BOTTOM && addr <= ADDR_TOP;
+    data = sys_state.memory[addr];
+    int decen = (data & 1 << IN_USE_BIT)  ? 1 : 0;
+    gpio_put(DEN, decen);
 
-    if (addr >= ADDR_BOTTOM && addr <= ADDR_TOP && phi2 != 0) {
+    if (decen && phi2) {
       we = (all & (uint32_t)(1 << WE));
 
       if (we == 0) {
         if ((sys_state.memory[addr] & (1 << RO_MEMORY_BIT)) == 0) {
           data = (uint32_t)((all & data_mask) >> D0);
-          sys_state.memory[addr] = data;
+          sys_state.memory[addr] = data | IN_USE_BIT;
         }
       } else {
-        data = sys_state.memory[addr];
         gpio_set_dir_masked(data_mask, data_mask);
         gpio_put_masked(data_mask, data << D0);
       }
