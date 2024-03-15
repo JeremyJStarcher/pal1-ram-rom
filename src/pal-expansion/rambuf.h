@@ -1,7 +1,7 @@
 #pragma once
 
-#include <stdint.h>
 #include <ctype.h>
+#include <stdint.h>
 
 #define RO_MEMORY_BIT 15
 #define IN_USE_BIT 14
@@ -31,7 +31,7 @@ typedef struct {
 
 extern SysStateStruct sys_state;
 
-void set_ram_byte(uint32_t addr, uint8_t value);
-void set_rom_byte(uint32_t addr, uint8_t value);
+void pokeram(uint16_t addr, uint8_t value);
+void pokerom(uint16_t addr, uint8_t value);
 void setup_memory_contents(void);
 void scpy(char *dest, char *src, size_t len);

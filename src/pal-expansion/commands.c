@@ -169,7 +169,7 @@ bool load_ptp_line(char *line) {
     idx += 2;
     count--;
 
-    set_ram_byte(addr, data);
+    pokeram(addr, data);
     addr += 1;
   }
 
@@ -241,7 +241,7 @@ void fill_rom_msb() {
   uint8_t data;
   for (addr = 0x0000; addr < 0xFFFF; addr += 1) {
     data = addr / 256;
-    set_rom_byte(addr, data);
+    pokerom(addr, data);
   }
 }
 
@@ -250,7 +250,7 @@ void fill_rom_lsb() {
   uint8_t data;
   for (addr = 0x0000; addr < 0xFFFF; addr += 1) {
     data = addr % 256;
-    set_rom_byte(addr, data);
+    pokerom(addr, data);
   }
 }
 

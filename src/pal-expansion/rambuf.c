@@ -14,7 +14,7 @@ SysStateStruct sys_state;
 
 void scpy(char *dest, char *src, size_t len);
 
-void set_ram_byte(uint32_t addr, uint8_t value) {
+void pokeram(uint16_t addr, uint8_t value) {
   uint16_t data = value;
 
   // There are gaps in the pins, so adjust the data.
@@ -30,13 +30,35 @@ void set_ram_byte(uint32_t addr, uint8_t value) {
   sys_state.memory[addr] = data;
 }
 
-void set_rom_byte(uint32_t addr, uint8_t value) {
-  set_ram_byte(addr, value);
+void pokerom(uint16_t addr, uint8_t value) {
+  pokeram(addr, value);
 
   uint16_t data = sys_state.memory[addr];
   data |= 1 << RO_MEMORY_BIT;
 
   sys_state.memory[addr] = data;
+}
+
+void dpokerom(uint16_t addr, uint16_t value) {
+  uint16_t addr_low = addr;
+  uint16_t addr_high = addr + 1;
+
+  uint8_t data_high = value >> 8;
+  uint8_t data_low = value & 0xFF;
+
+  pokerom(addr_low, data_low);
+  pokerom(addr_high, data_high);
+}
+
+void dpokeram(uint16_t addr, uint16_t value) {
+  uint16_t addr_low = addr;
+  uint16_t addr_high = addr + 1;
+
+  uint8_t data_high = value >> 8;
+  uint8_t data_low = value & 0xFF;
+
+  pokeram(addr_low, data_low);
+  pokeram(addr_high, data_high);
 }
 
 void scpy(char *dest, char *src, size_t len) {
@@ -61,23 +83,19 @@ void setup_memory_contents() {
   puts("\n");
 
   for (idx = 0x2000; idx < 0xFFFF; idx += 1) {
-    set_ram_byte(idx, 0);
+    pokeram(idx, 0);
   }
 
   // for(idx = 0; idx <  rom_extSize; idx += 1) {
   //     data = rom_ext[idx];
-  //     set_rom_byte(0xA000+idx, data);
+  //     pokerom(0xA000+idx, data);
   // }
 
+  pokerom(0x1FDD + 0, 'L');
+  pokerom(0x1FDD + 1, 'A');
+  pokerom(0x1FDD + 2, 'P');
 
-  set_rom_byte(0x1FDD+0, 'L');
-  set_rom_byte(0x1FDD+1, 'A');
-  set_rom_byte(0x1FDD+2, 'P');
-
-  set_rom_byte(0xFFFA, 0x1C);
-  set_rom_byte(0xFFFB, 0x1C);
-  set_rom_byte(0xFFFC, 0x22);
-  set_rom_byte(0xFFFD, 0x1C);
-  set_rom_byte(0xFFFE, 0x1F);
-  set_rom_byte(0xFFFF, 0x1C);
+  dpokerom(0xFFFA, 0x1C1C);
+  dpokerom(0xFFFC, 0x1C22);
+  dpokerom(0xFFFE, 0x1C1F);
 }
