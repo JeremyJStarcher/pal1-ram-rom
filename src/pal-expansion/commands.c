@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "clockspeed.h"
 #include "hardware/clocks.h"
@@ -193,6 +194,9 @@ void read_string(char *buffer, int max_length) {
 
   while (1) {
     ch = getchar();  // Read a character
+
+    ch = toupper(ch);
+
 
     // Check for line end: '\n' or '\r'
     if (ch == '\n' || ch == '\r') {
