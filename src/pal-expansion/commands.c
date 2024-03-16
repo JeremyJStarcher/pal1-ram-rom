@@ -237,7 +237,8 @@ void help_command() {
   printf("SAVE #: SAVE TO A SLOT IN FLASH MEMORY\n");
   printf("LOAD #: LOAD FROM A SLOT IN FLASH MEMORY\n");
   printf("LIST: LIST CONFIGURATIONS TO LOAD\n");
-  printf("PAUSE: PAUSE DEMO\n");
+  printf("BLOAD [RAM|ROM] ####: LOAD A BINARY FILE INTO THE GIVEN ADDRESS\n");
+  //printf("PAUSE: PAUSE DEMO\n");
 }
 
 void fill_rom_msb() {
@@ -350,6 +351,34 @@ void list_slots_command() {
   }
 }
 
+void bload(char *token) {
+  printf("BLOAD...\n");
+  uint32_t addr;
+  bool inrom = false;
+
+  token = strtok(NULL, " ");
+  if (strlen(token) == 0) {
+    printf("MUST SPECIFY RAM/ROM");
+    return;
+  }
+
+  if (token[1] == 'O') {
+    inrom = true;
+  }
+
+  token = strtok(NULL, " ");
+
+  if (strlen(token) == 0) {
+    printf("MUST SPECIFY ADDRESS");
+    return;
+  }
+
+  addr = (uint8_t)strtol(token, NULL, 16);
+
+  printf("RAM/ROM %s\n", inrom ? "ROM" : "RAM" );
+  printf("ADDR %04x\n", addr);
+}
+
 void command_loop(unsigned long xip_base, unsigned long flash_size) {
   char input[20];  // Define the buffer size
 
@@ -413,6 +442,8 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
 
     } else if (strcmp(command, "LIST") == 0) {
       list_slots_command();
+    } else if (strcmp(command, "BLOAD") == 0) {
+      bload(command);
     } else if (strcmp(command, "") == 0) {
       // ignore it.
     } else {
