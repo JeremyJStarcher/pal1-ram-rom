@@ -6,9 +6,12 @@ set -e
 rm -rf build
 mkdir build
 cd build
-cmake ../pal-expansion
-#cd pal-expansion 
-make -j5
+cmake ..
+cd pal-expansion
+make
+#cmake ../pal-expansion
+##cd pal-expansion 
+#make -j5
 
 UF2_FILE=$(find . -name "*.uf2")
 
