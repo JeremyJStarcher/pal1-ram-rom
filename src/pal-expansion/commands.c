@@ -1,5 +1,6 @@
 #include "commands.h"
 
+#include <ctype.h>
 #include <hardware/flash.h>
 #include <hardware/sync.h>
 #include <malloc.h>
@@ -7,7 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 #include "clockspeed.h"
 #include "hardware/clocks.h"
@@ -197,7 +197,6 @@ void read_string(char *buffer, int max_length) {
 
     ch = toupper(ch);
 
-
     // Check for line end: '\n' or '\r'
     if (ch == '\n' || ch == '\r') {
       break;
@@ -238,7 +237,7 @@ void help_command() {
   printf("LOAD #: LOAD FROM A SLOT IN FLASH MEMORY\n");
   printf("LIST: LIST CONFIGURATIONS TO LOAD\n");
   printf("BLOAD [RAM|ROM] ####: LOAD A BINARY FILE INTO THE GIVEN ADDRESS\n");
-  //printf("PAUSE: PAUSE DEMO\n");
+  // printf("PAUSE: PAUSE DEMO\n");
 }
 
 void fill_rom_msb() {
@@ -375,7 +374,7 @@ void bload(char *token) {
 
   addr = (uint8_t)strtol(token, NULL, 16);
 
-  printf("RAM/ROM %s\n", inrom ? "ROM" : "RAM" );
+  printf("RAM/ROM %s\n", inrom ? "ROM" : "RAM");
   printf("ADDR %04x\n", addr);
 }
 
