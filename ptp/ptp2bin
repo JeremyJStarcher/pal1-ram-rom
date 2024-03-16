@@ -1,0 +1,1 @@
+srec_cat basic.ptp -MOS_Technologies -offset -0x2000 -o basic.bin -binary

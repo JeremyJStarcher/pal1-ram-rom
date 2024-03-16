@@ -38,7 +38,13 @@
 
  */
 
-#include "crc16.h"
+#include "xmodem.h"
+
+#include <pico/stdlib.h>
+#include <string.h>
+
+#include "crc16-small.h"
+#include "rambuf.h"
 
 #define SOH 0x01
 #define STX 0x02
@@ -50,6 +56,10 @@
 
 #define DLY_1S 1000
 #define MAXRETRANS 25
+
+//#define _inbyte(s) getchar_timeout_us((s)*1000000)
+#define _inbyte(s) getchar_timeout_us((s)*1000)
+#define _outbyte(byte) putchar_raw(byte)
 
 static int check(int crc, const unsigned char *buf, int sz) {
   if (crc) {
@@ -73,7 +83,17 @@ static void flushinput(void) {
     ;
 }
 
-int xmodemReceive(unsigned char *dest, int destsz) {
+void processReceived(UploadConfig *dest, int len, char *buff, int size) {
+  int i;
+  for (i = 0; i < size; i++) {
+    uint16_t addr = dest->location.base_address + i + len;
+    pokeram(addr, buff[i]);
+
+    dpokeram(0x0000, addr);
+  }
+}
+
+int xmodemReceive(UploadConfig *dest, int destsz) {
   unsigned char
       xbuff[1030]; /* 1024 for XModem 1k + 3 head chars + 2 crc + nul */
   unsigned char *p;
@@ -137,7 +157,9 @@ int xmodemReceive(unsigned char *dest, int destsz) {
         register int count = destsz - len;
         if (count > bufsz) count = bufsz;
         if (count > 0) {
-          memcpy(&dest[len], &xbuff[3], count);
+          processReceived(dest, len, &xbuff[3], count);
+
+          // memcpy(&dest[len], &xbuff[3], count);
           len += count;
         }
         ++packetno;

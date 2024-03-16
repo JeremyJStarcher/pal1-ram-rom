@@ -1,21 +1,23 @@
+
 #include "commands.h"
 
 #include <ctype.h>
+#include <hardware/clocks.h>
 #include <hardware/flash.h>
 #include <hardware/sync.h>
+#include <hardware/timer.h>
 #include <malloc.h>
+#include <pico/multicore.h>
+#include <pico/stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <tusb.h>
 
 #include "clockspeed.h"
-#include "hardware/clocks.h"
-#include "hardware/timer.h"
-#include "pico/multicore.h"
-#include "pico/stdlib.h"
 #include "rambuf.h"
-#include "tusb.h"
+#include "xmodem.h"
 
 #define MAX_VALID_INDEX ((_flash_size / 2) / sizeof(SysStateStruct)) - 1
 
@@ -236,23 +238,23 @@ void help_command() {
   printf("SAVE #: SAVE TO A SLOT IN FLASH MEMORY\n");
   printf("LOAD #: LOAD FROM A SLOT IN FLASH MEMORY\n");
   printf("LIST: LIST CONFIGURATIONS TO LOAD\n");
-  printf("BLOAD [RAM|ROM] ####: LOAD A BINARY FILE INTO THE GIVEN ADDRESS\n");
+  printf("RX [RAM|ROM] ####: RECEIVE XMODEM\n");
   // printf("PAUSE: PAUSE DEMO\n");
 }
 
-void fill_rom_msb() {
+void fill_ram_msb() {
   uint16_t addr;
   uint8_t data;
-  for (addr = 0x0000; addr < 0xFFFF; addr += 1) {
+  for (addr = 0x2000; addr < 0xFFF0; addr += 1) {
     data = addr / 256;
     pokerom(addr, data);
   }
 }
 
-void fill_rom_lsb() {
+void fill_ram_lsb() {
   uint16_t addr;
   uint8_t data;
-  for (addr = 0x0000; addr < 0xFFFF; addr += 1) {
+  for (addr = 0x2000; addr < 0xFFF0; addr += 1) {
     data = addr % 256;
     pokerom(addr, data);
   }
@@ -350,9 +352,9 @@ void list_slots_command() {
   }
 }
 
-void bload(char *token) {
-  printf("BLOAD...\n");
-  uint32_t addr;
+void rx(char *token) {
+  printf("RX...\n");
+  uint16_t addr;
   bool inrom = false;
 
   token = strtok(NULL, " ");
@@ -372,10 +374,16 @@ void bload(char *token) {
     return;
   }
 
-  addr = (uint8_t)strtol(token, NULL, 16);
+  addr = (uint16_t)strtol(token, NULL, 16);
 
   printf("RAM/ROM %s\n", inrom ? "ROM" : "RAM");
   printf("ADDR %04x\n", addr);
+
+  UploadConfig dest;
+  dest.upload_type = XMODEL_UPLOAD_TYPE_PROGRAM;
+  dest.location.base_address = addr;
+
+  xmodemReceive(&dest, 0x4000);
 }
 
 void command_loop(unsigned long xip_base, unsigned long flash_size) {
@@ -406,9 +414,9 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
     } else if (strcmp(command, "L") == 0) {
       loadptp_command();
     } else if (strcmp(command, "LSB") == 0) {
-      fill_rom_lsb();
+      fill_ram_lsb();
     } else if (strcmp(command, "MSB") == 0) {
-      fill_rom_msb();
+      fill_ram_msb();
     } else if (strcmp(command, "RESET") == 0) {
       setup_memory_contents();
 
@@ -441,8 +449,8 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
 
     } else if (strcmp(command, "LIST") == 0) {
       list_slots_command();
-    } else if (strcmp(command, "BLOAD") == 0) {
-      bload(command);
+    } else if (strcmp(command, "RX") == 0) {
+      rx(command);
     } else if (strcmp(command, "") == 0) {
       // ignore it.
     } else {
