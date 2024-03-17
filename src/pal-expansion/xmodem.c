@@ -88,8 +88,6 @@ void processReceived(UploadConfig *dest, int len, char *buff, int size) {
   for (i = 0; i < size; i++) {
     uint16_t addr = dest->location.base_address + i + len;
     pokeram(addr, buff[i]);
-
-    dpokeram(0x0000, addr);
   }
 }
 

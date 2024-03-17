@@ -72,7 +72,7 @@ bool is_safe_to_access(size_t index) {
 
 SysStateStruct *get_slot_ptr(size_t index) {
   if (!is_safe_to_access(index)) {
-    printf("Error: Unsafe to access the requested memory slot.\n");
+    printf("Error: Unsafe to access the requested memory slot.\r\n");
     return NULL;  // Use NULL for pointer error signaling
   }
 
@@ -179,10 +179,8 @@ bool load_ptp_line(char *line) {
   given_checksum = parse_word_from_string(&line[idx]);
 
   if (given_checksum == checksum) {
-    // printf(" *MATCHED\n");
     return true;
   }
-  // printf(" *FAILED\n");
 
   load_ptp_error = true;
   return false;
@@ -199,7 +197,6 @@ void read_string(char *buffer, int max_length) {
 
     ch = toupper(ch);
 
-    // Check for line end: '\n' or '\r'
     if (ch == '\n' || ch == '\r') {
       break;
     }
@@ -230,16 +227,16 @@ void read_string(char *buffer, int max_length) {
 }
 
 void help_command() {
-  printf("---- HELP ----- \n");
-  printf("L: Load a paper tape file \n");
-  printf("MSB: FILL ROM WITH MSB (USED TO VERIFY ADDRESS CODING)\n");
-  printf("LSB: FILL ROM WITH LSB (USED TO VERIFY ADDRESS CODING)\n");
-  printf("RESET: RESET RAM/ROM TO POWERUP STATE\n");
-  printf("SAVE #: SAVE TO A SLOT IN FLASH MEMORY\n");
-  printf("LOAD #: LOAD FROM A SLOT IN FLASH MEMORY\n");
-  printf("LIST: LIST CONFIGURATIONS TO LOAD\n");
-  printf("RX [RAM|ROM] ####: RECEIVE XMODEM\n");
-  // printf("PAUSE: PAUSE DEMO\n");
+  printf("---- HELP ----- \r\n");
+  printf("L: Load a paper tape file \r\n");
+  printf("MSB: FILL ROM WITH MSB (USED TO VERIFY ADDRESS CODING)\r\n");
+  printf("LSB: FILL ROM WITH LSB (USED TO VERIFY ADDRESS CODING)\r\n");
+  printf("RESET: RESET RAM/ROM TO POWERUP STATE\r\n");
+  printf("SAVE #: SAVE TO A SLOT IN FLASH MEMORY\r\n");
+  printf("LOAD #: LOAD FROM A SLOT IN FLASH MEMORY\r\n");
+  printf("LIST: LIST CONFIGURATIONS TO LOAD\r\n");
+  printf("RX [RAM|ROM] ####: RECEIVE XMODEM\r\n");
+  // printf("PAUSE: PAUSE DEMO\r\n");
 }
 
 void fill_ram_msb() {
@@ -273,14 +270,14 @@ void loadptp_command() {
   if (load_ptp_error) {
     printf("*ERR*");
   } else {
-    printf("*KIM1*");
+    printf("*PAL*");
   }
 }
 
 void save_slot_command(size_t index) {
   if (!is_safe_to_access(index)) {
-    printf("Error: Unsafe to access the requested memory slot.\n");
-    printf("ONLY SLOTS %02x to %02x MAY BE USED\n", 0, MAX_VALID_INDEX);
+    printf("Error: Unsafe to access the requested memory slot.\r\n");
+    printf("ONLY SLOTS %02x to %02x MAY BE USED\r\n", 0, MAX_VALID_INDEX);
     return;  // Exit or handle error appropriately
   }
 
@@ -288,12 +285,12 @@ void save_slot_command(size_t index) {
       sizeof(SysStateStruct);  // Assuming you want the size of the structure
   uintptr_t offset = get_offset(index);
 
-  printf("flash size: %08x\n", _flash_size);
-  printf("SAVE SLOT: %d OFFSET %04x  size: %08x\n", index, offset, size);
+  printf("flash size: %08x\r\n", _flash_size);
+  printf("SAVE SLOT: %d OFFSET %04x  size: %08x\r\n", index, offset, size);
   if (offset % 4096 == 0) {
-    printf("ON THE BOUNDARY\n");
+    printf("ON THE BOUNDARY\r\n");
   } else {
-    printf("OOPS\n");
+    printf("OOPS\r\n");
   }
 
   pause();
@@ -316,8 +313,8 @@ void get_slot_state(size_t i, SlotStateStruct *slot_state) {
 
   bool pass = true;
 
-  // printf("\n:::%c %c %c %c\n", c0, c1, c2, c3);
-  // printf(":::%c %c %c %c\n", flag[0], flag[1], flag[2], flag[3]);
+  // printf("\r\n:::%c %c %c %c\r\n", c0, c1, c2, c3);
+  // printf(":::%c %c %c %c\r\n", flag[0], flag[1], flag[2], flag[3]);
 
   if (c0 != flag[0]) {
     pass = false;
@@ -353,7 +350,7 @@ void list_slots_command() {
 }
 
 void rx(char *token) {
-  printf("RX...\n");
+  printf("RX...\r\n");
   uint16_t addr;
   bool inrom = false;
 
@@ -367,17 +364,21 @@ void rx(char *token) {
     inrom = true;
   }
 
+  if (inrom) {
+    printf("LOADING AS ROM NOT YET AVAILABLE\r\n");
+  }
+
   token = strtok(NULL, " ");
 
   if (strlen(token) == 0) {
-    printf("MUST SPECIFY ADDRESS");
+    printf("MUST SPECIFY ADDRESS\r\n");
     return;
   }
 
   addr = (uint16_t)strtol(token, NULL, 16);
 
-  printf("RAM/ROM %s\n", inrom ? "ROM" : "RAM");
-  printf("ADDR %04x\n", addr);
+  printf("RAM/ROM %s\r\n", inrom ? "ROM" : "RAM");
+  printf("ADDR %04x\r\n", addr);
 
   UploadConfig dest;
   dest.upload_type = XMODEL_UPLOAD_TYPE_PROGRAM;
@@ -393,16 +394,16 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
   _flash_size = flash_size;
 
   while (1) {
-    printf("\nENTER COMMAND (OR HELP): ");
+    printf("\r\nENTER COMMAND (OR HELP): ");
     read_string(input, sizeof(input));
-    // printf("\nYou entered: %s\n", input);
+    // printf("\r\nYou entered: %s\r\n", input);
 
     char *command = strtok(input, " ");  // Get the first word as the command
     if (command == NULL) {
       continue;  // If no command is entered, skip to the next iteration
     }
 
-    printf("\n");
+    printf("\r\n");
 
     // Compare input with known commands and call the corresponding function
     if (strcmp(command, "HELP") == 0) {
@@ -431,7 +432,7 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
         save_slot_command(index);
 
       } else {
-        printf("MUST SPECIFY AN INDEX NUMBER\n");
+        printf("MUST SPECIFY AN INDEX NUMBER\r\n");
       }
 
     } else if (strcmp(command, "LOAD") == 0) {
@@ -444,7 +445,7 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
         load_slot_command(index, &sys_state);
 
       } else {
-        printf("MUST SPECIFY AN INDEX NUMBER\n");
+        printf("MUST SPECIFY AN INDEX NUMBER\r\n");
       }
 
     } else if (strcmp(command, "LIST") == 0) {
@@ -454,7 +455,7 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
     } else if (strcmp(command, "") == 0) {
       // ignore it.
     } else {
-      printf("HUH?\n");
+      printf("HUH?\r\n");
     }
   }
 }
