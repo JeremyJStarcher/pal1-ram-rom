@@ -21,6 +21,8 @@
 
 #define MAX_VALID_INDEX ((_flash_size / 2) / sizeof(SysStateStruct)) - 1
 
+//#define PRINT_DEBUG
+
 void main_memory_loop(void);
 
 unsigned long _xip_base;
@@ -285,13 +287,34 @@ void save_slot_command(size_t index) {
       sizeof(SysStateStruct);  // Assuming you want the size of the structure
   uintptr_t offset = get_offset(index);
 
-  printf("flash size: %08x\r\n", _flash_size);
+#ifdef PRINT_DEBUG
+  printf("FLASH SIZE: %08x\r\n", _flash_size);
   printf("SAVE SLOT: %d OFFSET %04x  size: %08x\r\n", index, offset, size);
   if (offset % 4096 == 0) {
     printf("ON THE BOUNDARY\r\n");
   } else {
     printf("OOPS\r\n");
   }
+#endif
+
+  puts("OLD DESCRIPTION OF SAVE SLOT: ");
+  SlotStateStruct slot_state;
+  get_slot_state(index, &slot_state);
+  puts(slot_state.description);
+
+  char input[SYS_DESCRIPTION_SIZE];
+  puts("ENTER NEW DESCRIPTION OR BLANK TO ABORT: ");
+  read_string(input, sizeof(input));
+  puts("");
+
+  if (strlen(input) == 0) {
+    puts("BLANK DESCRIPTION: ABORTING");
+    return;
+  }
+
+  puts("SAVING TO FLASH. THIS WILL TAKE A FEW SECONDS.");
+  puts("WILL NEED TO RESET YOUR PAL-1 AFTER THIS");
+  scpy(sys_state.description, input, SYS_DESCRIPTION_SIZE);
 
   pause();
   size_t idx = offset;
@@ -312,9 +335,6 @@ void get_slot_state(size_t i, SlotStateStruct *slot_state) {
   unsigned int c3 = state->primed_flag[3];
 
   bool pass = true;
-
-  // printf("\r\n:::%c %c %c %c\r\n", c0, c1, c2, c3);
-  // printf(":::%c %c %c %c\r\n", flag[0], flag[1], flag[2], flag[3]);
 
   if (c0 != flag[0]) {
     pass = false;
@@ -409,9 +429,10 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
     if (strcmp(command, "HELP") == 0) {
       help_command();
     } else if (strcmp(command, "PAUSE") == 0) {
-      puts("LINE 1 - Pausing");
+      puts("LINE 1 - PAUSING");
       pause();
-      puts("LINE 2 - Pausing");
+      puts("LINE 2 - PAUSING");
+      pause();
     } else if (strcmp(command, "L") == 0) {
       loadptp_command();
     } else if (strcmp(command, "LSB") == 0) {
@@ -430,7 +451,6 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
         index = (uint8_t)strtol(param_str, NULL, 16);
 
         save_slot_command(index);
-
       } else {
         printf("MUST SPECIFY AN INDEX NUMBER\r\n");
       }

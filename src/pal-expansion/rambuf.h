@@ -12,7 +12,7 @@
 #define MAGIC_PRIMED_KEY "Q!Q!"
 
 #define SYS_MEMORY_SIZE 65536  // Number of words
-#define SYS_DESCRIPTION_SIZE 20
+#define SYS_DESCRIPTION_SIZE 72
 #define SYS_PRIMED_SIZE 6   // Has this structure been primised yet?
 #define SYS_ALIGNMENT 4096  // 4K boundary
 
