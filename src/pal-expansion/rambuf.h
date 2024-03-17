@@ -5,6 +5,9 @@
 
 #define RO_MEMORY_BIT 15
 #define IN_USE_BIT 14
+// This bit set means that location will never be used as RAM or ROM
+// prevent the IO ports from getting stomped on
+#define EXCLUDE_BIT 13
 
 #define MAGIC_PRIMED_KEY "Q!Q!"
 

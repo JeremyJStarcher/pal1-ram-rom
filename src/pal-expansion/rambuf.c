@@ -1,5 +1,7 @@
 #include "rambuf.h"
 
+#include <pico/rand.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +16,20 @@ SysStateStruct sys_state;
 
 void scpy(char *dest, char *src, size_t len);
 
+void setexcludebyte(uint16_t addr) {
+  uint16_t data = 1 << EXCLUDE_BIT;
+  sys_state.memory[addr] = data;
+}
+
+bool is_excluded(uint16_t addr) {
+  return (sys_state.memory[addr] & (1 << EXCLUDE_BIT)) != 0;
+}
+
 void pokeram(uint16_t addr, uint8_t value) {
+  if (is_excluded(addr)) {
+    return;
+  }
+
   uint16_t data = value;
 
   // There are gaps in the pins, so adjust the data.
@@ -31,6 +46,9 @@ void pokeram(uint16_t addr, uint8_t value) {
 }
 
 void pokerom(uint16_t addr, uint8_t value) {
+  if (is_excluded(addr)) {
+    return;
+  }
   pokeram(addr, value);
 
   uint16_t data = sys_state.memory[addr];
@@ -82,15 +100,28 @@ void setup_memory_contents() {
   puts(sys_state.primed_flag);
   puts("\n");
 
-  for (idx = 0x2000; idx < 0xFFFF; idx += 1) {
-    pokeram(idx, 0);
+  // Block out the IO/Timer ranges to not be touched
+  // $1700 - $173F I/O, timer of 6530-003
+  // $1740 - $177F I/O, timer of 6530-002
+  for (idx = 0x1700; idx < 0x177F + 1; idx += 1) {
+    setexcludebyte(idx);
   }
 
-  // for(idx = 0; idx <  rom_extSize; idx += 1) {
-  //     data = rom_ext[idx];
-  //     pokerom(0xA000+idx, data);
-  // }
+  // Upper RAM
+  for (idx = 0x2000; idx < 0xFFFF; idx += 1) {
+    pokeram(idx, get_rand_64());
+  }
 
+  // BASE RAM
+  // this includes the RRIOT RAM.  The RRIOT I/O and TIMER
+  // ranges are excluded.
+  for (idx = 0x0000; idx < 0x17FF + 1; idx += 1) {
+    pokeram(idx, get_rand_64());
+  }
+
+  // While we could replace the entire ROM here, if we do that
+  // single step mode will no longer skip the ROM content as it
+  // uses physical address lines.
   pokerom(0x1FDD + 0, 'L');
   pokerom(0x1FDD + 1, 'A');
   pokerom(0x1FDD + 2, 'P');

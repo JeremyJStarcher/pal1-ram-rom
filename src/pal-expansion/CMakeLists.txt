@@ -36,7 +36,17 @@ pico_enable_stdio_usb(pico_memory 1)
 pico_enable_stdio_uart(pico_memory 0)
 
 
-target_link_libraries(pico_memory PRIVATE pico_stdlib pico_multicore hardware_flash hardware_sync pico_time)
+target_link_libraries(
+    pico_memory
+    PRIVATE
+    pico_stdlib
+    pico_multicore 
+    hardware_flash
+    hardware_sync
+    pico_time
+    pico_rand
+)
+
 pico_add_extra_outputs(pico_memory)
 
 # Add url via pico_set_program_url.
