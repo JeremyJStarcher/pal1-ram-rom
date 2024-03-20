@@ -1,0 +1,17 @@
+Comment,Designator,Footprint,LCSC
+TXS0108EPW,"U101,U102,U103,U105",TSSOP-20_4.4x6.5mm_P0.65mm,C17206
+1K,R101,R_0603_1608Metric_Pad0.98x0.95mm_HandSolder,C20197
+1N4148WS,D102,D_SOD-323F,C2128
+PICO RESET,SW101,SW_Push_1P1T_XKB_TS-1187A,C2845316
+0.1uf,C106,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,
+0.1uf,C101,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,
+0.1uf,C105,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,
+PAL-1 Expansion Connector,J104,PinHeader_2x20_P2.54mm_Vertical,
+0.1uf,C108,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,
+0.1uf,C103,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,
+0.1uf,C107,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,
+Pico,U104,RPi_Pico_SMD_TH,
+0.1uf,C102,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,
+0.1uf,C104,C_0603_1608Metric_Pad1.08x0.95mm_HandSolder,
+CONNECT TO TP5 ON PICO,TP101,TestPoint_Pad_2.5x2.5mm,
+DECEN ENABLE,JP101,SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm,
