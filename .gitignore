@@ -6,3 +6,6 @@ kicad/barebones/pal1-pico-rom.kicad_pcb.zip
 kicad/pal1-pico-rom/pal1-pico-rom.kicad_pcb.zip
 kicad/barebones/production
 src/pal-expansion/CMakeFiles
+kicad/level-shifted/jlcpcb/**
+kicad/level-shifted/level-shifted-backups/**
+kicad/level-shifted/jlcpcb/**

@@ -8891,7 +8891,7 @@
 			)
 		)
 	)
-	(global_label "LVD7"
+	(global_label "LVD0"
 		(shape input)
 		(at 214.63 55.88 0)
 		(fields_autoplaced yes)
@@ -9375,7 +9375,7 @@
 			)
 		)
 	)
-	(global_label "LVD0"
+	(global_label "LVD7"
 		(shape input)
 		(at 214.63 81.28 0)
 		(fields_autoplaced yes)
@@ -9463,7 +9463,7 @@
 			)
 		)
 	)
-	(global_label "LVD6"
+	(global_label "LVD1"
 		(shape input)
 		(at 214.63 60.96 0)
 		(fields_autoplaced yes)
@@ -9683,7 +9683,7 @@
 			)
 		)
 	)
-	(global_label "LVD3"
+	(global_label "LVD4"
 		(shape input)
 		(at 214.63 71.12 0)
 		(fields_autoplaced yes)
@@ -9925,7 +9925,7 @@
 			)
 		)
 	)
-	(global_label "LVD2"
+	(global_label "LVD5"
 		(shape input)
 		(at 214.63 73.66 0)
 		(fields_autoplaced yes)
@@ -10035,7 +10035,7 @@
 			)
 		)
 	)
-	(global_label "LVD1"
+	(global_label "LVD6"
 		(shape input)
 		(at 214.63 78.74 0)
 		(fields_autoplaced yes)
@@ -10211,7 +10211,7 @@
 			)
 		)
 	)
-	(global_label "LVD4"
+	(global_label "LVD3"
 		(shape input)
 		(at 214.63 68.58 0)
 		(fields_autoplaced yes)
@@ -11157,7 +11157,7 @@
 			)
 		)
 	)
-	(global_label "LVD5"
+	(global_label "LVD2"
 		(shape input)
 		(at 214.63 66.04 0)
 		(fields_autoplaced yes)
