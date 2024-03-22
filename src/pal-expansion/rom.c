@@ -142,8 +142,8 @@ void main_memory_loop() {
       we = (all & (uint32_t)(1 << WE));
 
       if (we == 0 && (data & (1 << RO_MEMORY_BIT)) == 0) {
-          data = (uint32_t)((all & data_mask) >> D0);
-          sys_state.memory[addr] = data | (1 << IN_USE_BIT);
+        data = (uint32_t)((all & data_mask) >> D0);
+        sys_state.memory[addr] = data | (1 << IN_USE_BIT);
       } else {
         gpio_set_dir_masked(data_mask, data_mask);
         gpio_put_masked(data_mask, data << D0);
