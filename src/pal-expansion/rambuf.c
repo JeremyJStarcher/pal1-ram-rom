@@ -129,4 +129,10 @@ void setup_memory_contents() {
   dpokerom(0xFFFA, 0x1C1C);
   dpokerom(0xFFFC, 0x1C22);
   dpokerom(0xFFFE, 0x1C1F);
+
+#if 0
+  dpokeram(0x17FA, 0x1C00);
+  dpokeram(0x17FC, 0x1C00);
+ dpokeram(0x17FE, 0x1C00);
+#endif
 }

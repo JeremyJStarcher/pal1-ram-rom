@@ -254,6 +254,7 @@ void command_help() {
   printf("LIST: LIST CONFIGURATIONS TO LOAD\r\n");
   printf("RX [RAM|ROM] ####: RECEIVE XMODEM\r\n");
   printf("MEMMAP: SHOW A MEMORY MAP\r\n");
+  printf("POKE|DPOKE: [RAM|ROM] ADDR VALUE\r\n");
   // printf("PAUSE: PAUSE DEMO\r\n");
 }
 
@@ -397,6 +398,55 @@ void command_list_slots() {
   }
 }
 
+void command_poke(char *token) {
+  bool inrom = false;
+  uint16_t addr;
+  uint16_t data;
+  bool dpoke = (strcmp(token, "DPOKE") == 0);
+
+  token = strtok(NULL, " ");
+  if (strlen(token) == 0) {
+    printf("MUST SPECIFY RAM/ROM");
+    return;
+  }
+
+  if (token[1] == 'O') {
+    inrom = true;
+  }
+
+  token = strtok(NULL, " ");
+
+  if (strlen(token) == 0) {
+    printf("MUST SPECIFY ADDRESS\r\n");
+    return;
+  }
+
+  addr = (uint16_t)strtol(token, NULL, 16);
+
+  token = strtok(NULL, " ");
+
+  if (strlen(token) == 0) {
+    printf("MUST SPECIFY VALUE\r\n");
+    return;
+  }
+  data = (uint16_t)strtol(token, NULL, 16);
+
+  if (dpoke) {
+    if (inrom) {
+      dpokerom(addr, data);
+    } else {
+      dpokeram(addr, data);
+    }
+
+  } else {
+    if (inrom) {
+      pokerom(addr, data);
+    } else {
+      pokeram(addr, data);
+    }
+  }
+}
+
 void command_rx(char *token) {
   printf("RX...\r\n");
   uint16_t addr;
@@ -487,7 +537,7 @@ void command_memmap(void) {
     mem_type = memory_type(idx);
 
     if (mem_type != start_mem_type) {
-      print_memmap_range(start_addr, idx, start_mem_type);
+      print_memmap_range(start_addr, idx - 1, start_mem_type);
       start_addr = idx;
       start_mem_type = mem_type;
     }
@@ -531,7 +581,6 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
       command_fill_ram_msb();
     } else if (strcmp(command, "RESET") == 0) {
       setup_memory_contents();
-
     } else if (strcmp(command, "SAVE") == 0) {
       command_save_slot(command);
     } else if (strcmp(command, "LOAD") == 0) {
@@ -540,6 +589,10 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
       command_list_slots();
     } else if (strcmp(command, "RX") == 0) {
       command_rx(command);
+    } else if (strcmp(command, "POKE") == 0) {
+      command_poke(command);
+    } else if (strcmp(command, "DPOKE") == 0) {
+      command_poke(command);
     } else if (strcmp(command, "") == 0) {
       // ignore it.
     } else {
