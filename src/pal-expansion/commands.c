@@ -19,6 +19,12 @@
 #include "rambuf.h"
 #include "xmodem.h"
 
+#define MEMORY_UNMAPPED 0
+#define MEMORY_RAM 1
+#define MEMORY_ROM 2
+#define MEMORY_IGNORE 3
+#define MEMORY_UNKNOWN 4
+
 #define MAX_VALID_INDEX ((_flash_size / 2) / sizeof(SysStateStruct)) - 1
 
 //#define PRINT_DEBUG
@@ -238,6 +244,7 @@ void help_command() {
   printf("LOAD #: LOAD FROM A SLOT IN FLASH MEMORY\r\n");
   printf("LIST: LIST CONFIGURATIONS TO LOAD\r\n");
   printf("RX [RAM|ROM] ####: RECEIVE XMODEM\r\n");
+  printf("MEMMAP: SHOW A MEMORY MAP\r\n");
   // printf("PAUSE: PAUSE DEMO\r\n");
 }
 
@@ -407,6 +414,87 @@ void rx(char *token) {
   xmodemReceive(&dest, 0x4000);
 }
 
+/*
+#define MEMORY_UNMAPPED 0
+#define MEMORY_RAM      1
+#define MEMORY_ROM      2
+#define MEMORY_IGNORE   3
+
+      if (we == 0 && (data & (1 << RO_MEMORY_BIT)) == 0) {
+          data = (uint32_t)((all & data_mask) >> D0);
+          sys_state.memory[addr] = data | (1 << IN_USE_BIT);
+
+          #define RO_MEMORY_BIT 15
+#define IN_USE_BIT 14
+// This bit set means that location will never be used as RAM or ROM
+// prevent the IO ports from getting stomped on
+#define EXCLUDE_BIT 13
+
+
+*/
+
+uint8_t memory_type(uint16_t addr) {
+  uint16_t data = sys_state.memory[addr];
+
+  if (data & (1 << EXCLUDE_BIT)) {
+    return MEMORY_IGNORE;
+  }
+
+  if (data & (1 << RO_MEMORY_BIT)) {
+    return MEMORY_ROM;
+  }
+
+  if (data & (1 << IN_USE_BIT)) {
+    return MEMORY_RAM;
+  }
+
+  return MEMORY_UNMAPPED;
+}
+
+void print_memmap_range(uint16_t start_addr, uint16_t idx, uint8_t mem_type) {
+  printf("%04x::%04x ", start_addr, idx);
+
+  switch (mem_type) {
+    case MEMORY_UNMAPPED:
+      printf("NOT MAPPED");
+      break;
+    case MEMORY_RAM:
+      printf("RAM");
+      break;
+    case MEMORY_ROM:
+      printf("ROM");
+      break;
+    case MEMORY_IGNORE:
+      printf("IGNORED");
+      break;
+    case MEMORY_UNKNOWN:
+      printf("UNKNOWN");
+      break;
+  }
+
+  printf("\r\n");
+}
+
+void memmap_command(void) {
+  puts("MEMMAP");
+
+  uint8_t mem_type;
+  uint16_t start_addr = 0x0000;
+  uint8_t start_mem_type = memory_type(start_addr);
+  size_t idx;
+
+  for (idx = 0x0000; idx < 0xFFFF; idx++) {
+    mem_type = memory_type(idx);
+
+    if (mem_type != start_mem_type) {
+      print_memmap_range(start_addr, idx, start_mem_type);
+      start_addr = idx;
+      start_mem_type = mem_type;
+    }
+  }
+  print_memmap_range(start_addr, 0xFFFF, start_mem_type);
+}
+
 void command_loop(unsigned long xip_base, unsigned long flash_size) {
   char input[20];  // Define the buffer size
 
@@ -433,6 +521,8 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
       pause();
       puts("LINE 2 - PAUSING");
       pause();
+    } else if (strcmp(command, "MEMMAP") == 0) {
+      memmap_command();
     } else if (strcmp(command, "L") == 0) {
       loadptp_command();
     } else if (strcmp(command, "LSB") == 0) {
