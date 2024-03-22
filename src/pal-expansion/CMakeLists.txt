@@ -20,6 +20,9 @@ set(PICO_DEFAULT_BINARY_TYPE copy_to_ram)
 
 add_executable(pico_memory)
 
+# Add compile options to your project to use the -O3 optimization level
+add_compile_options(-O3)
+
 target_sources(
     pico_memory
     PRIVATE
