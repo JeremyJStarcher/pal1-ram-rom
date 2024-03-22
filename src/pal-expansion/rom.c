@@ -108,8 +108,9 @@ int main() {
   // Specify contents of emulated ROM.
   setup_memory_contents();
 
-  // multicore_launch_core1(init_ux);
-
+  // GPIO setup.
+  setup_gpio();
+  gpio_put(DEN, 0);
   multicore_launch_core1(main_memory_loop);
 
   init_ux();
@@ -123,13 +124,9 @@ void main_memory_loop() {
   uint32_t cs;
   uint32_t phi2;
 
-  // GPIO setup.
-  setup_gpio();
-
-  gpio_put(DEN, 0);
-
   while (true) {
     all = gpio_get_all();
+
     addr = all & (uint32_t)0xFFFF;
     phi2 = (all & (uint32_t)(1 << PHI2));
 
@@ -144,11 +141,9 @@ void main_memory_loop() {
     if (decen && phi2) {
       we = (all & (uint32_t)(1 << WE));
 
-      if (we == 0) {
-        if ((sys_state.memory[addr] & (1 << RO_MEMORY_BIT)) == 0) {
+      if (we == 0 && (data & (1 << RO_MEMORY_BIT)) == 0) {
           data = (uint32_t)((all & data_mask) >> D0);
           sys_state.memory[addr] = data | (1 << IN_USE_BIT);
-        }
       } else {
         gpio_set_dir_masked(data_mask, data_mask);
         gpio_put_masked(data_mask, data << D0);
@@ -163,7 +158,7 @@ void setup_gpio() {
   size_t i;
   int gpio;
 
-#if 1
+#if 0
   gpio_init(LED_PIN);
   gpio_set_dir(LED_PIN, GPIO_OUT);
 
