@@ -90,8 +90,17 @@ SysStateStruct *get_slot_ptr(size_t index) {
                             offset);  // Correctly cast and return the pointer
 }
 
-void load_slot_command(size_t index, SysStateStruct *state) {
-  memcpy(state, get_slot_ptr(index), sizeof(SysStateStruct));
+void load_slot_command(char *token) {
+  char *param_str =
+      strtok(NULL, " ");  // Try to get the next word as a parameter
+  int index = -1;         // Default index value if no parameter is provided
+  if (param_str == NULL) {
+    puts("NO SLOT NUMBER GIVEN");
+  }
+  // index = atoi(param_str); // Convert parameter string to integer
+  index = (uint8_t)strtol(param_str, NULL, 16);
+
+  memcpy(&sys_state, get_slot_ptr(index), sizeof(SysStateStruct));
 }
 void crit_start() {
   pause();
@@ -234,7 +243,7 @@ void read_string(char *buffer, int max_length) {
   buffer[count] = '\0';
 }
 
-void help_command() {
+void command_help() {
   printf("---- HELP ----- \r\n");
   printf("L: Load a paper tape file \r\n");
   printf("MSB: FILL ROM WITH MSB (USED TO VERIFY ADDRESS CODING)\r\n");
@@ -248,7 +257,7 @@ void help_command() {
   // printf("PAUSE: PAUSE DEMO\r\n");
 }
 
-void fill_ram_msb() {
+void command_fill_ram_msb() {
   uint16_t addr;
   uint8_t data;
   for (addr = 0x2000; addr < 0xFFF0; addr += 1) {
@@ -257,7 +266,7 @@ void fill_ram_msb() {
   }
 }
 
-void fill_ram_lsb() {
+void command_fill_ram_lsb() {
   uint16_t addr;
   uint8_t data;
   for (addr = 0x2000; addr < 0xFFF0; addr += 1) {
@@ -266,7 +275,7 @@ void fill_ram_lsb() {
   }
 }
 
-void loadptp_command() {
+void command_loadptp() {
   char input[200];  // Define the buffer size
 
   start_ptp_load();
@@ -283,7 +292,19 @@ void loadptp_command() {
   }
 }
 
-void save_slot_command(size_t index) {
+void command_save_slot(char *token) {
+  char *param_str =
+      strtok(NULL, " ");  // Try to get the next word as a parameter
+  int index = -1;         // Default index value if no parameter is provided
+  if (param_str != NULL) {
+    // index = atoi(param_str); // Convert parameter string to integer
+    index = (uint8_t)strtol(param_str, NULL, 16);
+
+  } else {
+    printf("MUST SPECIFY AN INDEX NUMBER\r\n");
+    return;
+  }
+
   if (!is_safe_to_access(index)) {
     printf("Error: Unsafe to access the requested memory slot.\r\n");
     printf("ONLY SLOTS %02x to %02x MAY BE USED\r\n", 0, MAX_VALID_INDEX);
@@ -365,7 +386,7 @@ void get_slot_state(size_t i, SlotStateStruct *slot_state) {
   }
 }
 
-void list_slots_command() {
+void command_list_slots() {
   for (size_t i = 0; i < MAX_VALID_INDEX; i++) {
     printf("SLOT: %02x ", i);
 
@@ -376,7 +397,7 @@ void list_slots_command() {
   }
 }
 
-void rx(char *token) {
+void command_rx(char *token) {
   printf("RX...\r\n");
   uint16_t addr;
   bool inrom = false;
@@ -413,25 +434,6 @@ void rx(char *token) {
 
   xmodemReceive(&dest, 0x4000);
 }
-
-/*
-#define MEMORY_UNMAPPED 0
-#define MEMORY_RAM      1
-#define MEMORY_ROM      2
-#define MEMORY_IGNORE   3
-
-      if (we == 0 && (data & (1 << RO_MEMORY_BIT)) == 0) {
-          data = (uint32_t)((all & data_mask) >> D0);
-          sys_state.memory[addr] = data | (1 << IN_USE_BIT);
-
-          #define RO_MEMORY_BIT 15
-#define IN_USE_BIT 14
-// This bit set means that location will never be used as RAM or ROM
-// prevent the IO ports from getting stomped on
-#define EXCLUDE_BIT 13
-
-
-*/
 
 uint8_t memory_type(uint16_t addr) {
   uint16_t data = sys_state.memory[addr];
@@ -475,9 +477,7 @@ void print_memmap_range(uint16_t start_addr, uint16_t idx, uint8_t mem_type) {
   printf("\r\n");
 }
 
-void memmap_command(void) {
-  puts("MEMMAP");
-
+void command_memmap(void) {
   uint8_t mem_type;
   uint16_t start_addr = 0x0000;
   uint8_t start_mem_type = memory_type(start_addr);
@@ -515,53 +515,31 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
 
     // Compare input with known commands and call the corresponding function
     if (strcmp(command, "HELP") == 0) {
-      help_command();
+      command_help();
     } else if (strcmp(command, "PAUSE") == 0) {
       puts("LINE 1 - PAUSING");
       pause();
       puts("LINE 2 - PAUSING");
       pause();
     } else if (strcmp(command, "MEMMAP") == 0) {
-      memmap_command();
+      command_memmap();
     } else if (strcmp(command, "L") == 0) {
-      loadptp_command();
+      command_loadptp();
     } else if (strcmp(command, "LSB") == 0) {
-      fill_ram_lsb();
+      command_fill_ram_lsb();
     } else if (strcmp(command, "MSB") == 0) {
-      fill_ram_msb();
+      command_fill_ram_msb();
     } else if (strcmp(command, "RESET") == 0) {
       setup_memory_contents();
 
     } else if (strcmp(command, "SAVE") == 0) {
-      char *param_str =
-          strtok(NULL, " ");  // Try to get the next word as a parameter
-      int index = -1;         // Default index value if no parameter is provided
-      if (param_str != NULL) {
-        // index = atoi(param_str); // Convert parameter string to integer
-        index = (uint8_t)strtol(param_str, NULL, 16);
-
-        save_slot_command(index);
-      } else {
-        printf("MUST SPECIFY AN INDEX NUMBER\r\n");
-      }
-
+      command_save_slot(command);
     } else if (strcmp(command, "LOAD") == 0) {
-      char *param_str =
-          strtok(NULL, " ");  // Try to get the next word as a parameter
-      int index = -1;         // Default index value if no parameter is provided
-      if (param_str != NULL) {
-        // index = atoi(param_str); // Convert parameter string to integer
-        index = (uint8_t)strtol(param_str, NULL, 16);
-        load_slot_command(index, &sys_state);
-
-      } else {
-        printf("MUST SPECIFY AN INDEX NUMBER\r\n");
-      }
-
+      load_slot_command(command);
     } else if (strcmp(command, "LIST") == 0) {
-      list_slots_command();
+      command_list_slots();
     } else if (strcmp(command, "RX") == 0) {
-      rx(command);
+      command_rx(command);
     } else if (strcmp(command, "") == 0) {
       // ignore it.
     } else {
