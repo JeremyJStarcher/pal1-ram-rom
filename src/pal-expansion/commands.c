@@ -29,6 +29,10 @@
 
 //#define PRINT_DEBUG
 
+#define TOKEN_RAM 1
+#define TOKEN_ROM 2
+#define TOKEN_UNKNOWN 3
+
 void main_memory_loop(void);
 
 unsigned long _xip_base;
@@ -37,6 +41,18 @@ uint32_t ints;
 
 bool load_ptp_error = false;
 bool load_ptp_done = false;
+
+uint8_t token_ram_rom(char *token) {
+  if (strcmp(token, "ROM") == 0) {
+    return TOKEN_ROM;
+  }
+
+  if (strcmp(token, "RAM") == 0) {
+    return TOKEN_RAM;
+  }
+
+  return TOKEN_UNKNOWN;
+}
 
 void pause() {
   // If the USB is still busy when we enter a critical section,
@@ -401,19 +417,16 @@ void command_list_slots() {
 }
 
 void command_poke(char *token) {
-  bool inrom = false;
   uint16_t addr;
   uint16_t data;
   bool dpoke = (strcmp(token, "DPOKE") == 0);
 
   token = strtok(NULL, " ");
-  if (strlen(token) == 0) {
-    printf("MUST SPECIFY RAM/ROM");
-    return;
-  }
 
-  if (token[1] == 'O') {
-    inrom = true;
+  uint8_t dest_type = token_ram_rom(token);
+  if (dest_type == TOKEN_UNKNOWN) {
+    printf("MUST SPECIFY RAM/ROM\r\n");
+    return;
   }
 
   token = strtok(NULL, " ");
@@ -434,14 +447,14 @@ void command_poke(char *token) {
   data = (uint16_t)strtol(token, NULL, 16);
 
   if (dpoke) {
-    if (inrom) {
+    if (dest_type == TOKEN_ROM) {
       dpokerom(addr, data);
     } else {
       dpokeram(addr, data);
     }
 
   } else {
-    if (inrom) {
+    if (dest_type == TOKEN_ROM) {
       pokerom(addr, data);
     } else {
       pokeram(addr, data);
@@ -475,19 +488,16 @@ void command_peek(char *token) {
 void command_rx(char *token) {
   printf("RX...\r\n");
   uint16_t addr;
-  bool inrom = false;
 
   token = strtok(NULL, " ");
-  if (strlen(token) == 0) {
-    printf("MUST SPECIFY RAM/ROM");
+
+  uint8_t dest_type = token_ram_rom(token);
+  if (dest_type == TOKEN_UNKNOWN) {
+    printf("MUST SPECIFY RAM/ROM\n\n");
     return;
   }
 
-  if (token[1] == 'O') {
-    inrom = true;
-  }
-
-  if (inrom) {
+  if (dest_type == TOKEN_ROM) {
     printf("LOADING AS ROM NOT YET AVAILABLE\r\n");
   }
 
@@ -500,7 +510,7 @@ void command_rx(char *token) {
 
   addr = (uint16_t)strtol(token, NULL, 16);
 
-  printf("RAM/ROM %s\r\n", inrom ? "ROM" : "RAM");
+  printf("RAM/ROM %s\r\n", dest_type == TOKEN_ROM ? "ROM" : "RAM");
   printf("ADDR %04x\r\n", addr);
 
   UploadConfig dest;
