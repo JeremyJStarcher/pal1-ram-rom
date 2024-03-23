@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "pin_definitions.h"
+#include "commands.h"
 
 // #include "rom_ext.c"
 
@@ -30,20 +31,20 @@ void pokeram(uint16_t addr, uint8_t value) {
     return;
   }
 
-  uint16_t data = value;
+  static const uint8_t bit_positions[8] = {D0, D1, D2, D3, D4, D5, D6, D7};
+  uint16_t data = 0;
 
-  // There are gaps in the pins, so adjust the data.
-  // Any bit position not part of the data mask is a
-  // "don't care".
-
-  if (data & 1 << 7) {
-    data |= 1 << (D7 - D0);
+  for (int i = 0; i < 8; ++i) {
+    if (value & (1 << i)) { // Check if the ith bit of value is set
+      data |= 1 << (bit_positions[i] - bit_positions[0]); // Set the corresponding bit in data
+    }
   }
 
-  data |= 1 << IN_USE_BIT;
+  data |= 1 << IN_USE_BIT; // Set the IN_USE_BIT in data
 
-  sys_state.memory[addr] = data;
+  sys_state.memory[addr] = data; // Store the data in memory at the given address
 }
+
 
 void pokerom(uint16_t addr, uint8_t value) {
   if (is_excluded(addr)) {
@@ -107,6 +108,7 @@ void setup_memory_contents() {
     setexcludebyte(idx);
   }
 
+#if 1
   // Upper RAM
   for (idx = 0x2000; idx < 0xFFFF; idx += 1) {
     pokeram(idx, get_rand_64());
@@ -118,6 +120,7 @@ void setup_memory_contents() {
   for (idx = 0x0000; idx < 0x17FF + 1; idx += 1) {
     pokeram(idx, get_rand_64());
   }
+#endif
 
   // While we could replace the entire ROM here, if we do that
   // single step mode will no longer skip the ROM content as it
@@ -130,7 +133,8 @@ void setup_memory_contents() {
   dpokerom(0xFFFC, 0x1C22);
   dpokerom(0xFFFE, 0x1C1F);
 
-#if 0
+#if 1
+  pokeram(0x00F1, 0x00);
   dpokeram(0x17FA, 0x1C00);
   dpokeram(0x17FC, 0x1C00);
  dpokeram(0x17FE, 0x1C00);
