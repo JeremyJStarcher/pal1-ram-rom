@@ -40,3 +40,5 @@ void setup_memory_contents(void);
 void scpy(char *dest, char *src, size_t len);
 void dpokerom(uint16_t addr, uint16_t value);
 void dpokeram(uint16_t addr, uint16_t value);
+uint16_t dpeekram(uint16_t addr);
+uint8_t peekram(uint16_t addr);

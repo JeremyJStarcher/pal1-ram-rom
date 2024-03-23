@@ -254,7 +254,9 @@ void command_help() {
   printf("LIST: LIST CONFIGURATIONS TO LOAD\r\n");
   printf("RX [RAM|ROM] ####: RECEIVE XMODEM\r\n");
   printf("MEMMAP: SHOW A MEMORY MAP\r\n");
-  printf("POKE|DPOKE: [RAM|ROM] ADDR VALUE\r\n");
+  printf(
+      "POKE|DPOKE [RAM|ROM] ADDR VALUE: POKE A BYTE OR WORD TO AN ADDRESS\r\n");
+  printf("PEEK|DPEEK ADDR: PEEK A A BYTE OR WORD\r\n");
   // printf("PAUSE: PAUSE DEMO\r\n");
 }
 
@@ -447,6 +449,29 @@ void command_poke(char *token) {
   }
 }
 
+void command_peek(char *token) {
+  uint16_t addr;
+  uint16_t data;
+  bool dpeek = (strcmp(token, "DPEEK") == 0);
+
+  token = strtok(NULL, " ");
+
+  if (strlen(token) == 0) {
+    printf("MUST SPECIFY ADDRESS\r\n");
+    return;
+  }
+
+  addr = (uint16_t)strtol(token, NULL, 16);
+
+  if (dpeek) {
+    uint16_t data = dpeekram(addr);
+    printf("%04X", data);
+  } else {
+    uint8_t data = peekram(addr);
+    printf("%02X", data);
+  }
+}
+
 void command_rx(char *token) {
   printf("RX...\r\n");
   uint16_t addr;
@@ -593,6 +618,10 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
       command_poke(command);
     } else if (strcmp(command, "DPOKE") == 0) {
       command_poke(command);
+    } else if (strcmp(command, "DPEEK") == 0) {
+      command_peek(command);
+    } else if (strcmp(command, "PEEK") == 0) {
+      command_peek(command);
     } else if (strcmp(command, "") == 0) {
       // ignore it.
     } else {

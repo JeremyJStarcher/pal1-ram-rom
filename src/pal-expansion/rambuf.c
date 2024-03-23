@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "pin_definitions.h"
 #include "commands.h"
+#include "pin_definitions.h"
 
 // #include "rom_ext.c"
 
@@ -26,6 +26,30 @@ bool is_excluded(uint16_t addr) {
   return (sys_state.memory[addr] & (1 << EXCLUDE_BIT)) != 0;
 }
 
+uint16_t dpeekram(uint16_t addr) {
+  uint16_t r = 0;
+
+  r = peekram(addr + 1) * 256;
+  r |= peekram(addr + 0);
+  return r;
+}
+
+uint8_t peekram(uint16_t addr) {
+  static const uint8_t bit_positions[8] = {D0, D1, D2, D3, D4, D5, D6, D7};
+  uint16_t data = sys_state.memory[addr];  // Retrieve the stored data
+  uint8_t value = 0;
+
+  for (int i = 0; i < 8; ++i) {
+    // Extract the bit from data at the position defined by bit_positions[i]
+    // and set the corresponding bit in value.
+    if (data & (1 << (bit_positions[i] - D0))) {
+      value |= 1 << i;
+    }
+  }
+
+  return value;  // Return the reconstructed original byte value
+}
+
 void pokeram(uint16_t addr, uint8_t value) {
   if (is_excluded(addr)) {
     return;
@@ -35,16 +59,17 @@ void pokeram(uint16_t addr, uint8_t value) {
   uint16_t data = 0;
 
   for (int i = 0; i < 8; ++i) {
-    if (value & (1 << i)) { // Check if the ith bit of value is set
-      data |= 1 << (bit_positions[i] - bit_positions[0]); // Set the corresponding bit in data
+    if (value & (1 << i)) {  // Check if the ith bit of value is set
+      data |= 1 << (bit_positions[i] -
+                    bit_positions[0]);  // Set the corresponding bit in data
     }
   }
 
-  data |= 1 << IN_USE_BIT; // Set the IN_USE_BIT in data
+  data |= 1 << IN_USE_BIT;  // Set the IN_USE_BIT in data
 
-  sys_state.memory[addr] = data; // Store the data in memory at the given address
+  sys_state.memory[addr] =
+      data;  // Store the data in memory at the given address
 }
-
 
 void pokerom(uint16_t addr, uint8_t value) {
   if (is_excluded(addr)) {
@@ -111,14 +136,19 @@ void setup_memory_contents() {
 #if 1
   // Upper RAM
   for (idx = 0x2000; idx < 0xFFFF; idx += 1) {
-    pokeram(idx, get_rand_64());
+    uint8_t rnd = get_rand_64();
+    pokeram(idx, rnd);
+    if (peekram(idx) != rnd) {
+      printf("PEEKRAM FAILED at %04X\r\n");
+    }
   }
 
   // BASE RAM
   // this includes the RRIOT RAM.  The RRIOT I/O and TIMER
   // ranges are excluded.
   for (idx = 0x0000; idx < 0x17FF + 1; idx += 1) {
-    pokeram(idx, get_rand_64());
+    uint8_t rnd = get_rand_64();
+    pokeram(idx, rnd);
   }
 #endif
 
@@ -133,10 +163,15 @@ void setup_memory_contents() {
   dpokerom(0xFFFC, 0x1C22);
   dpokerom(0xFFFE, 0x1C1F);
 
+  uint16_t dd = dpeekram(0xFFFC);
+  if (dd != 0x1C22) {
+    printf("DPEEK FAILED %04X\n", dd);
+  }
+
 #if 1
   pokeram(0x00F1, 0x00);
   dpokeram(0x17FA, 0x1C00);
   dpokeram(0x17FC, 0x1C00);
- dpokeram(0x17FE, 0x1C00);
+  dpokeram(0x17FE, 0x1C00);
 #endif
 }
