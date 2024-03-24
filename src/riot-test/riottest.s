@@ -52,7 +52,7 @@ DPH = $01
 
 TESTR = $02 ; The test results spot
 TESTRS = $03 ; Test result status
-
+RIOT_BASE = $1700 ; or 1740 for built-in
 
 ; USER  / SYSTEM          User or System TIMER
 ; $1704 / $1744           Write: Timer, 1 usec, no interrupt
@@ -89,27 +89,27 @@ START:
 	.BYTE "WITHOUT BUSY NOOPS!",$00
         JSR CRLF
 
-        timerbasictest $1740, $04, $FD, $00
-        timerbasictest $1740, $0C, $FD, $00
-        timerbasictest $1740, $05, $00, $00
-        timerbasictest $1740, $0D, $00, $00
-        timerbasictest $1740, $06, $00, $00
-        timerbasictest $1740, $0E, $00, $00
-        timerbasictest $1740, $07, $00, $00
-        timerbasictest $1740, $0F, $00, $00
+        timerbasictest RIOT_BASE, $04, $FD, $00
+        timerbasictest RIOT_BASE, $0C, $FD, $00
+        timerbasictest RIOT_BASE, $05, $00, $00
+        timerbasictest RIOT_BASE, $0D, $00, $00
+        timerbasictest RIOT_BASE, $06, $00, $00
+        timerbasictest RIOT_BASE, $0E, $00, $00
+        timerbasictest RIOT_BASE, $07, $00, $00
+        timerbasictest RIOT_BASE, $0F, $00, $00
 
 	JSR PRIMM
 	.BYTE "WITH BUSY NOOPS!",$00
         JSR CRLF
 
-        timerbasictest $1740, $04, $F5, 1
-        timerbasictest $1740, $0C, $F5, 1
-        timerbasictest $1740, $05, $F4, 2
-        timerbasictest $1740, $0D, $F4, 2
-        timerbasictest $1740, $06, $24, 3
-        timerbasictest $1740, $0E, $24, 3
-        timerbasictest $1740, $07, $D4, 5
-        timerbasictest $1740, $0F, $D4, 5
+        timerbasictest RIOT_BASE, $04, $F5, 1
+        timerbasictest RIOT_BASE, $0C, $F5, 1
+        timerbasictest RIOT_BASE, $05, $F4, 2
+        timerbasictest RIOT_BASE, $0D, $F4, 2
+        timerbasictest RIOT_BASE, $06, $24, 3
+        timerbasictest RIOT_BASE, $0E, $24, 3
+        timerbasictest RIOT_BASE, $07, $D4, 5
+        timerbasictest RIOT_BASE, $0F, $D4, 5
 
         JMP     KIMMON           ; ..and exit to KIM
 

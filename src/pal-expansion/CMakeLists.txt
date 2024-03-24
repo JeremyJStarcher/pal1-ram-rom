@@ -30,6 +30,7 @@ target_sources(
     commands.c
     rambuf.c
     xmodem.c
+    6532_timer.c
 )
 
 

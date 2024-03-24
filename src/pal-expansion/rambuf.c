@@ -34,9 +34,15 @@ uint16_t dpeekram(uint16_t addr) {
   return r;
 }
 
-uint8_t peekram(uint16_t addr) {
+uint8_t data_16_to_8(uint16_t data) {
+  uint8_t value = data;
+  value |= ((data >> (D7 - D0)) & 1) << 7;
+  return value;
+}
+
+uint8_t data_16_to_8_slow(uint16_t data) {
   static const uint8_t bit_positions[8] = {D0, D1, D2, D3, D4, D5, D6, D7};
-  uint16_t data = sys_state.memory[addr];  // Retrieve the stored data
+
   uint8_t value = 0;
 
   for (int i = 0; i < 8; ++i) {
@@ -50,11 +56,18 @@ uint8_t peekram(uint16_t addr) {
   return value;  // Return the reconstructed original byte value
 }
 
-void pokeram(uint16_t addr, uint8_t value) {
-  if (is_excluded(addr)) {
-    return;
-  }
+uint8_t peekram(uint16_t addr) {
+  uint16_t data = sys_state.memory[addr];  // Retrieve the stored data
+  return data_16_to_8(data);
+}
 
+uint16_t data_8_to_16(uint8_t value) {
+  uint16_t data = value;
+  data |= ((value & (1 << 7)) ? 1 : 0) << D7 - D0;
+  return data;
+}
+
+uint16_t data_8_to_16_slow(uint8_t value) {
   static const uint8_t bit_positions[8] = {D0, D1, D2, D3, D4, D5, D6, D7};
   uint16_t data = 0;
 
@@ -66,9 +79,17 @@ void pokeram(uint16_t addr, uint8_t value) {
   }
 
   data |= 1 << IN_USE_BIT;  // Set the IN_USE_BIT in data
+  return data;
+}
 
-  sys_state.memory[addr] =
-      data;  // Store the data in memory at the given address
+void pokeram(uint16_t addr, uint8_t value) {
+  if (is_excluded(addr)) {
+    return;
+  }
+
+  uint16_t data = data_8_to_16(value);
+  data |= 1 << IN_USE_BIT;  // Set the IN_USE_BIT in data
+  sys_state.memory[addr] = data;
 }
 
 void pokerom(uint16_t addr, uint8_t value) {

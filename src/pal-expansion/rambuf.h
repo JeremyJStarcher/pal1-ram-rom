@@ -42,3 +42,5 @@ void dpokerom(uint16_t addr, uint16_t value);
 void dpokeram(uint16_t addr, uint16_t value);
 uint16_t dpeekram(uint16_t addr);
 uint8_t peekram(uint16_t addr);
+uint8_t data_16_to_8(uint16_t data);
+uint16_t data_8_to_16(uint8_t value);

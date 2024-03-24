@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "6532_timer.h"
 #include "clockspeed.h"
 #include "commands.h"
 #include "hardware/clocks.h"
@@ -120,9 +121,11 @@ void main_memory_loop() {
   uint16_t addr;
   uint16_t data;
   uint32_t all;
-  uint32_t we;
+  uint32_t we_n;
   uint32_t cs;
   uint32_t phi2;
+  bool phi2_state = false;
+  bool riot_range;
 
   while (true) {
     all = gpio_get_all();
@@ -130,18 +133,57 @@ void main_memory_loop() {
     addr = all & (uint32_t)0xFFFF;
     phi2 = (all & (uint32_t)(1 << PHI2));
 
-    // Set the DECEN line based on the current addressing
-    // If it is outside the range, then send DEN low
-    // letting the KIM-1 decode that address internally.
-    // char decen = addr >= ADDR_BOTTOM && addr <= ADDR_TOP;
+    riot_range = addr >= 0x1700 && addr <= 0x170F;
+    we_n = (all & (uint32_t)(1 << WE));
+
+    if (phi2) {
+      phi2_state = 1;
+      if (riot_range) {
+        if (we_n == 0) {
+          data = (uint32_t)((all & data_mask) >> D0);
+
+          // inline 16_to_8
+          data |= ((data >> (D7 - D0)) & 1) << 7;
+
+          riot_write_timer(addr, data);
+
+#if 0
+          uint16_t data2 = data_8_to_16(riot_read_timer(0x0006));
+          if (data2 != data) {
+            puts("DATA DOES NOT MATCH");
+            printf("%04X\r\n", addr);
+            print_binary(data, 16);
+            puts("");
+            print_binary(data2, 16);
+          }
+#endif
+
+        } else {
+          data = riot_read_timer(addr);
+
+          // inline 8 to 16
+          data |= ((data & (1 << 7)) ? 1 : 0) << D7 - D0;
+
+          gpio_put(DEN, 0);
+          gpio_set_dir_masked(data_mask, data_mask);
+          gpio_put_masked(data_mask, data << D0);
+          continue;
+        }
+      }
+    } else {
+      if (phi2_state) {
+        riot_tick();
+        phi2_state = false;
+      }
+    }
+
     data = sys_state.memory[addr];
     int decen = (data & 1 << IN_USE_BIT) ? 1 : 0;
+
     gpio_put(DEN, decen);
 
     if (decen && phi2) {
-      we = (all & (uint32_t)(1 << WE));
-
-      if (we == 0 && (data & (1 << RO_MEMORY_BIT)) == 0) {
+      if (we_n == 0 && (data & (1 << RO_MEMORY_BIT)) == 0) {
         data = (uint32_t)((all & data_mask) >> D0);
         sys_state.memory[addr] = data | (1 << IN_USE_BIT);
       } else {
