@@ -11,7 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "6532_timer.h"
+//#include "6532_timer.h"
+#include "6532_timer.c"
 #include "clockspeed.h"
 #include "commands.h"
 #include "hardware/clocks.h"
@@ -103,6 +104,7 @@ int main() {
   //  set_sys_clock_pll(1600000000, 4, 1);
 
   set_sys_clock_khz(CLOCK_SPEED_HIGH, false);
+  vreg_set_voltage(VREG_VOLTAGE_1_20);
 
   stdio_init_all();
 
@@ -112,6 +114,10 @@ int main() {
   // GPIO setup.
   setup_gpio();
   gpio_put(DEN, 0);
+
+  riot_write_timer(0x1704, 0);
+  uint64_t dummy = riot_read_timer(1706);
+
   multicore_launch_core1(main_memory_loop);
 
   init_ux();
@@ -124,7 +130,7 @@ void main_memory_loop() {
   uint32_t we_n;
   uint32_t cs;
   uint32_t phi2;
-  bool phi2_state = false;
+  bool riot_phi2_state = false;
   bool riot_range;
 
   while (true) {
@@ -137,27 +143,21 @@ void main_memory_loop() {
     we_n = (all & (uint32_t)(1 << WE));
 
     if (phi2) {
-      phi2_state = 1;
-      if (riot_range) {
+      riot_phi2_state = true;
+    } else {
+      if (riot_phi2_state) {
+        riot_tick();
+        riot_phi2_state = false;
+      }
+    }
+
+    if (riot_range) {
+      if (phi2) {
         if (we_n == 0) {
           data = (uint32_t)((all & data_mask) >> D0);
-
           // inline 16_to_8
           data |= ((data >> (D7 - D0)) & 1) << 7;
-
           riot_write_timer(addr, data);
-
-#if 0
-          uint16_t data2 = data_8_to_16(riot_read_timer(0x0006));
-          if (data2 != data) {
-            puts("DATA DOES NOT MATCH");
-            printf("%04X\r\n", addr);
-            print_binary(data, 16);
-            puts("");
-            print_binary(data2, 16);
-          }
-#endif
-
         } else {
           data = riot_read_timer(addr);
 
@@ -169,11 +169,8 @@ void main_memory_loop() {
           gpio_put_masked(data_mask, data << D0);
           continue;
         }
-      }
-    } else {
-      if (phi2_state) {
-        riot_tick();
-        phi2_state = false;
+      } else {
+        gpio_set_dir_masked(data_mask, 0);
       }
     }
 

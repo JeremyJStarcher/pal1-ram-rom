@@ -49,142 +49,126 @@ Current file: riottest.s
 000000r 1                       .endmacro
 000000r 1               
 000000r 1               
-000000r 1                       .org $2000
-002000  1               
-002000  1               DPL = $00
-002000  1               DPH = $01
-002000  1               
-002000  1               TESTR = $02 ; The test results spot
-002000  1               TESTRS = $03 ; Test result status
-002000  1               RIOT_BASE = $1700 ; or 1740 for built-in
-002000  1               
-002000  1               ; USER  / SYSTEM          User or System TIMER
-002000  1               ; $1704 / $1744           Write: Timer, 1 usec, no interrupt
-002000  1               ; $1705 / $1745           Write: Timer, 8 usec, no interrupt
-002000  1               ; $1706 / $1746           Write: Timer, 64 usec, no interrupt. Read: timer count, disable interrupt.
-002000  1               ; $1707 / $1747           Write: Timer, 1024 usec, no interrupt. Read: timer status, Bit 7 = 1 on timeout.
-002000  1               ; $170C / $174C           Write: Timer, 1 usec, interrupt
-002000  1               ; $170D / $174D           Write: Timer, 8 usec, interrupt
-002000  1               ; $170E / $174E           Write: Timer, 64 usec, interrupt. Read: timer count, enable interrupt.
-002000  1               ; $170F / $174F           Write: Timer, 1024 usec, interrupt
-002000  1               
-002000  1               
-002000  1               
-002000  1               ; KIM-ROUTINES
-002000  1               OUTCH = $1EA0; output a character to the TTY
-002000  1               KIMMON  = $1C4F; Return to monitor
-002000  1               CRLF = $1E2F ; Out a CR/LF to TTY
-002000  1               PRTBYT = $1E3B ; Output a hex byte to TTY
-002000  1               OUTSP = $1E9E; Output a space to the TTY
-002000  1               
-002000  1               
-002000  1  4C 03 20     	JMP	START
-002003  1               
-002003  1               START:
-002003  1  D8                   CLD
-002004  1  20 2F 1E             JSR CRLF
-002007  1  20 2F 1E             JSR CRLF
-00200A  1  20 47 28     	JSR PRIMM
-00200D  1  52 55 4E 4E  	.BYTE "RUNNING RIOT COMPATIBILITY TEST!",$00
-002011  1  49 4E 47 20  
-002015  1  52 49 4F 54  
-00202E  1               
-00202E  1  20 2F 1E             JSR CRLF
-002031  1               
-002031  1  20 47 28     	JSR PRIMM
-002034  1  57 49 54 48  	.BYTE "WITHOUT BUSY NOOPS!",$00
-002038  1  4F 55 54 20  
-00203C  1  42 55 53 59  
-002048  1  20 2F 1E             JSR CRLF
-00204B  1               
-00204B  1  20 47 28 52          timerbasictest RIOT_BASE, $04, $FD, $00
-00204F  1  75 6E 6E 69  
-002053  1  6E 67 20 74  
-0020C5  1  20 47 28 52          timerbasictest RIOT_BASE, $0C, $FD, $00
-0020C9  1  75 6E 6E 69  
-0020CD  1  6E 67 20 74  
-00213F  1  20 47 28 52          timerbasictest RIOT_BASE, $05, $00, $00
-002143  1  75 6E 6E 69  
-002147  1  6E 67 20 74  
-0021B9  1  20 47 28 52          timerbasictest RIOT_BASE, $0D, $00, $00
-0021BD  1  75 6E 6E 69  
-0021C1  1  6E 67 20 74  
-002233  1  20 47 28 52          timerbasictest RIOT_BASE, $06, $00, $00
-002237  1  75 6E 6E 69  
-00223B  1  6E 67 20 74  
-0022AD  1  20 47 28 52          timerbasictest RIOT_BASE, $0E, $00, $00
-0022B1  1  75 6E 6E 69  
-0022B5  1  6E 67 20 74  
-002327  1  20 47 28 52          timerbasictest RIOT_BASE, $07, $00, $00
-00232B  1  75 6E 6E 69  
-00232F  1  6E 67 20 74  
-0023A1  1  20 47 28 52          timerbasictest RIOT_BASE, $0F, $00, $00
-0023A5  1  75 6E 6E 69  
-0023A9  1  6E 67 20 74  
-00241B  1               
-00241B  1  20 47 28     	JSR PRIMM
-00241E  1  57 49 54 48  	.BYTE "WITH BUSY NOOPS!",$00
-002422  1  20 42 55 53  
-002426  1  59 20 4E 4F  
-00242F  1  20 2F 1E             JSR CRLF
-002432  1               
-002432  1  20 47 28 52          timerbasictest RIOT_BASE, $04, $F5, 1
-002436  1  75 6E 6E 69  
-00243A  1  6E 67 20 74  
-0024AF  1  20 47 28 52          timerbasictest RIOT_BASE, $0C, $F5, 1
-0024B3  1  75 6E 6E 69  
-0024B7  1  6E 67 20 74  
-00252C  1  20 47 28 52          timerbasictest RIOT_BASE, $05, $F4, 2
-002530  1  75 6E 6E 69  
-002534  1  6E 67 20 74  
-0025AC  1  20 47 28 52          timerbasictest RIOT_BASE, $0D, $F4, 2
-0025B0  1  75 6E 6E 69  
-0025B4  1  6E 67 20 74  
-00262C  1  20 47 28 52          timerbasictest RIOT_BASE, $06, $24, 3
-002630  1  75 6E 6E 69  
-002634  1  6E 67 20 74  
-0026AF  1  20 47 28 52          timerbasictest RIOT_BASE, $0E, $24, 3
-0026B3  1  75 6E 6E 69  
-0026B7  1  6E 67 20 74  
-002732  1  20 47 28 52          timerbasictest RIOT_BASE, $07, $D4, 5
-002736  1  75 6E 6E 69  
-00273A  1  6E 67 20 74  
-0027BB  1  20 47 28 52          timerbasictest RIOT_BASE, $0F, $D4, 5
-0027BF  1  75 6E 6E 69  
-0027C3  1  6E 67 20 74  
-002844  1               
-002844  1  4C 4F 1C             JMP     KIMMON           ; ..and exit to KIM
-002847  1               
-002847  1               ;Put the string following in-line until a NULL out to the console
-002847  1  68           PRIMM:  pla			; Get the low part of "return" address
-002848  1                                               ; (data start address)
-002848  1  85 00                sta     DPL
-00284A  1  68                   pla
-00284B  1  85 01                sta     DPH             ; Get the high part of "return" address
-00284D  1                                               ; (data start address)
-00284D  1                       ; Note: actually we're pointing one short
-00284D  1  A0 01        @PSINB: ldy     #1
-00284F  1  B1 00                lda     (DPL),y         ; Get the next string character
-002851  1  E6 00                inc     DPL             ; update the pointer
-002853  1  D0 02                bne     @PSICHO          ; if not, we're pointing to next character
-002855  1  E6 01                inc     DPH             ; account for page crossing
-002857  1  09 00        @PSICHO: ora     #0              ; Set flags according to contents of
-002859  1                                               ;    Accumulator
-002859  1  F0 06                beq     @PSIX1           ; don't print the final NULL
-00285B  1  20 A0 1E             jsr     OUTCH         ; write it out
-00285E  1  4C 4D 28             jmp     @PSINB           ; back around
-002861  1               
-002861  1  E6 00        @PSIX1: inc     DPL             ;
-002863  1  D0 02                bne     @PSIX2           ;
-002865  1  E6 01                inc     DPH             ; account for page crossing
-002867  1  6C 00 00     @PSIX2: jmp     (DPL)           ; return to byte following final NULL
-00286A  1               
-00286A  1               
-00286A  1               busy_loop:
-00286A  1  A2 FF            LDX #$FF    ; Load the X register with 255 (FF in hex)
-00286C  1               loop_start:
-00286C  1  CA               DEX         ; Decrement the X register by 1
-00286D  1  D0 FD            BNE loop_start ; Branch to loop_start if the result is Not Equal to zero (Z flag is not set)
-00286F  1                   ; The loop exits when X wraps around from 0 to $FF, which will not branch since Z flag will be set
-00286F  1  60               rts
-00286F  1               
+000000r 1                       .org $0200
+000200  1               
+000200  1               DPL = $00
+000200  1               DPH = $01
+000200  1               
+000200  1               TESTR = $02 ; The test results spot
+000200  1               TESTRS = $03 ; Test result status
+000200  1               RIOT_BASE = $1700 ; or 1740 for built-in
+000200  1               
+000200  1               ; USER  / SYSTEM          User or System TIMER
+000200  1               ; $1704 / $1744           Write: Timer, 1 usec, no interrupt
+000200  1               ; $1705 / $1745           Write: Timer, 8 usec, no interrupt
+000200  1               ; $1706 / $1746           Write: Timer, 64 usec, no interrupt. Read: timer count, disable interrupt.
+000200  1               ; $1707 / $1747           Write: Timer, 1024 usec, no interrupt. Read: timer status, Bit 7 = 1 on timeout.
+000200  1               ; $170C / $174C           Write: Timer, 1 usec, interrupt
+000200  1               ; $170D / $174D           Write: Timer, 8 usec, interrupt
+000200  1               ; $170E / $174E           Write: Timer, 64 usec, interrupt. Read: timer count, enable interrupt.
+000200  1               ; $170F / $174F           Write: Timer, 1024 usec, interrupt
+000200  1               
+000200  1               
+000200  1               
+000200  1               ; KIM-ROUTINES
+000200  1               OUTCH = $1EA0; output a character to the TTY
+000200  1               KIMMON  = $1C4F; Return to monitor
+000200  1               CRLF = $1E2F ; Out a CR/LF to TTY
+000200  1               PRTBYT = $1E3B ; Output a hex byte to TTY
+000200  1               OUTSP = $1E9E; Output a space to the TTY
+000200  1               
+000200  1               
+000200  1  4C 03 02     	JMP	START
+000203  1               
+000203  1               START:
+000203  1  D8                   CLD
+000204  1  20 2F 1E             JSR CRLF
+000207  1  20 2F 1E             JSR CRLF
+00020A  1  20 56 06     	JSR PRIMM
+00020D  1  52 55 4E 4E  	.BYTE "RUNNING RIOT COMPATIBILITY TEST!",$00
+000211  1  49 4E 47 20  
+000215  1  52 49 4F 54  
+00022E  1               
+00022E  1  20 2F 1E             JSR CRLF
+000231  1               
+000231  1  20 56 06     	JSR PRIMM
+000234  1  57 49 54 48  	.BYTE "WITHOUT BUSY NOOPS!",$00
+000238  1  4F 55 54 20  
+00023C  1  42 55 53 59  
+000248  1  20 2F 1E             JSR CRLF
+00024B  1               
+00024B  1  20 56 06 52          timerbasictest RIOT_BASE, $04, $FD, $00
+00024F  1  75 6E 6E 69  
+000253  1  6E 67 20 74  
+0002C5  1                       ;timerbasictest RIOT_BASE, $0C, $FD, $00
+0002C5  1  20 56 06 52          timerbasictest RIOT_BASE, $05, $00, $00
+0002C9  1  75 6E 6E 69  
+0002CD  1  6E 67 20 74  
+00033F  1                       ;timerbasictest RIOT_BASE, $0D, $00, $00
+00033F  1  20 56 06 52          timerbasictest RIOT_BASE, $06, $00, $00
+000343  1  75 6E 6E 69  
+000347  1  6E 67 20 74  
+0003B9  1                       ;timerbasictest RIOT_BASE, $0E, $00, $00
+0003B9  1  20 56 06 52          timerbasictest RIOT_BASE, $07, $00, $00
+0003BD  1  75 6E 6E 69  
+0003C1  1  6E 67 20 74  
+000433  1                       ;timerbasictest RIOT_BASE, $0F, $00, $00
+000433  1               
+000433  1  20 56 06     	JSR PRIMM
+000436  1  57 49 54 48  	.BYTE "WITH BUSY NOOPS!",$00
+00043A  1  20 42 55 53  
+00043E  1  59 20 4E 4F  
+000447  1  20 2F 1E             JSR CRLF
+00044A  1               
+00044A  1  20 56 06 52          timerbasictest RIOT_BASE, $04, $F5, 1
+00044E  1  75 6E 6E 69  
+000452  1  6E 67 20 74  
+0004C7  1                       ;timerbasictest RIOT_BASE, $0C, $F5, 1
+0004C7  1  20 56 06 52          timerbasictest RIOT_BASE, $05, $F4, 2
+0004CB  1  75 6E 6E 69  
+0004CF  1  6E 67 20 74  
+000547  1                       ;timerbasictest RIOT_BASE, $0D, $F4, 2
+000547  1  20 56 06 52          timerbasictest RIOT_BASE, $06, $24, 3
+00054B  1  75 6E 6E 69  
+00054F  1  6E 67 20 74  
+0005CA  1                       ;timerbasictest RIOT_BASE, $0E, $24, 3
+0005CA  1  20 56 06 52          timerbasictest RIOT_BASE, $07, $D4, 5
+0005CE  1  75 6E 6E 69  
+0005D2  1  6E 67 20 74  
+000653  1                       ;timerbasictest RIOT_BASE, $0F, $D4, 5
+000653  1               
+000653  1  4C 4F 1C             JMP     KIMMON           ; ..and exit to KIM
+000656  1               
+000656  1               ;Put the string following in-line until a NULL out to the console
+000656  1  68           PRIMM:  pla			; Get the low part of "return" address
+000657  1                                               ; (data start address)
+000657  1  85 00                sta     DPL
+000659  1  68                   pla
+00065A  1  85 01                sta     DPH             ; Get the high part of "return" address
+00065C  1                                               ; (data start address)
+00065C  1                       ; Note: actually we're pointing one short
+00065C  1  A0 01        @PSINB: ldy     #1
+00065E  1  B1 00                lda     (DPL),y         ; Get the next string character
+000660  1  E6 00                inc     DPL             ; update the pointer
+000662  1  D0 02                bne     @PSICHO          ; if not, we're pointing to next character
+000664  1  E6 01                inc     DPH             ; account for page crossing
+000666  1  09 00        @PSICHO: ora     #0              ; Set flags according to contents of
+000668  1                                               ;    Accumulator
+000668  1  F0 06                beq     @PSIX1           ; don't print the final NULL
+00066A  1  20 A0 1E             jsr     OUTCH         ; write it out
+00066D  1  4C 5C 06             jmp     @PSINB           ; back around
+000670  1               
+000670  1  E6 00        @PSIX1: inc     DPL             ;
+000672  1  D0 02                bne     @PSIX2           ;
+000674  1  E6 01                inc     DPH             ; account for page crossing
+000676  1  6C 00 00     @PSIX2: jmp     (DPL)           ; return to byte following final NULL
+000679  1               
+000679  1               
+000679  1               busy_loop:
+000679  1  A2 FF            LDX #$FF    ; Load the X register with 255 (FF in hex)
+00067B  1               loop_start:
+00067B  1  CA               DEX         ; Decrement the X register by 1
+00067C  1  D0 FD            BNE loop_start ; Branch to loop_start if the result is Not Equal to zero (Z flag is not set)
+00067E  1                   ; The loop exits when X wraps around from 0 to $FF, which will not branch since Z flag will be set
+00067E  1  60               rts
+00067E  1               

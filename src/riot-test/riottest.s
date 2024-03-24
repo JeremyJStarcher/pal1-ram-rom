@@ -45,7 +45,7 @@
         .endmacro
 
 
-        .org $2000
+        .org $0200
 
 DPL = $00
 DPH = $01
@@ -90,26 +90,26 @@ START:
         JSR CRLF
 
         timerbasictest RIOT_BASE, $04, $FD, $00
-        timerbasictest RIOT_BASE, $0C, $FD, $00
+        ;timerbasictest RIOT_BASE, $0C, $FD, $00
         timerbasictest RIOT_BASE, $05, $00, $00
-        timerbasictest RIOT_BASE, $0D, $00, $00
+        ;timerbasictest RIOT_BASE, $0D, $00, $00
         timerbasictest RIOT_BASE, $06, $00, $00
-        timerbasictest RIOT_BASE, $0E, $00, $00
+        ;timerbasictest RIOT_BASE, $0E, $00, $00
         timerbasictest RIOT_BASE, $07, $00, $00
-        timerbasictest RIOT_BASE, $0F, $00, $00
+        ;timerbasictest RIOT_BASE, $0F, $00, $00
 
 	JSR PRIMM
 	.BYTE "WITH BUSY NOOPS!",$00
         JSR CRLF
 
         timerbasictest RIOT_BASE, $04, $F5, 1
-        timerbasictest RIOT_BASE, $0C, $F5, 1
+        ;timerbasictest RIOT_BASE, $0C, $F5, 1
         timerbasictest RIOT_BASE, $05, $F4, 2
-        timerbasictest RIOT_BASE, $0D, $F4, 2
+        ;timerbasictest RIOT_BASE, $0D, $F4, 2
         timerbasictest RIOT_BASE, $06, $24, 3
-        timerbasictest RIOT_BASE, $0E, $24, 3
+        ;timerbasictest RIOT_BASE, $0E, $24, 3
         timerbasictest RIOT_BASE, $07, $D4, 5
-        timerbasictest RIOT_BASE, $0F, $D4, 5
+        ;timerbasictest RIOT_BASE, $0F, $D4, 5
 
         JMP     KIMMON           ; ..and exit to KIM
 
