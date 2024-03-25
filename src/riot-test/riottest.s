@@ -111,6 +111,8 @@ START:
         timerbasictest RIOT_BASE, $07, $D4, 5
         ;timerbasictest RIOT_BASE, $0F, $D4, 5
 
+	JMP	START
+
         JMP     KIMMON           ; ..and exit to KIM
 
 ;Put the string following in-line until a NULL out to the console

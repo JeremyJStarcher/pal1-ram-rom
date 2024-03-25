@@ -7,6 +7,8 @@
  * March 2024
  */
 
+// #define EMULATE_RIOT
+
 #include <malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -104,7 +106,7 @@ int main() {
   //  set_sys_clock_pll(1600000000, 4, 1);
 
   set_sys_clock_khz(CLOCK_SPEED_HIGH, false);
-  vreg_set_voltage(VREG_VOLTAGE_1_20);
+  vreg_set_voltage(VREG_VOLTAGE_1_30);
 
   stdio_init_all();
 
@@ -115,23 +117,24 @@ int main() {
   setup_gpio();
   gpio_put(DEN, 0);
 
-  riot_write_timer(0x1704, 0);
-  uint64_t dummy = riot_read_timer(1706);
-
   multicore_launch_core1(main_memory_loop);
 
   init_ux();
 }
 
 void main_memory_loop() {
-  uint16_t addr;
-  uint16_t data;
+  uint_fast16_t addr;
+  uint_fast16_t data;
   uint32_t all;
   uint32_t we_n;
   uint32_t cs;
   uint32_t phi2;
-  bool riot_phi2_state = false;
-  bool riot_range;
+
+#ifdef EMULATE_RIOT
+  uint_fast8_t riot_phi2_state = false;
+  uint_fast8_t riot_range;
+  uint_fast8_t riot_underflow;
+#endif
 
   while (true) {
     all = gpio_get_all();
@@ -139,18 +142,23 @@ void main_memory_loop() {
     addr = all & (uint32_t)0xFFFF;
     phi2 = (all & (uint32_t)(1 << PHI2));
 
-    riot_range = addr >= 0x1700 && addr <= 0x170F;
     we_n = (all & (uint32_t)(1 << WE));
 
+#ifdef EMULATE_RIOT
     if (phi2) {
       riot_phi2_state = true;
     } else {
       if (riot_phi2_state) {
-        riot_tick();
+        riot_counter--;
         riot_phi2_state = false;
+        // Do this calculation when we are not as busy
+        riot_underflow = riot_counter & (1 << 18);
       }
     }
+#endif
 
+#ifdef EMULATE_RIOT
+    riot_range = addr >= 0x1700 && addr <= 0x170F;
     if (riot_range) {
       if (phi2) {
         if (we_n == 0) {
@@ -164,11 +172,17 @@ void main_memory_loop() {
           period_type = periodtypemap[addr];
           riot_counter = data << shiftmap[addr];
         } else {
-          data = riot_read_timer(addr);
+          // data = riot_read_timer(addr);
+
+          if (riot_underflow) {
+            // Let the casting get rid of the rest
+            data = riot_counter;
+          } else {
+            data = riot_counter >> shiftmap2[period_type];
+          }
 
           // inline 8 to 16
           data |= ((data & (1 << 7)) ? 1 : 0) << D7 - D0;
-
           gpio_put(DEN, 0);
           gpio_set_dir_masked(data_mask, data_mask);
           gpio_put_masked(data_mask, data << D0);
@@ -176,8 +190,10 @@ void main_memory_loop() {
         }
       } else {
         gpio_set_dir_masked(data_mask, 0);
+        continue;
       }
     }
+#endif
 
     data = sys_state.memory[addr];
     int decen = (data & 1 << IN_USE_BIT) ? 1 : 0;

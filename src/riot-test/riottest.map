@@ -1,7 +1,7 @@
 Modules list:
 -------------
 riottest.o:
-    CODE              Offs=000000  Size=00047F  Align=00001  Fill=0000
+    CODE              Offs=000000  Size=000482  Align=00001  Fill=0000
     RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
     BSS               Offs=000000  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -15,15 +15,15 @@ Name                   Start     End    Size  Align
 ----------------------------------------------------
 NULL                  000000  000000  000000  00001
 ZEROPAGE              000080  000080  000000  00001
-CODE                  001000  00147E  00047F  00001
-BSS                   00147F  00147F  000000  00001
-DATA                  00147F  00147F  000000  00001
-RODATA                00147F  00147F  000000  00001
+CODE                  001000  001481  000482  00001
+BSS                   001482  001482  000000  00001
+DATA                  001482  001482  000000  00001
+RODATA                001482  001482  000000  00001
 
 
 Exports list by name:
 ---------------------
-__BSS_LOAD__              00147F  LA    __BSS_RUN__               00147F  LA    
+__BSS_LOAD__              001482  LA    __BSS_RUN__               001482  LA    
 __BSS_SIZE__              000000  EA    __STACKSIZE__             000800 REA    
 __STACKSTART__            008000 REA    __ZPSTART__               000080 REA    
 __ZP_FILEOFFS__           000000  EA    __ZP_LAST__               000080  LA    
@@ -36,8 +36,8 @@ Exports list by value:
 __BSS_SIZE__              000000  EA    __ZP_FILEOFFS__           000000  EA    
 __ZP_SIZE__               00001F  EA    __ZPSTART__               000080 REA    
 __ZP_LAST__               000080  LA    __ZP_START__              000080  LA    
-__STACKSIZE__             000800 REA    __BSS_LOAD__              00147F  LA    
-__BSS_RUN__               00147F  LA    __STACKSTART__            008000 REA    
+__STACKSIZE__             000800 REA    __BSS_LOAD__              001482  LA    
+__BSS_RUN__               001482  LA    __STACKSTART__            008000 REA    
 
 
 
