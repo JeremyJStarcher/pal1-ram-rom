@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#include "6532_timer.h"
+// #include "6532_timer.h"
 #include "6532_timer.c"
 #include "clockspeed.h"
 #include "commands.h"
@@ -47,7 +47,7 @@ uint16_t ADDR_BOTTOM = (uint16_t)0x2000;
 uint16_t ADDR_TOP = ((uint16_t)0xFFFF);
 
 #define HI_UINT16(a) (((a) >> 8) & 0xFF)
-#define LO_UINT16(a) ((a)&0xFF)
+#define LO_UINT16(a) ((a) & 0xFF)
 
 // this address should always never change value
 // to stop things that probe RAM
@@ -157,7 +157,12 @@ void main_memory_loop() {
           data = (uint32_t)((all & data_mask) >> D0);
           // inline 16_to_8
           data |= ((data >> (D7 - D0)) & 1) << 7;
-          riot_write_timer(addr, data);
+
+          // Inline this looking for speed
+          // Comes close but is still a bit slow
+          addr = addr & 0x000F;
+          period_type = periodtypemap[addr];
+          riot_counter = data << shiftmap[addr];
         } else {
           data = riot_read_timer(addr);
 

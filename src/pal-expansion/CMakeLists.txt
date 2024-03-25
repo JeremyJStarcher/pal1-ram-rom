@@ -11,7 +11,7 @@ endif()
 
 
 
-project(pico_memory)
+project(pico_memory C CXX ASM)
 
 pico_sdk_init()
 
@@ -57,6 +57,6 @@ pico_add_extra_outputs(pico_memory)
 #example_auto_set_url(pico_memory)
 
 # Slow down flash during boot for heavy overclocking.
-#pico_define_boot_stage2(slower_boot2 ${PICO_DEFAULT_BOOT_STAGE2_FILE})
-#target_compile_definitions(slower_boot2 PRIVATE PICO_FLASH_SPI_CLKDIV=4)
-#pico_set_boot_stage2(pico_memory slower_boot2)
+pico_define_boot_stage2(slower_boot2 ${PICO_DEFAULT_BOOT_STAGE2_FILE})
+target_compile_definitions(slower_boot2 PRIVATE PICO_FLASH_SPI_CLKDIV=4)
+pico_set_boot_stage2(pico_memory slower_boot2)

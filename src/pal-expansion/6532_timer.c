@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 uint32_t riot_counter = 1;
-uint8_t period_type = PERIODTYPE_TIM1T;
+int32_t period_type = PERIODTYPE_TIM1T;
 
 uint8_t riot_read_timer(uint16_t addr) {
   if (riot_counter & (1 << 18)) {
@@ -30,7 +30,7 @@ uint8_t riot_read_timer(uint16_t addr) {
   }
 }
 
-int periodtypemap[] = {
+int32_t __attribute__((section(".data"))) periodtypemap[] = {
     -1,                   // 00
     -1,                   // 01
     -1,                   // 02
@@ -49,7 +49,7 @@ int periodtypemap[] = {
     PERIODTYPE_TIM1024T   // 0F
 };
 
-int shiftmap[] = {
+int32_t __attribute__((section(".data"))) shiftmap[] = {
     -1,  // 00
     -1,  // 01
     -1,  // 02
@@ -68,29 +68,37 @@ int shiftmap[] = {
     10   // 0F
 };
 
+int32_t __attribute__((section(".data"))) shiftmap2[] = {
+0, // PERIODTYPE_TIM1T
+3, // PERIODTYPE_TIM8T
+3, // PERIODTYPE_TIM64T
+10 // PERIODTYPE_TIM1024T
+
+};
+
 void riot_write_timer(uint16_t addr, uint8_t data) {
   uint8_t adr = addr & 0x000F;
 
-  if (adr == 0x04) {
-    period_type = PERIODTYPE_TIM1T;
-    riot_counter = data;
-  }
-  if (adr == 0x05) {
-    period_type = PERIODTYPE_TIM8T;
-    riot_counter = data << 3;
-  }
+//   if (adr == 0x04) {
+//     period_type = PERIODTYPE_TIM1T;
+//     riot_counter = data;
+//   }
+//   if (adr == 0x05) {
+//     period_type = PERIODTYPE_TIM8T;
+//     riot_counter = data << 3;
+//   }
 
-  if (adr == 0x06) {
-    period_type = PERIODTYPE_TIM64T;
-    riot_counter = data << 6;
-  }
-  if (adr == 0x07) {
-    period_type = PERIODTYPE_TIM1024T;
-    riot_counter = data << 10;
-  }
+//   if (adr == 0x06) {
+//     period_type = PERIODTYPE_TIM64T;
+//     riot_counter = data << 6;
+//   }
+//   if (adr == 0x07) {
+//     period_type = PERIODTYPE_TIM1024T;
+//     riot_counter = data << 10;
+//   }
 
-  //   period_type = periodtypemap[adr];
-  //   riot_counter = data << shiftmap[adr];
+    period_type = periodtypemap[adr];
+    riot_counter = data << shiftmap[adr];
 
   //   switch (adr) {
   //     case 0x04:
