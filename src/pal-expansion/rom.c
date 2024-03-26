@@ -7,7 +7,8 @@
  * March 2024
  */
 
-// #define EMULATE_RIOT
+#define EMULATE_RIOT
+#define EMULATE_MEMORY
 
 #include <malloc.h>
 #include <stdio.h>
@@ -49,7 +50,7 @@ uint16_t ADDR_BOTTOM = (uint16_t)0x2000;
 uint16_t ADDR_TOP = ((uint16_t)0xFFFF);
 
 #define HI_UINT16(a) (((a) >> 8) & 0xFF)
-#define LO_UINT16(a) ((a) & 0xFF)
+#define LO_UINT16(a) ((a)&0xFF)
 
 // this address should always never change value
 // to stop things that probe RAM
@@ -117,6 +118,8 @@ int main() {
   setup_gpio();
   gpio_put(DEN, 0);
 
+  setup_riot_lookup_tables();
+
   multicore_launch_core1(main_memory_loop);
 
   init_ux();
@@ -134,7 +137,12 @@ void main_memory_loop() {
   uint_fast8_t riot_phi2_state = false;
   uint_fast8_t riot_range;
   uint_fast8_t riot_underflow;
+  uint_fast16_t riot_data;
+  uint_fast16_t riot_addr;
+
 #endif
+
+  save_and_disable_interrupts();
 
   while (true) {
     all = gpio_get_all();
@@ -144,18 +152,22 @@ void main_memory_loop() {
 
     we_n = (all & (uint32_t)(1 << WE));
 
-#ifdef EMULATE_RIOT
     if (phi2) {
+#ifdef EMULATE_RIOT
       riot_phi2_state = true;
+#endif
     } else {
+      gpio_set_dir_masked(data_mask, 0);
+
+#ifdef EMULATE_RIOT
       if (riot_phi2_state) {
         riot_counter--;
         riot_phi2_state = false;
         // Do this calculation when we are not as busy
         riot_underflow = riot_counter & (1 << 18);
       }
-    }
 #endif
+    }
 
 #ifdef EMULATE_RIOT
     riot_range = addr >= 0x1700 && addr <= 0x170F;
@@ -183,18 +195,16 @@ void main_memory_loop() {
 
           // inline 8 to 16
           data |= ((data & (1 << 7)) ? 1 : 0) << D7 - D0;
-          gpio_put(DEN, 0);
+          // gpio_put(DEN, 0);
           gpio_set_dir_masked(data_mask, data_mask);
           gpio_put_masked(data_mask, data << D0);
-          continue;
         }
-      } else {
-        gpio_set_dir_masked(data_mask, 0);
-        continue;
       }
+      continue;
     }
 #endif
 
+#ifdef EMULATE_MEMORY
     data = sys_state.memory[addr];
     int decen = (data & 1 << IN_USE_BIT) ? 1 : 0;
 
@@ -209,8 +219,9 @@ void main_memory_loop() {
         gpio_put_masked(data_mask, data << D0);
       }
     } else {
-      gpio_set_dir_masked(data_mask, 0);
+      //      gpio_set_dir_masked(data_mask, 0);
     }
+#endif
   }
 }
 

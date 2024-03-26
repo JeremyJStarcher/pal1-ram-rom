@@ -190,8 +190,8 @@ void setup_memory_contents() {
   }
 
 #if 1
-  pokeram(0x00F1, 0x00); // Clear all flags
-  pokeram(0x17F9, 0x00); // Tape load ID
+  pokeram(0x00F1, 0x00);  // Clear all flags
+  pokeram(0x17F9, 0x00);  // Tape load ID
   dpokeram(0x17FA, 0x1C00);
   dpokeram(0x17FC, 0x1C00);
   dpokeram(0x17FE, 0x1C00);
