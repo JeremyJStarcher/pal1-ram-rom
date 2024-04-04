@@ -3,6 +3,8 @@
 #include <ctype.h>
 #include <stdint.h>
 
+#include "rambuf.h"
+
 #define RO_MEMORY_BIT 15
 #define IN_USE_BIT 14
 // This bit set means that location will never be used as RAM or ROM
@@ -19,7 +21,7 @@
 // Calculate the total size of 'memory' and 'description' fields in bytes
 #define SYS_TOTAL_SIZE                                           \
   ((SYS_MEMORY_SIZE * sizeof(uint16_t)) + SYS_DESCRIPTION_SIZE + \
-   SYS_PRIMED_SIZE)
+   SYS_PRIMED_SIZE + ((255 + 255 + 4) * sizeof(uint16_t)))
 
 // Calculate padding required to align the total size to the nearest 4K boundary
 #define SYS_REQUIRED_PADDING (SYS_ALIGNMENT - (SYS_TOTAL_SIZE % SYS_ALIGNMENT))
@@ -28,6 +30,11 @@ typedef struct {
   uint16_t memory[SYS_MEMORY_SIZE];
   char description[SYS_DESCRIPTION_SIZE];
   char primed_flag[SYS_PRIMED_SIZE];
+
+  uint16_t periodtypemap[255];
+  uint16_t shiftmap[255];
+  uint16_t shiftmap2[4];
+
   char padding[SYS_REQUIRED_PADDING];  // Padding to align the total size to 4K
                                        // boundary
 } /* __attribute__((aligned(SYS_ALIGNMENT))) */ SysStateStruct;
