@@ -30,6 +30,10 @@
                 JSR PRIMM
                 .BYTE " actual ",$0
 
+                JSR CRLF
+                JSR CRLF
+                JMP     KIMMON           ; ..and exit to KIM
+
                 jmp end
 
                 pass:
@@ -46,6 +50,7 @@
 
 
         .org $0200
+        jmp START
 
 DPL = $00
 DPH = $01
@@ -75,41 +80,6 @@ OUTSP = $1E9E; Output a space to the TTY
 
 
 
-.scope 
-                JSR CRLF
-                JSR PRIMM
-                .BYTE "Running first test: ",0
-
-                lda #>$1704 
-                jsr PRTBYT
-                lda #<$1704 
-                jsr PRTBYT
-                jsr OUTSP
-
-                lda #$01
-                sta $1704
-
-                lda $1706
-                STA TESTR
-
-                cmp #$FD
-                beq pass
-
-                JSR PRIMM
-                .BYTE "failed!",$0
- 
-                jmp end
-
-                pass:
-                JSR PRIMM
-                .BYTE "passed: ",$0
-
-                end:
-
-                JSR CRLF
-.endscope
-
-
 
 START:
         CLD
@@ -120,33 +90,33 @@ START:
 
         JSR CRLF
 
-	;JSR PRIMM
-	;.BYTE "WITHOUT BUSY NOOPS!",$00
-        ;JSR CRLF
+	JSR PRIMM
+	.BYTE "WITHOUT BUSY NOOPS!",$00
+        JSR CRLF
 
         timerbasictest RIOT_BASE, $04, $FD, $00
-        ;;timerbasictest RIOT_BASE, $0C, $FD, $00
-        ;timerbasictest RIOT_BASE, $05, $00, $00
-        ;;timerbasictest RIOT_BASE, $0D, $00, $00
-        ;timerbasictest RIOT_BASE, $06, $00, $00
-        ;;timerbasictest RIOT_BASE, $0E, $00, $00
-        ;timerbasictest RIOT_BASE, $07, $00, $00
-        ;;timerbasictest RIOT_BASE, $0F, $00, $00
+        ;timerbasictest RIOT_BASE, $0C, $FD, $00
+        timerbasictest RIOT_BASE, $05, $00, $00
+        ;timerbasictest RIOT_BASE, $0D, $00, $00
+        timerbasictest RIOT_BASE, $06, $00, $00
+        ;timerbasictest RIOT_BASE, $0E, $00, $00
+        timerbasictest RIOT_BASE, $07, $00, $00
+        ;timerbasictest RIOT_BASE, $0F, $00, $00
 
-	;JSR PRIMM
-	;.BYTE "WITH BUSY NOOPS!",$00
-        ;JSR CRLF
+	JSR PRIMM
+	.BYTE "WITH BUSY NOOPS!",$00
+        JSR CRLF
 
-        ;timerbasictest RIOT_BASE, $04, $F5, 1
-        ;;timerbasictest RIOT_BASE, $0C, $F5, 1
-        ;timerbasictest RIOT_BASE, $05, $F4, 2
-        ;;timerbasictest RIOT_BASE, $0D, $F4, 2
-        ;timerbasictest RIOT_BASE, $06, $24, 3
-        ;;timerbasictest RIOT_BASE, $0E, $24, 3
-        ;timerbasictest RIOT_BASE, $07, $D4, 5
-        ;;timerbasictest RIOT_BASE, $0F, $D4, 5
+        timerbasictest RIOT_BASE, $04, $F5, 1
+        ;timerbasictest RIOT_BASE, $0C, $F5, 1
+        timerbasictest RIOT_BASE, $05, $F4, 2
+        ;timerbasictest RIOT_BASE, $0D, $F4, 2
+        timerbasictest RIOT_BASE, $06, $24, 3
+        ;timerbasictest RIOT_BASE, $0E, $24, 3
+        timerbasictest RIOT_BASE, $07, $D4, 5
+        ;timerbasictest RIOT_BASE, $0F, $D4, 5
 
-	;JMP	START
+	JMP	START
 
         JMP     KIMMON           ; ..and exit to KIM
 

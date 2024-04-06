@@ -122,7 +122,7 @@ int main() {
   init_ux();
 }
 
-void main_memory_loop() {
+void __time_critical_func(main_memory_loop)() {
   uint_fast16_t addr;
   uint_fast16_t data;
   uint32_t all;
@@ -141,7 +141,6 @@ void main_memory_loop() {
 
     addr = all & (uint32_t)0xFFFF;
     phi2 = (all & (uint32_t)(1 << PHI2));
-
     we_n = (all & (uint32_t)(1 << WE));
 
 #ifdef EMULATE_RIOT
