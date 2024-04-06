@@ -17,7 +17,7 @@ rm -rf build
 mkdir build
 cd build
 cmake ../pal-expansion
-make
+make VERBOSE=TRUE
 
 
 UF2_FILE=$(find . -name "*.uf2")
