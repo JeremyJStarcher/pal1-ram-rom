@@ -13,3 +13,8 @@ kicad/level-shifted/jlcpcb/**
 kicad/mplex/jlcpcb/**
 kicad/mplex/mplex/**
 kicad/mplex/jlcpcb/**
+kicad/mplex/mplex-backups/
+kicad/mplex/production/
+src/riot-test/riottest.bin
+src/riot-test/riottest.c
+src/riot-test/riottest.o

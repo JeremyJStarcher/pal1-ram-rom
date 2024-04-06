@@ -8,6 +8,7 @@
 
 #include "commands.h"
 #include "pin_definitions.h"
+#include "riottest.c"
 
 // #include "rom_ext.c"
 
@@ -172,6 +173,11 @@ void setup_memory_contents() {
     pokeram(idx, rnd);
   }
 #endif
+
+  for (idx = 0x0000; idx < riot_testSize; idx += 1) {
+    uint8_t val = riot_test[idx];
+    pokeram(0x0200 + idx, val);
+  }
 
   // While we could replace the entire ROM here, if we do that
   // single step mode will no longer skip the ROM content as it

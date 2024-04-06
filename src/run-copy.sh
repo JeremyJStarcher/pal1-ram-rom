@@ -3,6 +3,12 @@
 # Abort if any command fails
 set -e
 
+cd riot-test
+make
+cd ..
+
+
+
 # rm -rf build
 # mkdir build
 # cd build

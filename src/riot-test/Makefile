@@ -1,6 +1,8 @@
 PROGRAM = riottest
 
-all: $(PROGRAM).ptp
+all: $(PROGRAM).ptp Makefile
+	./convert.py
+	cp $(PROGRAM).c ../pal-expansion
 
 $(PROGRAM).ptp: $(PROGRAM).bin Makefile
 	srec_cat $(PROGRAM).bin -binary -offset 0x0200 -o $(PROGRAM).ptp -MOS_Technologies
@@ -12,6 +14,6 @@ $(PROGRAM).o:	$(PROGRAM).s
 	ca65 --verbose -g -l $(PROGRAM).lst $(PROGRAM).s
 
 clean:
-	$(RM) *.o *.lst *.map *.bin
+	$(RM) *.o *.lst *.map *.bin $(PROGRAM).c
 
 distclean: clean

@@ -7,8 +7,7 @@
  * March 2024
  */
 
-//#define EMULATE_RIOT
-#define EMULATE_MEMORY
+#define EMULATE_RIOT
 
 #include <malloc.h>
 #include <stdio.h>
@@ -103,17 +102,16 @@ void init_ux() {
 int main() {
   // Set system clock speed.
   // 400 MHz
-   vreg_set_voltage(VREG_VOLTAGE_1_30);
-   set_sys_clock_pll(1600000000, 4, 1);
+  //  vreg_set_voltage(VREG_VOLTAGE_1_30);
+  //  set_sys_clock_pll(1600000000, 4, 1);
 
-  // set_sys_clock_khz(CLOCK_SPEED_HIGH, false);
-  // vreg_set_voltage(VREG_VOLTAGE_1_30);
+  set_sys_clock_khz(CLOCK_SPEED_HIGH, false);
+  vreg_set_voltage(VREG_VOLTAGE_1_30);
 
   stdio_init_all();
 
   // Specify contents of emulated ROM.
   setup_memory_contents();
-  setup_riot_lookup_tables();
 
   // GPIO setup.
   setup_gpio();
@@ -132,17 +130,11 @@ void main_memory_loop() {
   uint32_t cs;
   uint32_t phi2;
 
-  char dummyCounter = 64;
-
 #ifdef EMULATE_RIOT
   uint_fast8_t riot_phi2_state = false;
   uint_fast8_t riot_range;
   uint_fast8_t riot_underflow;
-  uint_fast16_t riot_data;
-  uint_fast16_t riot_addr;
 #endif
-
-  save_and_disable_interrupts();
 
   while (true) {
     all = gpio_get_all();
@@ -150,70 +142,59 @@ void main_memory_loop() {
     addr = all & (uint32_t)0xFFFF;
     phi2 = (all & (uint32_t)(1 << PHI2));
 
+    we_n = (all & (uint32_t)(1 << WE));
+
+#ifdef EMULATE_RIOT
     if (phi2) {
-#ifdef EMULATE_RIOT
       riot_phi2_state = true;
-
-        if (dummyCounter) {
-    addr = 0x1704;
-    we_n = 0;
-    dummyCounter -= 1;
-  }
-
-#endif
     } else {
-      gpio_set_dir_masked(data_mask, 0);
-
-
-#ifdef EMULATE_RIOT
-      if (riot_addr) {
-        // Resuse the temp variable
-        riot_addr = 0;
-      }
-
       if (riot_phi2_state) {
         riot_counter--;
         riot_phi2_state = false;
         // Do this calculation when we are not as busy
         riot_underflow = riot_counter & (1 << 18);
       }
-      continue;
-#endif
     }
-
-    we_n = (all & (uint32_t)(1 << WE));
+#endif
 
 #ifdef EMULATE_RIOT
     riot_range = addr >= 0x1700 && addr <= 0x170F;
     if (riot_range) {
-      if (we_n == 0) {
-        riot_data = (uint32_t)((all & data_mask) >> D0);
-        // inline 16_to_8
-        riot_data |= ((riot_data >> (D7 - D0)) & 1) << 7;
+      if (phi2) {
+        if (we_n == 0) {
+          data = (uint32_t)((all & data_mask) >> D0);
+          // inline 16_to_8
+          data |= ((data >> (D7 - D0)) & 1) << 7;
 
-        addr = sys_state.memory[addr];
-
-        period_type = addr & 0xFF00;
-        riot_counter = riot_data << (addr & 0x00FF);
-      } else {
-        if (riot_underflow) {
-          // Let the casting get rid of the rest
-          data = riot_counter;
+          // Inline this looking for speed
+          // Comes close but is still a bit slow
+          addr = addr & 0x000F;
+          period_type = periodtypemap[addr];
+          riot_counter = data << shiftmap[addr];
         } else {
-          data = riot_counter >> sys_state.shiftmap2[period_type];
-        }
+          // data = riot_read_timer(addr);
 
-        // inline 8 to 16
-        data |= ((data & (1 << 7)) ? 1 : 0) << D7 - D0;
-        // gpio_put(DEN, 0);
-        gpio_set_dir_masked(data_mask, data_mask);
-        gpio_put_masked(data_mask, data << D0);
+          if (riot_underflow) {
+            // Let the casting get rid of the rest
+            data = riot_counter;
+          } else {
+            data = riot_counter >> shiftmap2[period_type];
+          }
+
+          // inline 8 to 16
+          data |= ((data & (1 << 7)) ? 1 : 0) << D7 - D0;
+          gpio_put(DEN, 0);
+          gpio_set_dir_masked(data_mask, data_mask);
+          gpio_put_masked(data_mask, data << D0);
+          continue;
+        }
+      } else {
+        gpio_set_dir_masked(data_mask, 0);
+        continue;
       }
-      continue;
     }
 #endif
 
-#ifdef EMULATE_MEMORY
     data = sys_state.memory[addr];
     int decen = (data & 1 << IN_USE_BIT) ? 1 : 0;
 
@@ -227,8 +208,9 @@ void main_memory_loop() {
         gpio_set_dir_masked(data_mask, data_mask);
         gpio_put_masked(data_mask, data << D0);
       }
+    } else {
+      gpio_set_dir_masked(data_mask, 0);
     }
-#endif
   }
 }
 
