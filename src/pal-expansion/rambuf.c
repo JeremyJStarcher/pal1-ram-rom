@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "commands.h"
+#include "ilink.c"
 #include "pin_definitions.h"
 #include "riottest.c"
 
@@ -178,6 +179,22 @@ void setup_memory_contents() {
     uint8_t val = riot_test[idx];
     pokeram(0x0200 + idx, val);
   }
+
+  for (idx = 0x0000; idx < ilinkSize; idx += 1) {
+    uint8_t val = ilink[idx];
+    pokerom(0x1A96 + idx, val);
+  }
+
+  // Set up the regular readline so it becomes upper case
+  dpokerom(0x1C6A + 1, 0x1A99);
+
+  // 001A99  1  4C D3 1A             JMP normal
+
+  /*
+
+  001C6A  1  20 5A 1E     READ    JSR   GETCH     ; GET CHAR
+
+  */
 
   // While we could replace the entire ROM here, if we do that
   // single step mode will no longer skip the ROM content as it

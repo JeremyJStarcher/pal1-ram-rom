@@ -21,10 +21,22 @@ GETCH = $1E5A; Get one ASCII character from TTY and return in A.
 SAD = $1740     ; 6530 A DATA
 SBD = $1742 ; KIM 6532 PIA B data register
 
-        .org $0200
-        CLD
+        .org $1A96
+        ; MAIN ENTRY POINT
+        JMP MAIN
+
+        ; Entry point for upper case readch
+        JMP ucasech
+
+ucasech:
+        JSR EGETCHAR
+        PHA
+        jsr OUTCH
+        PLA
+        rts
 
 MAIN:
+        CLD
         LDA XCH_CMD_REG
         CMP #XCH_CMD_CHOUT
         BEQ PCHOUT
@@ -59,7 +71,7 @@ EGETCHAR:
         LDA echoflag ; if notechoflag 
         beq normal ;  then normal echo 
         LDA SBD  ; else set TTY bit PB0 to 0 
-        AND #$FE  
+        AND #$FE
         STA SBD ; 
 normal: JSR GETCH ; get character from input
         PHA ; save
@@ -67,4 +79,17 @@ normal: JSR GETCH ; get character from input
         ORA #$01 
         STA SBD 
         PLA ; restore received character
+
+
+        ; Assuming the character is already loaded in the A register
+        CMP #$61         ; Compare with ASCII value of 'a'
+        BCC NotLowercase ; If less than 'a', it's not lowercase
+        CMP #$7A         ; Compare with ASCII value of 'z'
+        BCS NotLowercase ; If greater than 'z', it's not lowercase
+
+        ; Correct way to convert lowercase to uppercase
+        SEC              ; Set carry flag for subtraction
+        SBC #$20         ; Subtract 32 to convert to uppercase
+
+NotLowercase:
         RTS 

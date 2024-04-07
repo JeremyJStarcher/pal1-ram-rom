@@ -34,4 +34,4 @@ def binary_file_to_c_array(input_file, output_file, array_name="binaryData", byt
 
 # Example usage:
 binary_file_to_c_array("riottest.bin", "riottest.c", "riot_test", 16)
-
+binary_file_to_c_array("ilink.bin", "ilink.c", "ilink", 16)

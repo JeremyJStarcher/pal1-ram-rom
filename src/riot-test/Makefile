@@ -4,6 +4,7 @@ ILINK = ilink
 all: $(RIOTTEST).ptp $(ILINK).ptp Makefile
 	./convert.py
 	cp $(RIOTTEST).c ../pal-expansion
+	cp $(ILINK).c ../pal-expansion
 
 $(RIOTTEST).ptp: $(RIOTTEST).bin Makefile
 	srec_cat $(RIOTTEST).bin -binary -offset 0x0200 -o $(RIOTTEST).ptp -MOS_Technologies
@@ -17,7 +18,7 @@ $(RIOTTEST).o:	$(RIOTTEST).s
 
 
 $(ILINK).ptp: $(ILINK).bin Makefile
-	srec_cat $(ILINK).bin -binary -offset 0x0200 -o $(ILINK).ptp -MOS_Technologies
+	srec_cat $(ILINK).bin -binary -offset 0x1A96 -o $(ILINK).ptp -MOS_Technologies
 
 $(ILINK).bin: $(ILINK).o
 	ld65 -t none -vm -m $(ILINK).map -o $(ILINK).bin $(ILINK).o
