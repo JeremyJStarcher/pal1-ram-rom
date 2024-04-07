@@ -1,19 +1,33 @@
-PROGRAM = riottest
+RIOTTEST = riottest
+ILINK = ilink
 
-all: $(PROGRAM).ptp Makefile
+all: $(RIOTTEST).ptp $(ILINK).ptp Makefile
 	./convert.py
-	cp $(PROGRAM).c ../pal-expansion
+	cp $(RIOTTEST).c ../pal-expansion
 
-$(PROGRAM).ptp: $(PROGRAM).bin Makefile
-	srec_cat $(PROGRAM).bin -binary -offset 0x0200 -o $(PROGRAM).ptp -MOS_Technologies
+$(RIOTTEST).ptp: $(RIOTTEST).bin Makefile
+	srec_cat $(RIOTTEST).bin -binary -offset 0x0200 -o $(RIOTTEST).ptp -MOS_Technologies
 
-$(PROGRAM).bin: $(PROGRAM).o
-	ld65 -t none -vm -m $(PROGRAM).map -o $(PROGRAM).bin $(PROGRAM).o
+$(RIOTTEST).bin: $(RIOTTEST).o
+	ld65 -t none -vm -m $(RIOTTEST).map -o $(RIOTTEST).bin $(RIOTTEST).o
 
-$(PROGRAM).o:	$(PROGRAM).s
-	ca65 --verbose -g -l $(PROGRAM).lst $(PROGRAM).s
+$(RIOTTEST).o:	$(RIOTTEST).s
+	ca65 --verbose -g -l $(RIOTTEST).lst $(RIOTTEST).s
+
+
+
+$(ILINK).ptp: $(ILINK).bin Makefile
+	srec_cat $(ILINK).bin -binary -offset 0x0200 -o $(ILINK).ptp -MOS_Technologies
+
+$(ILINK).bin: $(ILINK).o
+	ld65 -t none -vm -m $(ILINK).map -o $(ILINK).bin $(ILINK).o
+
+$(ILINK).o:	$(ILINK).s
+	ca65 --verbose -g -l $(ILINK).lst $(ILINK).s
+
+
 
 clean:
-	$(RM) *.o *.lst *.map *.bin $(PROGRAM).c
+	$(RM) *.o *.lst *.map *.bin $(RIOTTEST).c
 
 distclean: clean

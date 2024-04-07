@@ -15,6 +15,9 @@ kicad/mplex/mplex/**
 kicad/mplex/jlcpcb/**
 kicad/mplex/mplex-backups/
 kicad/mplex/production/
-src/riot-test/riottest.bin
-src/riot-test/riottest.c
-src/riot-test/riottest.o
+
+src/riot-test/*.bin
+src/riot-test/*.c
+src/riot-test/*.o
+src/riot-test/*.lst
+src/riot-test/*.map

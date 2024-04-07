@@ -9,6 +9,7 @@
 #include <malloc.h>
 #include <pico/multicore.h>
 #include <pico/stdlib.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,6 +42,66 @@ uint32_t ints;
 
 bool load_ptp_error = false;
 bool load_ptp_done = false;
+bool output_to_pal = true;
+
+#include <stdarg.h>
+#include <stdio.h>
+
+void aputchar(char c) {
+  putchar(c);
+
+  if (output_to_pal) {
+    pokeram(XCH_TO_PAL, c);
+    pokeram(XCH_CMD_REG, XCH_CMD_CHOUT);
+
+    absolute_time_t start_time = get_absolute_time();
+
+    while (true) {
+      int xch_clk = peekram(XCH_CMD_REG);
+      if (xch_clk == XCH_CMD_NONE) {
+        break;
+      }
+
+      if (absolute_time_diff_us(start_time, get_absolute_time()) >= 500000) {
+        // printf("Timeout reached, proceeding...\n");
+        // output_to_pal = false;
+        break;
+      }
+    }
+  }
+}
+
+void aputs(char *c) {
+  for (int i = 0; i < strlen(c); ++i) {
+    aputchar(c[i]);
+  }
+
+  aputchar('\r');
+  aputchar('\n');
+}
+
+// Wrapper function for snaprintf to send formatted string via api_send_char.
+int aprintf(const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+
+  // Assuming a maximum buffer size. Adjust this according to your needs.
+  char buffer[1024];
+  int formatted_len = vsnprintf(buffer, sizeof(buffer), format, args);
+  va_end(args);
+
+  // Check if snaprintf succeeded
+  if (formatted_len < 0) {
+    return -1;  // Return an error.
+  }
+
+  // Send each character of the formatted string via the API.
+  for (int i = 0; i < formatted_len; ++i) {
+    aputchar(buffer[i]);
+  }
+
+  return formatted_len;  // Return the number of characters sent.
+}
 
 uint8_t token_ram_rom(char *token) {
   if (strcmp(token, "ROM") == 0) {
@@ -68,8 +129,8 @@ void pause() {
 }
 
 uintptr_t get_offset(size_t index) {
-  size_t size =
-      sizeof(SysStateStruct);  // Assuming you want the size of the structure
+  // Assuming you want the size of the structure
+  size_t size = sizeof(SysStateStruct);
   return (_flash_size / 2) + (index * size);
 }
 
@@ -96,14 +157,15 @@ bool is_safe_to_access(size_t index) {
 
 SysStateStruct *get_slot_ptr(size_t index) {
   if (!is_safe_to_access(index)) {
-    printf("Error: Unsafe to access the requested memory slot.\r\n");
+    aprintf("Error: Unsafe to access the requested memory slot.\r\n");
     return NULL;  // Use NULL for pointer error signaling
   }
 
   size_t size = sizeof(SysStateStruct);
   uintptr_t offset = get_offset(index);
-  return (SysStateStruct *)(XIP_BASE +
-                            offset);  // Correctly cast and return the pointer
+
+  // Correctly cast and return the pointer
+  return (SysStateStruct *)(XIP_BASE + offset);
 }
 
 void load_slot_command(char *token) {
@@ -111,7 +173,7 @@ void load_slot_command(char *token) {
       strtok(NULL, " ");  // Try to get the next word as a parameter
   int index = -1;         // Default index value if no parameter is provided
   if (param_str == NULL) {
-    puts("NO SLOT NUMBER GIVEN");
+    aputs("NO SLOT NUMBER GIVEN");
   }
   // index = atoi(param_str); // Convert parameter string to integer
   index = (uint8_t)strtol(param_str, NULL, 16);
@@ -223,10 +285,22 @@ bool load_ptp_line(char *line) {
 
 void read_string(char *buffer, int max_length) {
   int count = 0;  // Number of characters currently in the buffer
-  char ch;        // Character read from stdin
+  int ch;         // Character read from stdin
 
   while (1) {
-    ch = getchar();  // Read a character
+    // jjz
+
+    pokeram(XCH_CMD_REG, XCH_CMD_CHIN);
+    pokeram(XCH_FROM_PAL, 9);
+
+    ch = getchar_timeout_us(10);
+    if (ch == -1) {
+      ch = peekram(XCH_FROM_PAL);
+      pokeram(XCH_FROM_PAL, 0);
+      if (ch == 0) {
+        continue;
+      }
+    }
 
     ch = toupper(ch);
 
@@ -239,9 +313,9 @@ void read_string(char *buffer, int max_length) {
       // Remove the last character from the buffer
       count--;
       // Echo backspace sequence to terminal (backspace, space, backspace)
-      putchar('\b');
-      putchar(' ');
-      putchar('\b');
+      aputchar('\b');
+      aputchar(' ');
+      aputchar('\b');
       continue;
     }
 
@@ -250,30 +324,31 @@ void read_string(char *buffer, int max_length) {
       // If the buffer is not full, add the character to the buffer
       if (count < max_length - 1) {
         buffer[count++] = ch;
-        putchar(ch);  // Echo the character
+        aputchar(ch);  // Echo the character
       }
     }
   }
 
   // Null-terminate the string
   buffer[count] = '\0';
+  pokeram(XCH_CMD_REG, XCH_CMD_NONE);
 }
 
 void command_help() {
-  printf("---- HELP ----- \r\n");
-  printf("L: Load a paper tape file \r\n");
-  printf("MSB: FILL ROM WITH MSB (USED TO VERIFY ADDRESS CODING)\r\n");
-  printf("LSB: FILL ROM WITH LSB (USED TO VERIFY ADDRESS CODING)\r\n");
-  printf("RESET: RESET RAM/ROM TO POWERUP STATE\r\n");
-  printf("SAVE #: SAVE TO A SLOT IN FLASH MEMORY\r\n");
-  printf("LOAD #: LOAD FROM A SLOT IN FLASH MEMORY\r\n");
-  printf("LIST: LIST CONFIGURATIONS TO LOAD\r\n");
-  printf("RX [RAM|ROM] ####: RECEIVE XMODEM\r\n");
-  printf("MEMMAP: SHOW A MEMORY MAP\r\n");
-  printf(
+  aprintf("---- HELP ----- \r\n");
+  aprintf("L: Load a paper tape file \r\n");
+  aprintf("MSB: FILL ROM WITH MSB (USED TO VERIFY ADDRESS CODING)\r\n");
+  aprintf("LSB: FILL ROM WITH LSB (USED TO VERIFY ADDRESS CODING)\r\n");
+  aprintf("RESET: RESET RAM/ROM TO POWERUP STATE\r\n");
+  aprintf("SAVE #: SAVE TO A SLOT IN FLASH MEMORY\r\n");
+  aprintf("LOAD #: LOAD FROM A SLOT IN FLASH MEMORY\r\n");
+  aprintf("LIST: LIST CONFIGURATIONS TO LOAD\r\n");
+  aprintf("RX [RAM|ROM] ####: RECEIVE XMODEM\r\n");
+  aprintf("MEMMAP: SHOW A MEMORY MAP\r\n");
+  aprintf(
       "POKE|DPOKE [RAM|ROM] ADDR VALUE: POKE A BYTE OR WORD TO AN ADDRESS\r\n");
-  printf("PEEK|DPEEK ADDR: PEEK A A BYTE OR WORD\r\n");
-  // printf("PAUSE: PAUSE DEMO\r\n");
+  aprintf("PEEK|DPEEK ADDR: PEEK A A BYTE OR WORD\r\n");
+  // aprintf("PAUSE: PAUSE DEMO\r\n");
 }
 
 void command_fill_ram_msb() {
@@ -305,9 +380,9 @@ void command_loadptp() {
   }
 
   if (load_ptp_error) {
-    printf("*ERR*");
+    aprintf("*ERR*");
   } else {
-    printf("*PAL*");
+    aprintf("*PAL*");
   }
 }
 
@@ -320,13 +395,13 @@ void command_save_slot(char *token) {
     index = (uint8_t)strtol(param_str, NULL, 16);
 
   } else {
-    printf("MUST SPECIFY AN INDEX NUMBER\r\n");
+    aprintf("MUST SPECIFY AN INDEX NUMBER\r\n");
     return;
   }
 
   if (!is_safe_to_access(index)) {
-    printf("Error: Unsafe to access the requested memory slot.\r\n");
-    printf("ONLY SLOTS %02x to %02x MAY BE USED\r\n", 0, MAX_VALID_INDEX);
+    aprintf("Error: Unsafe to access the requested memory slot.\r\n");
+    aprintf("ONLY SLOTS %02x to %02x MAY BE USED\r\n", 0, MAX_VALID_INDEX);
     return;  // Exit or handle error appropriately
   }
 
@@ -335,32 +410,32 @@ void command_save_slot(char *token) {
   uintptr_t offset = get_offset(index);
 
 #ifdef PRINT_DEBUG
-  printf("FLASH SIZE: %08x\r\n", _flash_size);
-  printf("SAVE SLOT: %d OFFSET %04x  size: %08x\r\n", index, offset, size);
+  aprintf("FLASH SIZE: %08x\r\n", _flash_size);
+  aprintf("SAVE SLOT: %d OFFSET %04x  size: %08x\r\n", index, offset, size);
   if (offset % 4096 == 0) {
-    printf("ON THE BOUNDARY\r\n");
+    aprintf("ON THE BOUNDARY\r\n");
   } else {
-    printf("OOPS\r\n");
+    aprintf("OOPS\r\n");
   }
 #endif
 
-  puts("OLD DESCRIPTION OF SAVE SLOT: ");
+  aputs("OLD DESCRIPTION OF SAVE SLOT: ");
   SlotStateStruct slot_state;
   get_slot_state(index, &slot_state);
-  puts(slot_state.description);
+  aputs(slot_state.description);
 
   char input[SYS_DESCRIPTION_SIZE];
-  puts("ENTER NEW DESCRIPTION OR BLANK TO ABORT: ");
+  aputs("ENTER NEW DESCRIPTION OR BLANK TO ABORT: ");
   read_string(input, sizeof(input));
-  puts("");
+  aputs("");
 
   if (strlen(input) == 0) {
-    puts("BLANK DESCRIPTION: ABORTING");
+    aputs("BLANK DESCRIPTION: ABORTING");
     return;
   }
 
-  puts("SAVING TO FLASH. THIS WILL TAKE A FEW SECONDS.");
-  puts("WILL NEED TO RESET YOUR PAL-1 AFTER THIS");
+  aputs("SAVING TO FLASH. THIS WILL TAKE A FEW SECONDS.");
+  aputs("WILL NEED TO RESET YOUR PAL-1 AFTER THIS");
   scpy(sys_state.description, input, SYS_DESCRIPTION_SIZE);
 
   pause();
@@ -407,12 +482,12 @@ void get_slot_state(size_t i, SlotStateStruct *slot_state) {
 
 void command_list_slots() {
   for (size_t i = 0; i < MAX_VALID_INDEX; i++) {
-    printf("SLOT: %02x ", i);
+    aprintf("SLOT: %02x ", i);
 
     SlotStateStruct slot_state;
     get_slot_state(i, &slot_state);
 
-    puts(slot_state.description);
+    aputs(slot_state.description);
   }
 }
 
@@ -425,14 +500,14 @@ void command_poke(char *token) {
 
   uint8_t dest_type = token_ram_rom(token);
   if (dest_type == TOKEN_UNKNOWN) {
-    printf("MUST SPECIFY RAM/ROM\r\n");
+    aprintf("MUST SPECIFY RAM/ROM\r\n");
     return;
   }
 
   token = strtok(NULL, " ");
 
   if (strlen(token) == 0) {
-    printf("MUST SPECIFY ADDRESS\r\n");
+    aprintf("MUST SPECIFY ADDRESS\r\n");
     return;
   }
 
@@ -441,7 +516,7 @@ void command_poke(char *token) {
   token = strtok(NULL, " ");
 
   if (strlen(token) == 0) {
-    printf("MUST SPECIFY VALUE\r\n");
+    aprintf("MUST SPECIFY VALUE\r\n");
     return;
   }
   data = (uint16_t)strtol(token, NULL, 16);
@@ -470,7 +545,7 @@ void command_peek(char *token) {
   token = strtok(NULL, " ");
 
   if (strlen(token) == 0) {
-    printf("MUST SPECIFY ADDRESS\r\n");
+    aprintf("MUST SPECIFY ADDRESS\r\n");
     return;
   }
 
@@ -478,40 +553,40 @@ void command_peek(char *token) {
 
   if (dpeek) {
     uint16_t data = dpeekram(addr);
-    printf("%04X", data);
+    aprintf("%04X", data);
   } else {
     uint8_t data = peekram(addr);
-    printf("%02X", data);
+    aprintf("%02X", data);
   }
 }
 
 void command_rx(char *token) {
-  printf("RX...\r\n");
+  aprintf("RX...\r\n");
   uint16_t addr;
 
   token = strtok(NULL, " ");
 
   uint8_t dest_type = token_ram_rom(token);
   if (dest_type == TOKEN_UNKNOWN) {
-    printf("MUST SPECIFY RAM/ROM\n\n");
+    aprintf("MUST SPECIFY RAM/ROM\n\n");
     return;
   }
 
   if (dest_type == TOKEN_ROM) {
-    printf("LOADING AS ROM NOT YET AVAILABLE\r\n");
+    aprintf("LOADING AS ROM NOT YET AVAILABLE\r\n");
   }
 
   token = strtok(NULL, " ");
 
   if (strlen(token) == 0) {
-    printf("MUST SPECIFY ADDRESS\r\n");
+    aprintf("MUST SPECIFY ADDRESS\r\n");
     return;
   }
 
   addr = (uint16_t)strtol(token, NULL, 16);
 
-  printf("RAM/ROM %s\r\n", dest_type == TOKEN_ROM ? "ROM" : "RAM");
-  printf("ADDR %04x\r\n", addr);
+  aprintf("RAM/ROM %s\r\n", dest_type == TOKEN_ROM ? "ROM" : "RAM");
+  aprintf("ADDR %04x\r\n", addr);
 
   UploadConfig dest;
   dest.upload_type = XMODEL_UPLOAD_TYPE_PROGRAM;
@@ -539,27 +614,27 @@ uint8_t memory_type(uint16_t addr) {
 }
 
 void print_memmap_range(uint16_t start_addr, uint16_t idx, uint8_t mem_type) {
-  printf("%04x::%04x ", start_addr, idx);
+  aprintf("%04x::%04x ", start_addr, idx);
 
   switch (mem_type) {
     case MEMORY_UNMAPPED:
-      printf("NOT MAPPED");
+      aprintf("NOT MAPPED");
       break;
     case MEMORY_RAM:
-      printf("RAM");
+      aprintf("RAM");
       break;
     case MEMORY_ROM:
-      printf("ROM");
+      aprintf("ROM");
       break;
     case MEMORY_IGNORE:
-      printf("IGNORED");
+      aprintf("IGNORED");
       break;
     case MEMORY_UNKNOWN:
-      printf("UNKNOWN");
+      aprintf("UNKNOWN");
       break;
   }
 
-  printf("\r\n");
+  aprintf("\r\n");
 }
 
 void command_memmap(void) {
@@ -587,24 +662,24 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
   _flash_size = flash_size;
 
   while (1) {
-    printf("\r\nENTER COMMAND (OR HELP): ");
+    aprintf("\r\nENTER COMMAND (OR HELP): ");
     read_string(input, sizeof(input));
-    // printf("\r\nYou entered: %s\r\n", input);
+    // aprintf("\r\nYou entered: %s\r\n", input);
 
     char *command = strtok(input, " ");  // Get the first word as the command
     if (command == NULL) {
       continue;  // If no command is entered, skip to the next iteration
     }
 
-    printf("\r\n");
+    aprintf("\r\n");
 
     // Compare input with known commands and call the corresponding function
     if (strcmp(command, "HELP") == 0) {
       command_help();
     } else if (strcmp(command, "PAUSE") == 0) {
-      puts("LINE 1 - PAUSING");
+      aputs("LINE 1 - PAUSING");
       pause();
-      puts("LINE 2 - PAUSING");
+      aputs("LINE 2 - PAUSING");
       pause();
     } else if (strcmp(command, "MEMMAP") == 0) {
       command_memmap();
@@ -635,7 +710,7 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
     } else if (strcmp(command, "") == 0) {
       // ignore it.
     } else {
-      printf("HUH?\r\n");
+      aprintf("HUH?\r\n");
     }
   }
 }
@@ -645,7 +720,7 @@ void print_binary(unsigned int value, int bits) {
       1 << (bits - 1);  // Create a mask for the most significant bit
 
   for (int i = 0; i < bits; i++) {
-    putchar((value & mask) ? '1' : '0');  // Check if the current bit is set
+    aputchar((value & mask) ? '1' : '0');  // Check if the current bit is set
     value <<= 1;  // Shift the value left to check the next bit
   }
 }

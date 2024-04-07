@@ -35,13 +35,13 @@ uint16_t dpeekram(uint16_t addr) {
   return r;
 }
 
-uint8_t data_16_to_8(uint16_t data) {
+uint8_t data_16_to_8_fast(uint16_t data) {
   uint8_t value = data;
   value |= ((data >> (D7 - D0)) & 1) << 7;
   return value;
 }
 
-uint8_t data_16_to_8_slow(uint16_t data) {
+uint8_t data_16_to_8(uint16_t data) {
   static const uint8_t bit_positions[8] = {D0, D1, D2, D3, D4, D5, D6, D7};
 
   uint8_t value = 0;
