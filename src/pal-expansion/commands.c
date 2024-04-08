@@ -42,6 +42,8 @@ uint32_t ints;
 
 bool load_ptp_error = false;
 bool load_ptp_done = false;
+
+// If the PAL is not responding, stop sending things to it.
 bool output_to_pal = true;
 
 #include <stdarg.h>
@@ -63,8 +65,7 @@ void aputchar(char c) {
       }
 
       if (absolute_time_diff_us(start_time, get_absolute_time()) >= 500000) {
-        // printf("Timeout reached, proceeding...\n");
-        // output_to_pal = false;
+        output_to_pal = false;
         break;
       }
     }
@@ -291,15 +292,15 @@ void read_string(char *buffer, int max_length) {
     // jjz
 
     pokeram(XCH_CMD_REG, XCH_CMD_CHIN);
-    pokeram(XCH_FROM_PAL, 9);
+    pokeram(XCH_FROM_PAL, 0);
 
     ch = getchar_timeout_us(10);
     if (ch == -1) {
       ch = peekram(XCH_FROM_PAL);
-      pokeram(XCH_FROM_PAL, 0);
       if (ch == 0) {
         continue;
       }
+      output_to_pal = true;
     }
 
     ch = toupper(ch);
