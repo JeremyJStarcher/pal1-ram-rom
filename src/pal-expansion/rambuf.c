@@ -185,16 +185,9 @@ void setup_memory_contents() {
     pokerom(0x1A96 + idx, val);
   }
 
-  // Set up the regular readline so it becomes upper case
-  dpokerom(0x1C6A + 1, 0x1A99);
-
-  // 001A99  1  4C D3 1A             JMP normal
-
-  /*
-
-  001C6A  1  20 5A 1E     READ    JSR   GETCH     ; GET CHAR
-
-  */
+  // Point GETCH to our own routine
+  pokerom(0x1E5A + 0, 0x4C);
+  dpokerom(0x1E5A + 1, 0x1A99);
 
   // While we could replace the entire ROM here, if we do that
   // single step mode will no longer skip the ROM content as it
