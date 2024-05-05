@@ -2,6 +2,7 @@
 
 #include <ctype.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #define RO_MEMORY_BIT 15
 #define IN_USE_BIT 14
@@ -19,15 +20,22 @@
 // Calculate the total size of 'memory' and 'description' fields in bytes
 #define SYS_TOTAL_SIZE                                           \
   ((SYS_MEMORY_SIZE * sizeof(uint16_t)) + SYS_DESCRIPTION_SIZE + \
-   SYS_PRIMED_SIZE)
+   SYS_PRIMED_SIZE + sizeof(StateSetStruct))
 
 // Calculate padding required to align the total size to the nearest 4K boundary
 #define SYS_REQUIRED_PADDING (SYS_ALIGNMENT - (SYS_TOTAL_SIZE % SYS_ALIGNMENT))
 
 typedef struct {
+  bool force_upper_case;
+  bool set_vectors;
+  bool autoload_zero;
+} StateSetStruct;
+
+typedef struct {
   uint16_t memory[SYS_MEMORY_SIZE];
   char description[SYS_DESCRIPTION_SIZE];
   char primed_flag[SYS_PRIMED_SIZE];
+  StateSetStruct settings;
   char padding[SYS_REQUIRED_PADDING];  // Padding to align the total size to 4K
                                        // boundary
 } /* __attribute__((aligned(SYS_ALIGNMENT))) */ SysStateStruct;

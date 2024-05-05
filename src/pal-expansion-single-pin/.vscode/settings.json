@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "clockspeed.h": "c",
+        "commands.h": "c",
+        "stdarg.h": "c"
+    }
+}

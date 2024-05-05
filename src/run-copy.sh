@@ -7,8 +7,6 @@ cd riot-test
 make
 cd ..
 
-
-
 # rm -rf build
 # mkdir build
 # cd build
@@ -22,8 +20,11 @@ cd ..
 rm -rf build
 mkdir build
 cd build
-cmake ../pal-expansion
-make VERBOSE=TRUE
+#cmake ../pal-expansion
+cmake ../pal-expansion-single-pin
+
+#make VERBOSE=TRUE
+make
 
 
 UF2_FILE=$(find . -name "*.uf2")
@@ -60,8 +61,6 @@ while [ ! -d "$MOUNT_POINT" ]; do
     echo "Waiting for $MOUNT_POINT to be mounted..."
 done
 
-
-
 # Attempt to copy the .uf2 file to the mount point with retries
 MAX_RETRIES=5
 RETRY_INTERVAL=2
@@ -79,6 +78,4 @@ done
 
 
 echo "Operation completed successfully."
-
-
 

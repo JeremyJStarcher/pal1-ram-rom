@@ -165,7 +165,9 @@ void setup_memory_contents() {
       printf("PEEKRAM FAILED at %04X\r\n");
     }
   }
+#endif
 
+#if 0
   // BASE RAM
   // this includes the RRIOT RAM.  The RRIOT I/O and TIMER
   // ranges are excluded.
@@ -175,6 +177,7 @@ void setup_memory_contents() {
   }
 #endif
 
+#if 0
   for (idx = 0x0000; idx < riot_testSize; idx += 1) {
     uint8_t val = riot_test[idx];
     pokeram(0x0200 + idx, val);
@@ -204,8 +207,9 @@ void setup_memory_contents() {
   if (dd != 0x1C22) {
     printf("DPEEK FAILED %04X\n", dd);
   }
+#endif
 
-#if 1
+#if 0
   pokeram(0x00F1, 0x00);  // Clear all flags
   pokeram(0x17F9, 0x00);  // Tape load ID
   dpokeram(0x17FA, 0x1C00);

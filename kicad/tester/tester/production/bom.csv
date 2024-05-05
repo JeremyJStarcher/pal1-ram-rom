@@ -1,0 +1,8 @@
+﻿Designator,Footprint,Quantity,Value,LCSC Part #
+J1,PinSocket_1x08_P2.54mm_Vertical,1,Power,
+J102,PinHeader_2x20_P2.54mm_Vertical,1,PAL-1 Expansion Connector,
+J2,PinSocket_1x10_P2.54mm_Vertical,1,PWM,
+"J3, J5",PinSocket_1x08_P2.54mm_Vertical,2,Analog,
+J4,PinSocket_1x08_P2.54mm_Vertical,1,PWM,
+J6,PinSocket_1x08_P2.54mm_Vertical,1,Communication,
+J7,PinSocket_2x18_P2.54mm_Vertical,1,Digital,

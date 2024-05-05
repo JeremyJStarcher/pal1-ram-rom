@@ -7,7 +7,7 @@
  * March 2024
  */
 
-#define EMULATE_RIOT
+// #define EMULATE_RIOT
 
 #include <malloc.h>
 #include <stdio.h>
@@ -29,15 +29,26 @@
 #define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
 #define LED_PIN 25
 
+#define ADDR_TRACK_COUNT_MAX 1000
+uint32_t addresses[ADDR_TRACK_COUNT_MAX];
+size_t addr_idx = 0;
+
 int ledValue = 0;
 
 uint32_t addr_mask = 0;
 uint32_t data_mask = 0;
+uint32_t chip_enable_mask = 0;
 
 uint32_t addr_pins[] = {A0, A1, A2,  A3,  A4,  A5,  A6,  A7,
                         A8, A9, A10, A11, A12, A13, A14, A15};
 uint32_t data_pins[] = {D0, D1, D2, D3, D4, D5, D6, D7};
 uint32_t ctrl_pins[] = {WE, PHI2};
+uint32_t chip_enable_pins[] = {DATA_CE, ADDR_CE};
+
+#define DATA_DIR 16
+//#define DATA_CE 17
+//#define ADDR_CE 18
+
 
 uint32_t getTotalHeap(void);
 uint32_t getFreeHeap(void);
@@ -49,7 +60,10 @@ uint16_t ADDR_BOTTOM = (uint16_t)0x2000;
 uint16_t ADDR_TOP = ((uint16_t)0xFFFF);
 
 #define HI_UINT16(a) (((a) >> 8) & 0xFF)
-#define LO_UINT16(a) ((a)&0xFF)
+#define LO_UINT16(a) ((a) & 0xFF)
+
+#define CDIR_BUS_TO_PICO 1
+#define CDIR_PICO_TO_BUS 0
 
 // this address should always never change value
 // to stop things that probe RAM
@@ -73,6 +87,11 @@ void init_ux() {
   printf("data_mask          : 0x%08x\n", data_mask);
   printf("data_mask          : ");
   print_binary(data_mask, 32);
+  printf("\n");
+
+  printf("CE_mask            : 0x%08x\n", chip_enable_mask);
+  printf("CE_mask            : ");
+  print_binary(chip_enable_mask, 32);
   printf("\n");
 
   printf("Free heap size     : %ld\n", getFreeHeap());
@@ -122,7 +141,8 @@ int main() {
   init_ux();
 }
 
-void __time_critical_func(main_memory_loop)() {
+//void __time_critical_func(main_memory_loop)() {
+void main_memory_loop(void) {
   uint_fast16_t addr;
   uint_fast16_t data;
   uint32_t all;
@@ -136,15 +156,33 @@ void __time_critical_func(main_memory_loop)() {
   uint_fast8_t riot_underflow;
 #endif
 
-  while (true) {
-    all = gpio_get_all();
+    uint16_t addr;
 
+  while (true) {
+    gpio_put_masked(chip_enable_mask, ~(1 << ADDR_CE ));
+    all = gpio_get_all();
     addr = all & (uint32_t)0xFFFF;
+
     phi2 = (all & (uint32_t)(1 << PHI2));
     we_n = (all & (uint32_t)(1 << WE));
 
+    //   if (ff == 0x2000) {
+    //     printf("Found target\r\n");
+    // }
+
 #ifdef EMULATE_RIOT
     if (phi2) {
+      if (addresses[addr_idx - 1] != addr) {
+        addresses[addr_idx] = addr;
+        addr += 1;
+        if (addr == ADDR_TRACK_COUNT_MAX) {
+          for (addr_idx = 0; addr_idx < ADDR_TRACK_COUNT_MAX; addr_idx++) {
+            printf("%04X\n", addresses[addr_idx]);
+          }
+          addr_idx = 0;
+        }
+      }
+
       riot_phi2_state = true;
     } else {
       if (riot_phi2_state) {
@@ -199,16 +237,26 @@ void __time_critical_func(main_memory_loop)() {
 
     gpio_put(DEN, decen);
 
+
+
     if (decen && phi2) {
+
+    gpio_put_masked(chip_enable_mask, ~(1 << DATA_CE ));
+
       if (we_n == 0 && (data & (1 << RO_MEMORY_BIT)) == 0) {
+        gpio_put(DATA_DIR, CDIR_BUS_TO_PICO);
+
         data = (uint32_t)((all & data_mask) >> D0);
         sys_state.memory[addr] = data | (1 << IN_USE_BIT);
       } else {
-        gpio_set_dir_masked(data_mask, data_mask);
+        gpio_put(DATA_DIR, CDIR_PICO_TO_BUS);
         gpio_put_masked(data_mask, data << D0);
       }
     } else {
-      gpio_set_dir_masked(data_mask, 0);
+      //gpio_put_masked(chip_enable_mask, ~(1 << CS4));
+        gpio_put(DATA_DIR, CDIR_BUS_TO_PICO);
+      gpio_put(DEN, 0);
+      // gpio_set_dir_masked(data_mask, 0);
     }
   }
 }
@@ -235,6 +283,10 @@ void setup_gpio() {
   gpio_set_function(DEN, GPIO_FUNC_SIO);
   gpio_set_dir(DEN, GPIO_OUT);
 
+  gpio_init(DATA_DIR);
+  gpio_set_function(DATA_DIR, GPIO_FUNC_SIO);
+  gpio_set_dir(DATA_DIR, GPIO_OUT);
+
   for (i = 0; i < NELEMS(addr_pins); i++) {
     gpio = addr_pins[i];
     addr_mask |= (1 << gpio);
@@ -257,6 +309,15 @@ void setup_gpio() {
     gpio_set_function(gpio, GPIO_FUNC_SIO);
     gpio_set_dir(gpio, GPIO_IN);
   }
+
+  for (i = 0; i < NELEMS(chip_enable_pins); i++) {
+    gpio = chip_enable_pins[i];
+    chip_enable_mask |= (1 << gpio);
+    gpio_init(gpio);
+    gpio_set_function(gpio, GPIO_FUNC_SIO);
+    gpio_set_dir(gpio, GPIO_OUT);
+  }
+
 }
 
 uint32_t getTotalHeap(void) {

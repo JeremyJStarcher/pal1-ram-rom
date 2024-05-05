@@ -337,6 +337,7 @@ void read_string(char *buffer, int max_length) {
 
 void command_help() {
   aprintf("---- HELP ----- \r\n");
+  aprintf("SET: VIEW AND CHANGE SETTINGS\r\n");
   aprintf("L: Load a paper tape file \r\n");
   aprintf("MSB: FILL ROM WITH MSB (USED TO VERIFY ADDRESS CODING)\r\n");
   aprintf("LSB: FILL ROM WITH LSB (USED TO VERIFY ADDRESS CODING)\r\n");
@@ -538,6 +539,37 @@ void command_poke(char *token) {
   }
 }
 
+void command_set(char *token) {
+  #define SETSIZE 10
+
+  token = strtok(NULL, " ");
+
+  char n[SETSIZE];
+  scpy(n, token, SETSIZE);
+
+  token = strtok(NULL, " ");
+  uint8_t data = (uint16_t)strtol(token, NULL, 16);
+
+
+  aprintf("SETTING %s to %02X\r\n", n, data);
+
+    if (strcmp(n, "FU") == 0) {
+      sys_state.settings.force_upper_case = data;
+    }
+
+
+  aputs("SETTINGS");
+
+  aprintf("(FU) FORCE UPPERCASE: %2X\r\n", sys_state.settings.force_upper_case);
+  aprintf("(SV) SET VECTORS: %2X\r\n", sys_state.settings.set_vectors);
+
+
+  return;
+
+}
+
+
+
 void command_peek(char *token) {
   uint16_t addr;
   uint16_t data;
@@ -708,6 +740,8 @@ void command_loop(unsigned long xip_base, unsigned long flash_size) {
       command_peek(command);
     } else if (strcmp(command, "PEEK") == 0) {
       command_peek(command);
+    } else if (strcmp(command, "SET") == 0) {
+      command_set(command);
     } else if (strcmp(command, "") == 0) {
       // ignore it.
     } else {
