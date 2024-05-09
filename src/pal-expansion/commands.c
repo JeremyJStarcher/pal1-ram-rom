@@ -722,6 +722,11 @@ void print_binary(unsigned int value, int bits) {
 
   for (int i = 0; i < bits; i++) {
     aputchar((value & mask) ? '1' : '0');  // Check if the current bit is set
+
+    if ((i + 1) % 4 == 0) {
+      aputchar('_');  // Check if the current bit is set
+    }
+
     value <<= 1;  // Shift the value left to check the next bit
   }
 }

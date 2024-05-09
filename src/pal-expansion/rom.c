@@ -143,17 +143,35 @@ void __time_critical_func(main_memory_loop)() {
     phi2 = (all & (uint32_t)(1 << PHI2));
     we_n = (all & (uint32_t)(1 << WE));
 
+    //   printf("WE %d -- PHI2 %d SS- %d \r\n", !!we_n, !!phi2,
+    //   riot_phi2_state);
+
 #ifdef EMULATE_RIOT
-    if (phi2) {
+    if (phi2 && !riot_phi2_state) {
+      // Rising edge
       riot_phi2_state = true;
-    } else {
-      if (riot_phi2_state) {
-        riot_counter--;
-        riot_phi2_state = false;
-        // Do this calculation when we are not as busy
-        riot_underflow = riot_counter & (1 << 18);
-      }
+
+#if 0
+      uint8_t data2 = peekram(addr);
+
+      printf("ADDR = %04x ", addr);
+      print_binary(addr, 16);
+      printf("WE %d -- PHI2 %d DATA = %02X ", !!we_n,  !!phi2,
+             data2);
+      print_binary(data2, 8);
+      printf("\r\n");
+#endif
     }
+
+    if (!phi2 && riot_phi2_state) {
+      // Falling edge
+
+      riot_counter--;
+      riot_phi2_state = false;
+      // Do this calculation when we are not as busy
+      riot_underflow = riot_counter & (1 << 18);
+    }
+
 #endif
 
 #ifdef EMULATE_RIOT
@@ -194,9 +212,13 @@ void __time_critical_func(main_memory_loop)() {
     }
 #endif
 
+    //    pokeram(addr, 1 << 7 | 1 << 6 | 1 << 5 | 1 << 4 | 1 << 3  | 1 << 2 | 1
+    //    << 1);
+
     data = sys_state.memory[addr];
     int decen = (data & 1 << IN_USE_BIT) ? 1 : 0;
 
+    decen = 1;
     gpio_put(DEN, decen);
 
     if (decen && phi2) {

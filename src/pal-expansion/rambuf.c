@@ -173,6 +173,8 @@ void setup_memory_contents() {
     uint8_t rnd = get_rand_64();
     pokeram(idx, rnd);
   }
+
+  command_fill_ram_lsb();
 #endif
 
   for (idx = 0x0000; idx < riot_testSize; idx += 1) {
