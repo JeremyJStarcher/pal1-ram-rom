@@ -357,7 +357,7 @@ void command_fill_ram_msb() {
   uint8_t data;
   for (addr = 0x2000; addr < 0xFFF0; addr += 1) {
     data = addr / 256;
-    pokerom(addr, data);
+    pokeram(addr, data);
   }
 }
 
@@ -366,7 +366,7 @@ void command_fill_ram_lsb() {
   uint8_t data;
   for (addr = 0x2000; addr < 0xFFF0; addr += 1) {
     data = addr % 256;
-    pokerom(addr, data);
+    pokeram(addr, data);
   }
 }
 

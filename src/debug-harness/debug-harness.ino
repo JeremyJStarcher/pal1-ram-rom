@@ -1,4 +1,13 @@
+String a;
+
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
+
+const int ADDR_LOW = 0x2000;
+const int ADDR_HIGH = 0xFFF0;
+
+#define TEST_LSB
+#define TEST_MSB
+#define TEST_WRITE
 
 const int AA0 = 52;
 const int AA1 = 53;
@@ -54,39 +63,39 @@ const int RDY = 3;
 const int address_lines[] = { AA0, AA1, AA2, AA3, AA4, AA5, AA6, AA7, AA8, AA9, AA10, AA11, AA12, AA13, AA14, AA15 };
 const int data_lines[] = { DATA0, DATA1, DATA2, DATA3, DATA4, DATA5, DATA6, DATA7 };
 
+void readString() {
+  while (!Serial.available()) {
+  }
+  while (Serial.available()) {
+    a = Serial.readString();  // read the incoming data as string
+    //Serial.println(a);
+  }
+}
+
 uint8_t slowRead(int pin) {
   uint8_t v;
-  //delay(1);
+  //delay(100);
   v = digitalRead(pin);
-  //delay(1);
+  //delay(100);
   return v;
 }
 
 uint8_t readDataPins() {
   uint8_t value = 0;
   uint8_t v;
-  //Serial.print("Data: ");
   for (int i = 0; i < ARRAY_SIZE(data_lines); i++) {
     int pin = data_lines[i];
-    //pinMode(pin, INPUT_PULLUP);
+    pinMode(pin, INPUT);
     v = slowRead(pin);
-
-    //    Serial.print(pin);
-    //    Serial.print(":");
-    //    Serial.print(v);
-    //    Serial.print(" ");
-
     value |= v << i;
   }
-  //  Serial.print(value);
-  //  Serial.print(" 0x");
-  //  Serial.print(value, HEX);
-  //  Serial.println();
   return value;
 }
 
 
 uint16_t readAddressPins() {
+  set_data_lines_direction(INPUT);
+
   uint16_t value = 0;
   for (int i = 0; i < ARRAY_SIZE(address_lines); i++) {
     value |= (digitalRead(address_lines[i]) << i);
@@ -94,14 +103,19 @@ uint16_t readAddressPins() {
   return value;
 }
 
+void writeDataToPins(uint8_t value) {
+  for (int i = 0; i < ARRAY_SIZE(data_lines); i++) {
+    int pin = data_lines[i];
+    pinMode(pin, OUTPUT);
+    digitalWrite(pin, value & (1 << i) ? HIGH : LOW);
+    //delay(1 * 1000);
+  }
+}
+
 void writeAddressToPins(uint16_t value) {
-  //Serial.print(value, HEX);
-  //Serial.print("  ");
   for (int i = 0; i < ARRAY_SIZE(address_lines); i++) {
-    //Serial.print(value & (1 << i) ? "1" : "0");
     digitalWrite(address_lines[i], value & (1 << i) ? HIGH : LOW);
   }
-  //Serial.println();
 }
 
 void set_address_lines_direction(int mode) {
@@ -113,15 +127,45 @@ void set_address_lines_direction(int mode) {
 void set_data_lines_direction(int mode) {
   for (size_t i = 0; i < ARRAY_SIZE(data_lines); i++) {
     int pin = data_lines[i];
-    // Serial.print("Setting pin ");
-    // Serial.print(pin);
-    // Serial.print(" to mode ");
-    // Serial.println(mode);
     pinMode(pin, mode);
   }
 }
 
+void dump_addr_data(int addr, int data) {
+  Serial.print("ADDR = ");
+  Serial.print(addr, HEX);
+  Serial.print(" Data = ");
+  Serial.print(data, HEX);
+  Serial.print(" ");
+  Serial.print(data, BIN);
+
+  Serial.print(" MATCH? ");
+  Serial.print(addr & 0x00FF, HEX);
+
+  Serial.println();
+}
+
+void reset_pins() {
+  set_address_lines_direction(OUTPUT);
+  set_data_lines_direction(INPUT);
+
+  pinMode(DEN, INPUT);
+  pinMode(RW, OUTPUT);
+  pinMode(PHI2, OUTPUT);
+  digitalWrite(RW, HIGH);
+}
+
+uint8_t read_data(uint16_t addr) {
+  digitalWrite(PHI2, LOW);
+  writeAddressToPins(addr);
+  digitalWrite(PHI2, HIGH);
+  uint8_t data = readDataPins();
+  return data;
+}
+
 void setup() {
+  uint8_t data;
+  uint8_t is_match;
 
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
@@ -131,46 +175,64 @@ void setup() {
 
   delay(1 * 1000);
 
+  Serial.println();
   Serial.println("====RESET===");
+  reset_pins();
 
-  set_address_lines_direction(OUTPUT);
-  set_data_lines_direction(INPUT);
-
-  pinMode(DEN, INPUT);
-  pinMode(RW, OUTPUT);
-  pinMode(PHI2, OUTPUT);
-
-  digitalWrite(RW, HIGH);
-
-  for (int addr = 0x2000; addr < 0xFFF0; addr += 1 ) {
-
-    digitalWrite(PHI2, LOW);
-    writeAddressToPins(addr);
-
-    digitalWrite(PHI2, HIGH);
-    uint8_t data = readDataPins();
-    
-    uint8_t is_match = (addr & 0x00FF) == data;
-    //uint8_t is_match = (addr & 0xFF00) == data << 8;
-
+#ifdef TEST_LSB
+  reset_pins();
+  Serial.println("LOAD LSB INTO RAM AND PRESS ENTER");
+  readString();
+  Serial.println("RUNNING LSB TEST");
+  for (int addr = ADDR_LOW; addr < ADDR_HIGH; addr += 1) {
+    data = read_data(addr);
+    is_match = (addr & 0x00FF) == data;
     if (!is_match) {
-      Serial.print("ADDR = ");
-      Serial.print(addr, HEX);
-      Serial.print(" Data = ");
-      Serial.print(data, HEX);
-      Serial.print(" ");
-      Serial.print(data, BIN);
-
-      Serial.print(" MATCH? ");
-      Serial.print(addr & 0x00FF, HEX);
-      Serial.print(" MATCH2? ");
-      Serial.print(is_match, HEX);
-
-      Serial.println();
+      Serial.print("LSB ");
+      dump_addr_data(addr, data);
     }
   }
-  Serial.println("<-- DONE -->");
+#endif
 
+
+#ifdef TEST_MSB
+  reset_pins();
+  Serial.println("LOAD MSB INTO RAM AND PRESS ENTER");
+  readString();
+  Serial.println("RUNNING MSB TEST");
+  for (int addr = ADDR_LOW; addr < ADDR_HIGH; addr += 1) {
+    data = read_data(addr);
+    is_match = (addr & 0xFF00) == data << 8;
+    if (!is_match) {
+      Serial.print("MSB ");
+      dump_addr_data(addr, data);
+    }
+  }
+#endif
+
+#ifdef TEST_WRITE
+  reset_pins();
+  Serial.println("RUNNING WRITE TEST");
+  for (int addr = ADDR_LOW; addr < ADDR_HIGH; addr += 1) {
+    int flipped = ~(addr)&0x00FF;
+    digitalWrite(PHI2, LOW);
+    digitalWrite(RW, LOW);
+    writeAddressToPins(addr);
+    writeDataToPins(flipped);
+
+    digitalWrite(PHI2, HIGH);
+    digitalWrite(RW, HIGH);
+
+    data = readDataPins();
+
+    if (data != flipped) {
+      Serial.print("FLIP TEST ");
+      dump_addr_data(addr, data);
+    }
+  }
+#endif
+
+  Serial.println("<-- DONE -->");
 }
 
 

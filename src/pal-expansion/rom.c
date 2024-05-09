@@ -218,12 +218,18 @@ void __time_critical_func(main_memory_loop)() {
     data = sys_state.memory[addr];
     int decen = (data & 1 << IN_USE_BIT) ? 1 : 0;
 
-    decen = 1;
     gpio_put(DEN, decen);
 
     if (decen && phi2) {
       if (we_n == 0 && (data & (1 << RO_MEMORY_BIT)) == 0) {
         data = (uint32_t)((all & data_mask) >> D0);
+
+#if 0
+      printf("WDATA = %02X ", data);
+      print_binary(data, 8);
+      printf("\r\n");
+#endif
+
         sys_state.memory[addr] = data | (1 << IN_USE_BIT);
       } else {
         gpio_set_dir_masked(data_mask, data_mask);
